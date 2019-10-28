@@ -6,7 +6,9 @@
 \alias{simLists}
 \title{The \code{simLists} class}
 \description{
-This is a grouping of \code{simList} objects
+This is a grouping of \code{simList} objects. Normally this class will be
+made using \code{experiment2}, but can be made manually if there are
+existing \code{simList} objects.
 }
 \section{Slots}{
 
@@ -18,17 +20,6 @@ will be prepended to the relative paths of each \code{simList}}
 \item{\code{.xData}}{Environment holding the \code{simLists}.}
 }}
 
-\note{
-The \code{simList} class extends the \code{environment}, by adding
-several slots that provide information about the metadata for a discrete
-event simulation. The environment slot, if accessed directly is \code{.xData}
-and this is where input and output objects from modules are placed.
-The \code{\link{simList_}} class is similar, but it extends the \code{list}
-class. All other slots are the same.
-Thus, \code{simList} is identical to \code{simList_}, except that the former
-uses an environment for objects and the latter uses a list.
-The class \code{simList_} is only used internally.
-}
 \section{Accessor Methods}{
 
 

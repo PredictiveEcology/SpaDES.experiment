@@ -5,7 +5,6 @@
 #' @rdname simInitAnd
 #' @inheritParams SpaDES.core::simInit
 #' @inheritParams experiment
-#' @importFrom methods formalArgs is new
 #' @importFrom utils getFromNamespace
 #' @details
 #' \code{simInitAndExperiment} cannot pass modules or params to \code{experiment} because
