@@ -1,0 +1,61 @@
+Package: SpaDES.experiment
+Type: Package
+Title: Tools to build simulation experiments within the `SpaDES` ecosystem
+Description: Tools to do simulation experiments within the SpaDES ecosystem. 
+  This includes replication, parameter sweeps, scenario analysis, 
+  pattern oriented modeling, and simulation experiments. The package introduces
+  a new object class, the `simLists`, which is an environment that contains
+  many `simList` objects. This package also includes tools to do posthoc 
+  analyses of such `simLists` objects.
+URL:
+    http://spades-experiment.predictiveecology.org/,
+    https://github.com/PredictiveEcology/SpaDES.experiment
+Date: 2019-10-25
+Version: 0.0.1.9000
+Authors@R: c(
+    person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
+    person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
+    role = c("aut"), comment = c(ORCID = "0000-0001-7146-8135")),
+    person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
+    role = "cph")
+    )
+Depends:
+    R (>= 3.5),
+    reproducible (>= 0.2.10.9001),
+    SpaDES.core (>= 0.1.4)
+Imports:
+    crayon,
+    data.table (>= 1.10.4),
+    DEoptim (>= 2.2-4),
+    future,
+    future.apply,
+    magrittr,
+    methods,
+    parallel,
+    purrr,
+    raster (>= 2.5-8),
+    utils
+Suggests:
+    future.callr,
+    igraph,
+    knitr,
+    quickPlot,
+    RandomFields (>= 3.3.4),
+    rmarkdown,
+    sf,
+    SpaDES.tools (>= 0.2.0),
+    testthat (>= 1.0.2)
+Encoding: UTF-8
+Language: en-CA
+License: GPL-3
+VignetteBuilder: knitr, rmarkdown
+BugReports: https://github.com/PredictiveEcology/SpaDES.core/issues
+ByteCompile: yes
+Collate: 
+    'POM.R'
+    'experiment.R'
+    'simLists-class.R'
+    'experiment2.R'
+    'simInitAndExperiment.R'
+RoxygenNote: 6.1.1
