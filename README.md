@@ -1,17 +1,17 @@
 
 
-[![Build Status](https://travis-ci.org/PredictiveEcology/SpaDES.core.svg?branch=master)](https://travis-ci.org/PredictiveEcology/SpaDES.core)
-[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/2fxqhgk6miv2fytd/branch/master?svg=true)](https://ci.appveyor.com/project/achubaty/spades-core/branch/master)
-[![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/SpaDES.core/badge.svg?branch=master)](https://coveralls.io/github/PredictiveEcology/SpaDES.core?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/SpaDES.core)](https://cran.r-project.org/package=SpaDES.core)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/SpaDES.core)](https://cran.r-project.org/package=SpaDES.core)
+[![Build Status](https://travis-ci.org/PredictiveEcology/SpaDES.experiment.svg?branch=master)](https://travis-ci.org/PredictiveEcology/SpaDES.experiment)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/2fxqhgk6miv2fytd/branch/master?svg=true)](https://ci.appveyor.com/project/achubaty/spades-experiment/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/SpaDES.experiment/badge.svg?branch=master)](https://coveralls.io/github/PredictiveEcology/SpaDES.experiment?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/SpaDES.experiment)](https://cran.r-project.org/package=SpaDES.experiment)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/SpaDES.experiment)](https://cran.r-project.org/package=SpaDES.experiment)
 
 <img align="right" width="80" vspace="10" hspace="10" src="https://github.com/PredictiveEcology/SpaDES/raw/master/docs/images/SpaDES.png">
 
 # SpaDES.core
 
 
-Core functionality for Spatial Discrete Event Simulation (SpaDES)
+Simulation experiments and other functionality with SpaDES models.
 
 **Website:** [http://SpaDES.PredictiveEcology.org](http://SpaDES.PredictiveEcology.org)
 
@@ -32,7 +32,7 @@ install.packages("SpaDES.core")
 ```r
 #install.packages("devtools")
 library("devtools")
-install_github("PredictiveEcology/SpaDES.core", dependencies = TRUE) # stable
+install_github("PredictiveEcology/SpaDES.experiment", dependencies = TRUE) # stable
 ```
 
 ### Development version (unstable)
@@ -42,5 +42,5 @@ install_github("PredictiveEcology/SpaDES.core", dependencies = TRUE) # stable
 ```r
 #install.packages("devtools")
 library("devtools")
-install_github("PredictiveEcology/SpaDES.core", ref = "development", dependencies = TRUE) # unstable
+install_github("PredictiveEcology/SpaDES.experiment", ref = "development", dependencies = TRUE) # unstable
 ```
