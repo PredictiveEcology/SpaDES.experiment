@@ -8,7 +8,7 @@
 
 <img align="right" width="80" vspace="10" hspace="10" src="https://github.com/PredictiveEcology/SpaDES/raw/master/docs/images/SpaDES.png">
 
-# SpaDES.core
+# SpaDES.experiment
 
 
 Simulation experiments and other functionality with SpaDES models.
