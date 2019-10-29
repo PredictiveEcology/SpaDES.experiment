@@ -123,7 +123,7 @@ test_that("experiment2 test 1", {
 
   expect_true(is(sims, "simLists"))
   mess <- capture.output(sims)
-  expect_true(sum(grepl("3 simLists", mess)) == 1)
+  expect_true(sum(grepl("2 simLists", mess)) == 1)
 
   df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
   df2 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
