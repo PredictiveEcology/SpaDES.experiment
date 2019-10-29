@@ -5,7 +5,7 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
   This includes replication, parameter sweeps, scenario analysis, 
   pattern oriented modeling, and simulation experiments. The package introduces
   a new object class, the `simLists`, which is an environment that contains
-  many `simList` objects. This package also includes tools to do posthoc 
+  many `simList` objects. This package also includes tools to do post hoc 
   analyses of such `simLists` objects.
 URL:
     http://spades-experiment.predictiveecology.org/,
@@ -45,7 +45,8 @@ Suggests:
     rmarkdown,
     sf,
     SpaDES.tools (>= 0.2.0),
-    testthat (>= 1.0.2)
+    testthat (>= 1.0.2),
+    spelling
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3

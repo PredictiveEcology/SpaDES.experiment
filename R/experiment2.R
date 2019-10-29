@@ -143,14 +143,13 @@ experiment2Inner <- function(X, ll, clearSimEnv, createUniquePaths,
 
 #' Coerce elements of a simLists object to a data.table
 #'
-#' This is particularly useful to build plots using the tidyverse,
-#' e.g., \code{ggplot2}
+#' This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg{ggplot2}.
 #' @importFrom purrr transpose
 #' @inheritParams data.table::as.data.table
 #' @param vals A character vector or list of object names to extract from each
-#'   simList, or a list of quoted expressions to calculate for each \code{simList},
+#'   \code{simList}, or a list of quoted expressions to calculate for each \code{simList},
 #'   or a mix of character and quoted expressions.
-#' @param byRep Should the data.table have a column labelled "rep", indicating replicate
+#' @param byRep Should the \code{data.table} have a column labelled "rep", indicating replicate
 #'   number/label. Currently, only \code{TRUE} is accepted.
 #' @param objectsFromSim Character vector of objects to extract from the simLists. If
 #'   omitted, it will extract all objects from each simList in order to calculate the
@@ -163,7 +162,7 @@ experiment2Inner <- function(X, ll, clearSimEnv, createUniquePaths,
 #'   these will all be loaded, one at a time, \code{vals} evaluated one at a time, and
 #'   all the unique values will be returned. A column, \code{saveTime}, will be
 #'   part of the returned value.
-#' @param ... Currently unused.
+#' @param ... Additional arguments. Currently unused.
 #' @details
 #' See examples.
 #'

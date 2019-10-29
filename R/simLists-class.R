@@ -1,4 +1,3 @@
-################################################################################
 #' The \code{simLists} class
 #'
 #' This is a grouping of \code{simList} objects. Normally this class will be
@@ -95,7 +94,7 @@ setMethod(
       paste0(s[1], ", ..., ", tail(s,1))
     })
     simListChStr <- paste0(names(ll), ": ", ll)
-    simListEntries <- (seq_along(unique(simLists))-1)*2 + length(out) + 1
+    simListEntries <- (seq_along(unique(simLists)) - 1)*2 + length(out) + 1
     out[simListEntries] <- lapply(simListChStr, function(x) x)
     out[simListEntries + 1] <- lapply(simListsBySimList, function(x) {
       paste("  ", capture.output(ls.str(object[[x[1]]])))
@@ -105,4 +104,3 @@ setMethod(
     ### print result
     cat(unlist(out), fill = FALSE, sep = "\n")
   })
-

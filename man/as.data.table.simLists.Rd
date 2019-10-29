@@ -10,11 +10,11 @@
 \arguments{
 \item{x}{An R object.}
 
-\item{byRep}{Should the data.table have a column labelled "rep", indicating replicate
+\item{byRep}{Should the \code{data.table} have a column labelled "rep", indicating replicate
 number/label. Currently, only \code{TRUE} is accepted.}
 
 \item{vals}{A character vector or list of object names to extract from each
-simList, or a list of quoted expressions to calculate for each \code{simList},
+\code{simList}, or a list of quoted expressions to calculate for each \code{simList},
 or a mix of character and quoted expressions.}
 
 \item{objectsFromSim}{Character vector of objects to extract from the simLists. If
@@ -30,11 +30,10 @@ these will all be loaded, one at a time, \code{vals} evaluated one at a time, an
 all the unique values will be returned. A column, \code{saveTime}, will be
 part of the returned value.}
 
-\item{...}{Currently unused.}
+\item{...}{Additional arguments. Currently unused.}
 }
 \description{
-This is particularly useful to build plots using the tidyverse,
-e.g., \code{ggplot2}
+This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg{ggplot2}.
 }
 \details{
 See examples.
