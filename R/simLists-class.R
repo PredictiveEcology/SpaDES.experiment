@@ -41,12 +41,12 @@ setClass(
 #' Given the name or the definition of a class, plus optionally data to be
 #' included in the object, \code{new} returns an object from that class.
 #'
-#' @export
-#' @importFrom SpaDES.core .paths
 #' @param .Object  A \code{simList} object.
 #' @param ... Optional Values passed to any or all slot
+#'
+#' @export
+#' @importFrom SpaDES.core .paths
 #' @rdname initialize-method
-#' @import methods
 setMethod("initialize",
           signature(.Object = "simLists"),
           definition = function(.Object, ...) {
