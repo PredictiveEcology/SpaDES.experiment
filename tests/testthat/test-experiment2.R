@@ -8,7 +8,7 @@ test_that("experiment2 test 1", {
   }, add = TRUE)
 
 
-  endTime <- 5
+  endTime <- 2
   # Example of changing parameter values
   mySim1 <- simInit(
     times = list(start = 0.0, end = endTime, timeunit = "year"),
@@ -74,13 +74,14 @@ test_that("experiment2 test 1", {
     warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
     # Test Caching
     cap0 <- capture_output(mess <- capture_messages(spades(Copy(mySim1), debug = 2)))
-    expect_true(sum(grepl("cached", cap0))==0)
+    expects <- if (is(plan(), "sequential")) 0 else 1 # sequential has no concurrent spades
+    expect_true(sum(grepl("cached", cap0))==expects)
     cap1 <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2)))
-    expects <- if (is(plan(), "sequential")) 1 else 2 # sequential has no concurrent spades
-    # expect_true(sum(grepl("cached", cap1))==expects) # b/c they are at the same time. If sequential, one would be memoised
+    expects <- if (is(plan(), "sequential")) 2 else 2 # sequential has no concurrent spades
+    expect_true(sum(grepl("cached", cap1))==expects) # b/c they are at the same time. If sequential, one would be memoised
     cap <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2,
-                                                                       mySim1)))
-    expects <- if (is(plan(), "callr")) c(2,1) else c(0,3) # uses a new session each call
+                                                                       mySim3)))
+    expects <- c(3,0) # uses a new session each call
     expect_true(sum(grepl("cached", cap))==expects[1]) # these are not same session as previous, so can't memoise
     expect_true(sum(grepl("memoised", cap))==expects[2]) # 2 were old, plus 1 was a redo in one of the workers
 
@@ -122,8 +123,8 @@ test_that("experiment2 test 1", {
   lapply(names(stStart), function(x) print(stEnd[[x]] - stStart[[x]]))
 
   expect_true(is(sims, "simLists"))
-  mess <- capture.output(sims)
-  expect_true(sum(grepl("2 simLists", mess)) == 1)
+  mess4 <- capture.output(sims)
+  expect_true(sum(grepl("3 simLists", mess)) == 1)
 
   df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
   df2 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
