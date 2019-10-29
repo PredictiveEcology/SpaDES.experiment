@@ -16,3 +16,4 @@ vignettes/.*_cache$
 vignettes/.*\.log$
 ^\.httr-oauth$
 ^revdep$
+CNAME
