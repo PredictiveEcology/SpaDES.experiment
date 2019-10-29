@@ -11,7 +11,7 @@
 # SpaDES.experiment
 
 
-Simulation experiments and other functionality with SpaDES models.
+Tools to build simulation experiments within the `SpaDES` ecosystem.
 
 **Website:** [http://SpaDES.PredictiveEcology.org](http://SpaDES.PredictiveEcology.org)
 
