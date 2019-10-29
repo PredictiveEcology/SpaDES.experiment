@@ -2,7 +2,8 @@ test_that("experiment2 test 1", {
   #if (!interactive())
   skip_on_cran()
   skip_on_appveyor()
-  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2"), smcc = FALSE)
+  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2"),
+                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
@@ -79,50 +80,54 @@ test_that("experiment2 test 1", {
     cap1 <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2)))
     expects <- if (is(plan(), "sequential")) 2 else 2 # sequential has no concurrent spades
     expect_true(sum(grepl("cached", cap1))==expects) # b/c they are at the same time. If sequential, one would be memoised
-    cap <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2,
-                                                                       mySim3)))
-    expects <- c(3,0) # uses a new session each call
-    expect_true(sum(grepl("cached", cap))==expects[1]) # these are not same session as previous, so can't memoise
-    expect_true(sum(grepl("memoised", cap))==expects[2]) # 2 were old, plus 1 was a redo in one of the workers
-
+    # cap <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2,
+    #                                                                    mySim3)))
+    # expects <- 3 # uses a new session each call
+    # expect_true(sum(grepl("cached", cap))==expects[1]) # these are not same session as previous, so can't memoise
+    # expect_true(sum(grepl("memoised", cap))==expects[2]) # 2 were old, plus 1 was a redo in one of the workers
 
     # Test replication
     mySim1Orig <- Copy(mySim1)
     mySim2Orig <- Copy(mySim2)
 
+    repNums <- c(2, 3, 3)
     cap1 <- capture.output(mess <- capture_messages(
-      sims <- experiment2(mySim1, mySim2, replicates = c(2,3))
+      sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
+                          replicates = repNums)
     ))
     # Test don't need to use Copy
     expect_true(isTRUE(all.equal(mySim1Orig, mySim1))) # can't use identical -- envs are different
 
     # Test replication -- can be a vector of replicates
-    expect_true(length(ls(sims)) == 5)
-    expect_true(sum(grepl("^1", sort(ls(sims)))) == 2)
-    expect_true(sum(grepl("^2", sort(ls(sims)))) == 3)
-    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == 2)
-    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == 2)
-    expect_false(identical(sims$`1_rep1`$caribou$x1, sims$`1_rep2`$caribou$x1))
-    expect_false(identical(sims$`1_rep1`$caribou$x1, sims$`2_rep2`$caribou$x1))
-    expect_false(identical(sims$`1_rep1`$caribou$x1, sims$`2_rep1`$caribou$x1))
+    expect_true(length(ls(sims)) == sum(repNums))
+    expect_true(sum(grepl("^sim1", sort(ls(sims)))) == repNums[1])
+    expect_true(sum(grepl("^sim2", sort(ls(sims)))) == repNums[2])
+    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == sum(repNums >= 1))
+    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == sum(repNums >= 2))
+    expect_true(sum(grepl("rep3$", sort(ls(sims)))) == sum(repNums >= 3))
+    expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim1_rep2`$caribou$x1))
+    expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep2`$caribou$x1))
+    expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep1`$caribou$x1))
   }
 
-  stStart <- list()
-  stEnd <- list()
-  for (pl in c("sequential")) {
-    #for (pl in c("sequential", "multiprocess", "callr")) {
-    stStart[[pl]] <- Sys.time()
-    cat(" -- testing future plan when", pl, "                ")
-    warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
-    cap1 <- capture.output(mess <- capture_messages(
-      sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
-                          replicates = 3, useCache = FALSE)
-    ))
-    stEnd[[pl]] <- Sys.time()
-  }
-  lapply(names(stStart), function(x) print(stEnd[[x]] - stStart[[x]]))
+  # stStart <- list()
+  # stEnd <- list()
+  # for (pl in c("sequential")) {
+  # #  for (pl in c("sequential", "multiprocess", "callr")) {
+  #   stStart[[pl]] <- Sys.time()
+  #   cat(" -- testing future plan when", pl, "                ")
+  #   warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
+  #   cap1 <- capture.output(mess <- capture_messages(
+  #     sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
+  #                         replicates = 3, useCache = FALSE)
+  #   ))
+  #   stEnd[[pl]] <- Sys.time()
+  # }
+  # lapply(names(stStart), function(x) print(stEnd[[x]] - stStart[[x]]))
 
   expect_true(is(sims, "simLists"))
+
+  # test "show" method
   mess4 <- capture.output(sims)
   expect_true(sum(grepl("3 simLists", mess4)) == 1)
 
