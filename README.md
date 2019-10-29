@@ -24,7 +24,7 @@ This includes replication, parameter sweeps, scenario analysis, pattern oriented
 **Install from CRAN:**
 
 ```r
-install.packages("SpaDES.core")
+install.packages("SpaDES.experiment")
 ```
 
 **Install from GitHub:**

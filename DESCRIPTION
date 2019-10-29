@@ -10,7 +10,7 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
 URL:
     http://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2019-10-25
+Date: 2019-10-29
 Version: 0.0.1.9000
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
@@ -50,7 +50,7 @@ Encoding: UTF-8
 Language: en-CA
 License: GPL-3
 VignetteBuilder: knitr, rmarkdown
-BugReports: https://github.com/PredictiveEcology/SpaDES.core/issues
+BugReports: https://github.com/PredictiveEcology/SpaDES.experiment/issues
 ByteCompile: yes
 Collate: 
     'POM.R'

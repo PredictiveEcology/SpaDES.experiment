@@ -58,7 +58,7 @@ setMethod("initialize",
 
             attr(.Object@.xData, "name") <- "simLists"
             return(.Object)
-          })
+})
 
 #' Show method for \code{simLists}
 #' @param object  \code{simLists}

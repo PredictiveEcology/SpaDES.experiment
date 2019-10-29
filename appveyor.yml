@@ -68,8 +68,8 @@ notifications:
    to:
      - alex.chubaty@gmail.com
      - '{{commitAuthorEmail}}'
-   subject: 'SpaDES.core: r-appveyor build {{status}}'
-   message: "https://ci.appveyor.com/project/achubaty/SpaDES-core"
+   subject: 'SpaDES.experiment: r-appveyor build {{status}}'
+   message: "https://ci.appveyor.com/project/achubaty/SpaDES-experiment"
    on_build_success: false
    on_build_failure: false
    on_build_status_changed: true

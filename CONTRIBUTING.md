@@ -1,8 +1,8 @@
-We welcome contributions to `SpaDES.core`, both as bug reports or package enhancements.
+We welcome contributions to `SpaDES.experiment`, both as bug reports or package enhancements.
 
 ## Report a bug
 
-1. Use the [issue tracker](https://github.com/PredictiveEcology/SpaDES.core/issues) to report a bug.
+1. Use the [issue tracker](https://github.com/PredictiveEcology/SpaDES.experiment/issues) to report a bug.
 
 2. Please include a minimum reproducible example that triggers the bug.
 
@@ -21,4 +21,3 @@ We welcome contributions to `SpaDES.core`, both as bug reports or package enhanc
 We'll try to review your pull request and provide feedback / merge improvements as quickly as possible.
 
 Thank you!
-
