@@ -29,6 +29,7 @@ if (getRversion() >= "3.1.0") {
 #'   seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
 #'   calls from running a second time during second call to the same
 #'   \code{experiment2} function.
+#' @inheritParams SpaDES.core::spades
 #'
 #' @details
 #'
@@ -59,26 +60,29 @@ setGeneric(
   "experiment2",
   signature = "...",
   function(..., replicates = 1, clearSimEnv = FALSE,
-           createUniquePaths = c("outputPath"), useCache = FALSE) {
+           createUniquePaths = c("outputPath"), useCache = FALSE,
+           debug = getOption("spades.debug"), drive_auth_account) {
     standardGeneric("experiment2")
   })
 
 #' @rdname experiment2
-#' @importFrom future.apply future_lapply
+#' @importFrom future.apply future_lapply future_mapply
 #' @importFrom SpaDES.core packages
 setMethod(
   "experiment2",
   signature("simList"),
   definition = function(..., replicates, clearSimEnv,
                         createUniquePaths = c("outputPath"),
-                        useCache = FALSE) {
+                        useCache = FALSE, debug = getOption("spades.debug"),
+                        drive_auth_account = NULL) {
     # determine packages to load in the workers
     if (any(createUniquePaths != "outputPath")) {
       message("createUniquePaths only accepts outputPath, currently",
               ". Setting it to 'outputPath'")
       createUniquePaths <- "outputPath"
     }
-    pkg <- c(unique(unlist(lapply(list(...), packages, clean = TRUE))), "SpaDES.experiment")
+    pkg <- c(unique(unlist(lapply(list(...), packages, clean = TRUE))), 
+             "SpaDES.experiment", "googledrive")
     outSimLists <- new("simLists")
     ll <- list(...)
     possSimNames <- as.character(seq_along(list(...)))
@@ -92,10 +96,12 @@ setMethod(
     }
 
     if (!missing(replicates)) {
-      if (length(replicates) == 1) replicates <- rep(replicates, length(ll))
+      #if (length(replicates) == 1) replicates <- rep(replicates, length(ll))
 
-      simNames <- unlist(Map(x = simNames, each = replicates, rep))
+      #simNames <- unlist(Map(x = simNames, times = replicates, rep))
+      simNames <- rep(simNames, times = replicates) # keep them alternating for mapply
       repNums <- unlist(lapply(replicates, seq_len))
+      repNums <- rep(repNums, each = length(ll))
       namsExpanded <- paste(simNames, paddedFloatToChar(repNums, padL = max(nchar(repNums))),
                      sep = "_rep")
       names(simNames) <- namsExpanded
@@ -108,36 +114,66 @@ setMethod(
       # rather than 1 copy per sim
     iters <- seq_along(namsExpanded)
     names(iters) <- namsExpanded
-    list2env(future_lapply(X = iters, ll = ll, clearSimEnv = clearSimEnv,
-                           createUniquePaths = createUniquePaths,
-                           names = namsExpanded,
-                           simNames = simNames,
-                           useCache = useCache,
-                           .spades = .spades,
-                           FUN = experiment2Inner,
-                           future.packages = pkg
-    ),
-    envir = outSimLists@.xData)
+    #out <- mapply(
+      #list2env(
+    out <- future_mapply(
+      #X = iters, 
+      sim = ll,  # recycled by replicates -- maybe this reduces copying ...?
+      name = namsExpanded,
+      simName = simNames,
+      MoreArgs = list(clearSimEnv = clearSimEnv,
+                      createUniquePaths = createUniquePaths,
+                      useCache = useCache,
+                      .spades = .spades, 
+                      debug = debug, 
+                      drive_auth_account = drive_auth_account),
+      FUN = experiment2Inner,
+      SIMPLIFY = FALSE,
+      future.packages = pkg
+    )#,
+    names(out) <- namsExpanded
+    list2env(out, envir = outSimLists@.xData)
     return(outSimLists)
   })
 
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
-experiment2Inner <- function(X, ll, clearSimEnv, createUniquePaths,
-                             simNames, names, useCache = FALSE, ...) {
-  simName <- simNames[X]
-  name <- names[X]
-  outputPath(ll[[simName]]) <- checkPath(file.path(outputPath(ll[[simName]]), name),
+experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
+                             simName, name, useCache = FALSE, 
+                             debug = getOption("spades.debug"), drive_auth_account,
+                             ...) {
+  # a <- rbindlist(inputObjects(sim), fill = TRUE, use.names = TRUE)
+  # na <- ls(sim)[ls(sim) %in% a$objectName]
+  # names(na) <- na; lapply(na, function(nn) grep(paste0(nn, "$"), names(b), value = TRUE))
+  
+  #simName <- simNames[X]
+  #name <- names[X]
+  outputPath(sim) <- checkPath(file.path(outputPath(sim), name),
                                    create = TRUE)
-  s <- Cache(.spades, ll[[simName]], useCache = useCache, simName, ...)
-  if (isTRUE(clearSimEnv))
-    rm(ls(s), envir = envir(s))
+  if (!is.null(drive_auth_account))
+    googledrive::drive_auth(drive_auth_account)
+  googledrive::drive_deauth()
+  s <- Cache(.spades, sim, useCache = useCache, simName, 
+             debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
   s
 }
 
 #' @importFrom reproducible Copy
-.spades <- function(sim, ...) {
-  s <- spades(Copy(sim), ...)
+#' @importFrom future plan
+.spades <- function(sim, debug = getOption("spades.debug"), 
+                    clearSimEnv = FALSE, ...) {
+  # don't make a copy if it is callr or multisession because future will make the copy
+  if (!any(c("callr", "multisession") %in% attr(plan(), "class"))) {
+    a <- Sys.time()
+    message("Copying simList prior to spades call")
+    sim <- Copy(sim, filebackedDir = file.path(outputPath(sim), "rasterFiles"))
+    b <- Sys.time()
+    message(format(b-a), " to Copy")
+  }
+  s <- spades(sim, debug = debug, ...)
+  if (isTRUE(clearSimEnv))
+    rm(list = ls(s), envir = envir(s))
+  return(s)
 }
 
 

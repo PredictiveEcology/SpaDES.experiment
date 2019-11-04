@@ -7,11 +7,13 @@
 \title{Run experiment, algorithm 2, using \code{\link[SpaDES.core]{spades}}}
 \usage{
 experiment2(..., replicates = 1, clearSimEnv = FALSE,
-  createUniquePaths = c("outputPath"), useCache = FALSE)
+  createUniquePaths = c("outputPath"), useCache = FALSE,
+  debug = getOption("spades.debug"), drive_auth_account)
 
 \S4method{experiment2}{simList}(..., replicates = 1,
   clearSimEnv = FALSE, createUniquePaths = c("outputPath"),
-  useCache = FALSE)
+  useCache = FALSE, debug = getOption("spades.debug"),
+  drive_auth_account = NULL)
 }
 \arguments{
 \item{...}{One or more \code{simList} objects}
@@ -32,6 +34,10 @@ name and replicate number, allowing each replicate and each \code{simList} to be
 seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
 calls from running a second time during second call to the same
 \code{experiment2} function.}
+
+\item{debug}{Optional logical flag or character vector indicating what to print to
+console at each event. See details.
+Default is to use the value in \code{getOption("spades.debug")}.}
 }
 \value{
 Invisibly returns a \code{simLists} object. This class
