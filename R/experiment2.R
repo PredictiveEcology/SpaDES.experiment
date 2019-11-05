@@ -112,15 +112,15 @@ setMethod(
 
       # do copy of sim inside workers, so there is only 1 copy per worker,
       # rather than 1 copy per sim
-    iters <- seq_along(namsExpanded)
-    names(iters) <- namsExpanded
+    #iters <- seq_along(namsExpanded)
+    names(namsExpanded) <- namsExpanded
     #out <- mapply(
       #list2env(
     out <- future_mapply(
       #X = iters, 
-      sim = ll,  # recycled by replicates -- maybe this reduces copying ...?
       name = namsExpanded,
       simName = simNames,
+      sim = ll,  # recycled by replicates -- maybe this reduces copying ...?
       MoreArgs = list(clearSimEnv = clearSimEnv,
                       createUniquePaths = createUniquePaths,
                       useCache = useCache,
