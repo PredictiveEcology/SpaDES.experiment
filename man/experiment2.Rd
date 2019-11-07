@@ -32,10 +32,13 @@ indicating which should create a new, unique path, as a sub-path to the original
 \code{paths} of \code{simInit}. Default, and currently only option, is \code{"outputPath"}}
 
 \item{useCache}{Logical. Passed to \code{spades}. This will be passed with the \code{simList}
-name and replicate number, allowing each replicate and each \code{simList} to be
-seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
-calls from running a second time during second call to the same
-\code{experiment2} function.}
+ name and replicate number, allowing each replicate and each \code{simList} to be
+ seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
+ calls from running a second time during second call to the same
+ \code{experiment2} function.
+@param drive_auth_account Optional character string. If provided, it will be passed
+  to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to allow
+  a specific user account for googledrive}
 
 \item{debug}{Optional logical flag or character vector indicating what to print to
 console at each event. See details.
