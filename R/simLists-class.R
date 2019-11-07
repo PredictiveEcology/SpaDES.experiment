@@ -21,6 +21,7 @@
 #' @rdname simLists-class
 #' @rdname simLists
 #' @importFrom data.table as.data.table data.table
+#' @include helpers.R
 #'
 #' @author Eliot McIntire
 #' @exportClass simLists

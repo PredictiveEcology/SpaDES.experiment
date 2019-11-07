@@ -55,8 +55,10 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.experiment/issues
 ByteCompile: yes
 Collate: 
     'POM.R'
-    'experiment.R'
+    'helpers.R'
     'simLists-class.R'
+    'as.data.table.R'
+    'experiment.R'
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
