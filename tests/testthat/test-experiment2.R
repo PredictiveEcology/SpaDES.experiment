@@ -90,7 +90,7 @@ test_that("experiment2 test 1", {
     mySim1Orig <- Copy(mySim1)
     mySim2Orig <- Copy(mySim2)
 
-    repNums <- c(2, 3, 3)
+    repNums <- c(3)
     cap1 <- capture.output(mess <- capture_messages(
       sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
                           replicates = repNums)
@@ -99,12 +99,12 @@ test_that("experiment2 test 1", {
     expect_true(isTRUE(all.equal(mySim1Orig, mySim1))) # can't use identical -- envs are different
 
     # Test replication -- can be a vector of replicates
-    expect_true(length(ls(sims)) == sum(repNums))
-    expect_true(sum(grepl("^sim1", sort(ls(sims)))) == repNums[1])
-    expect_true(sum(grepl("^sim2", sort(ls(sims)))) == repNums[2])
-    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == sum(repNums >= 1))
-    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == sum(repNums >= 2))
-    expect_true(sum(grepl("rep3$", sort(ls(sims)))) == sum(repNums >= 3))
+    expect_true(length(ls(sims)) == repNums * 3)
+    expect_true(sum(grepl("^sim1", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("^sim2", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep3$", sort(ls(sims)))) == repNums)
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim1_rep2`$caribou$x1))
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep2`$caribou$x1))
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep1`$caribou$x1))

@@ -15,7 +15,9 @@ if (getRversion() >= "3.1.0") {
 #'
 #' @param ... One or more \code{simList} objects
 #' @param replicates The number of replicates to run of the same \code{simList}.
-#'                   See details and examples.
+#'                   See details and examples. To minimize memory overhead, currently,
+#'                   this must be length 1, i.e., all \code{...} simList objects will
+#'                   receive the same number of replicates.
 #'
 #' @param clearSimEnv Logical. If TRUE, then the envir(sim) of each simList in the return list
 #'                    is emptied. This is to reduce RAM load of large return object.
@@ -81,7 +83,7 @@ setMethod(
               ". Setting it to 'outputPath'")
       createUniquePaths <- "outputPath"
     }
-    pkg <- c(unique(unlist(lapply(list(...), packages, clean = TRUE))), 
+    pkg <- c(unique(unlist(lapply(list(...), packages, clean = TRUE))),
              "SpaDES.experiment", "googledrive")
     outSimLists <- new("simLists")
     ll <- list(...)
@@ -91,8 +93,8 @@ setMethod(
     simNames <- names(ll)
 
     # names(ll) <- simNames
-    if (length(simNames) != length(replicates) && length(replicates) != 1) {
-      stop("replicates argument must be length 1 or the same length as the number of simLists")
+    if (length(replicates) != 1) {
+      stop("replicates argument must be length 1")
     }
 
     if (!missing(replicates)) {
@@ -117,15 +119,15 @@ setMethod(
     #out <- mapply(
       #list2env(
     out <- future_mapply(
-      #X = iters, 
+      #X = iters,
       name = namsExpanded,
       simName = simNames,
       sim = ll,  # recycled by replicates -- maybe this reduces copying ...?
       MoreArgs = list(clearSimEnv = clearSimEnv,
                       createUniquePaths = createUniquePaths,
                       useCache = useCache,
-                      .spades = .spades, 
-                      debug = debug, 
+                      .spades = .spades,
+                      debug = debug,
                       drive_auth_account = drive_auth_account),
       FUN = experiment2Inner,
       SIMPLIFY = FALSE,
@@ -139,13 +141,13 @@ setMethod(
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
 experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
-                             simName, name, useCache = FALSE, 
+                             simName, name, useCache = FALSE,
                              debug = getOption("spades.debug"), drive_auth_account,
                              ...) {
   # a <- rbindlist(inputObjects(sim), fill = TRUE, use.names = TRUE)
   # na <- ls(sim)[ls(sim) %in% a$objectName]
   # names(na) <- na; lapply(na, function(nn) grep(paste0(nn, "$"), names(b), value = TRUE))
-  
+
   #simName <- simNames[X]
   #name <- names[X]
   outputPath(sim) <- checkPath(file.path(outputPath(sim), name),
@@ -153,14 +155,14 @@ experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
   if (!is.null(drive_auth_account))
     googledrive::drive_auth(drive_auth_account)
   googledrive::drive_deauth()
-  s <- Cache(.spades, sim, useCache = useCache, simName, 
+  s <- Cache(.spades, sim, useCache = useCache, simName,
              debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
   s
 }
 
 #' @importFrom reproducible Copy
 #' @importFrom future plan
-.spades <- function(sim, debug = getOption("spades.debug"), 
+.spades <- function(sim, debug = getOption("spades.debug"),
                     clearSimEnv = FALSE, ...) {
   # don't make a copy if it is callr or multisession because future will make the copy
   if (!any(c("callr", "multisession") %in% attr(plan(), "class"))) {

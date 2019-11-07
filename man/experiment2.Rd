@@ -19,7 +19,9 @@ experiment2(..., replicates = 1, clearSimEnv = FALSE,
 \item{...}{One or more \code{simList} objects}
 
 \item{replicates}{The number of replicates to run of the same \code{simList}.
-See details and examples.}
+See details and examples. To minimize memory overhead, currently,
+this must be length 1, i.e., all \code{...} simList objects will
+receive the same number of replicates.}
 
 \item{clearSimEnv}{Logical. If TRUE, then the envir(sim) of each simList in the return list
 is emptied. This is to reduce RAM load of large return object.
