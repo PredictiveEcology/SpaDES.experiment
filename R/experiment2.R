@@ -31,9 +31,10 @@ if (getRversion() >= "3.1.0") {
 #'   seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
 #'   calls from running a second time during second call to the same
 #'   \code{experiment2} function.
-#'  @param drive_auth_account Optional character string. If provided, it will be passed
+#' @param drive_auth_account Optional character string. If provided, it will be passed
 #'    to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to allow
 #'    a specific user account for googledrive
+#'
 #' @inheritParams SpaDES.core::spades
 #'
 #' @details
