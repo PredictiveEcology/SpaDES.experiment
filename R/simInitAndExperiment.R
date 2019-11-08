@@ -3,9 +3,11 @@
 #' @export
 #' @aliases simInitAndExperiment
 #' @rdname simInitAnd
+#' @importClassesFrom SpaDES.core simList
 #' @inheritParams SpaDES.core::simInit
 #' @inheritParams experiment
 #' @importFrom utils getFromNamespace
+#' @include simLists-class.R
 #' @details
 #' \code{simInitAndExperiment} cannot pass modules or params to \code{experiment} because
 #' these are also in \code{simInit}. If the \code{experiment} is being used
