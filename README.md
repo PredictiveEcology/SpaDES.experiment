@@ -13,7 +13,7 @@
 Tools to build simulation experiments within the `SpaDES` ecosystem.
 This includes replication, parameter sweeps, scenario analysis, pattern oriented modeling, and simulation experiments.
 
-**Website:** [http://SpaDES.PredictiveEcology.org](http://SpaDES.PredictiveEcology.org)
+**Website:** [https://spades-experiment.PredictiveEcology.org](https://SpaDES-experiment.PredictiveEcology.org)
 
 **Wiki:** [https://github.com/PredictiveEcology/SpaDES/wiki](https://github.com/PredictiveEcology/SpaDES/wiki)
 

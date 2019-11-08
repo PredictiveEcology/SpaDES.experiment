@@ -8,7 +8,7 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
   many `simList` objects. This package also includes tools to do post hoc 
   analyses of such `simLists` objects.
 URL:
-    http://spades-experiment.predictiveecology.org/,
+    https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
 Date: 2019-10-29
 Version: 0.0.1.9000
