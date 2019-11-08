@@ -24,7 +24,7 @@ Wiki: \url{https://github.com/PredictiveEcology/SpaDES/wiki}
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://spades-experiment.predictiveecology.org/}
+  \item \url{https://spades-experiment.predictiveecology.org/}
   \item \url{https://github.com/PredictiveEcology/SpaDES.experiment}
   \item Report bugs at \url{https://github.com/PredictiveEcology/SpaDES.experiment/issues}
 }
