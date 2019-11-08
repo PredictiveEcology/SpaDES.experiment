@@ -30,6 +30,7 @@ Imports:
     DEoptim (>= 2.2-4),
     future,
     future.apply,
+    googledrive,
     magrittr,
     methods,
     parallel,

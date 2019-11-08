@@ -73,6 +73,7 @@ setGeneric(
 
 #' @rdname experiment2
 #' @importFrom future.apply future_lapply future_mapply
+#' @importFrom googledrive drive_auth
 #' @importFrom SpaDES.core packages
 setMethod(
   "experiment2",
@@ -157,8 +158,9 @@ experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
   outputPath(sim) <- checkPath(file.path(outputPath(sim), name),
                                    create = TRUE)
   if (!is.null(drive_auth_account))
-    googledrive::drive_auth(drive_auth_account)
-  googledrive::drive_deauth()
+    drive_auth(drive_auth_account)
+
+  # drive_deauth()
   s <- Cache(.spades, sim, useCache = useCache, simName,
              debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
   s
