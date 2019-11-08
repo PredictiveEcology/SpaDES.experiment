@@ -4,31 +4,34 @@
 \alias{as.data.table.simLists}
 \title{Coerce elements of a simLists object to a data.table}
 \usage{
-\method{as.data.table}{simLists}(x, byRep = TRUE, vals,
-  objectsFromSim = NULL, objectsFromOutputs = NULL, ...)
+\method{as.data.table}{simLists}(x, vals, objectsFromSim = NULL,
+  objectsFromOutputs = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
 
-\item{byRep}{Should the \code{data.table} have a column labelled "rep", indicating replicate
-number/label. Currently, only \code{TRUE} is accepted.}
-
-\item{vals}{A character vector or list of object names to extract from each
-\code{simList}, or a list of quoted expressions to calculate for each \code{simList},
+\item{vals}{A (named) list of object names to extract from each
+\code{simList}, or a named list of quoted expressions to calculate for each \code{simList},
 or a mix of character and quoted expressions.}
 
 \item{objectsFromSim}{Character vector of objects to extract from the simLists. If
 omitted, it will extract all objects from each simList in order to calculate the
-\code{vals}. This may have a computational cost.}
+\code{vals}. This may have a computational cost. If \code{NA}, then no objects will be
+accessed from the \code{simList}. Objects identified here will only be as they are in
+the \code{simList}, i.e., at \code{end(sim)}.}
 
-\item{objectsFromOutputs}{Character vector of objects to load from the
+\item{objectsFromOutputs}{List of (named) character vectors of objects to load from the
 \code{outputs(sim)} prior to evaluating \code{vals}. If there already is an object
 with that same name in the \code{simList}, then it will be overwritten with
 the object loaded from \code{outputs(sim)}. If there are many objects with the
 same name, specifically from several \code{saveTime} values in the \code{outputs(sim)},
 these will all be loaded, one at a time, \code{vals} evaluated one at a time, and
-all the unique values will be returned. A column, \code{saveTime}, will be
-part of the returned value.}
+each of the values will be returned from each \code{saveTime}.
+A column, \code{saveTime}, will be
+part of the returned \code{data.table}
+For cases where more than one object is required at a given
+\code{saveTime}, all should be identified here, without time specified. This function will
+take all identified objects from the same time period.}
 
 \item{...}{Additional arguments. Currently unused.}
 }

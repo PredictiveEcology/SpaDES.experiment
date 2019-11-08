@@ -187,6 +187,24 @@ test_that("experiment2 test 1", {
 
   }
 
+  df2 <- as.data.table(sims, byRep = TRUE,
+                       vals = c("nPixelsBurned",
+                                meanFireSize = quote({
+                                  mean(table(landscape$Fires[])[-1]) /
+                                    NROW(caribou)
+                                })),
+                       objectsFromOutputs = list(NA, c("landscape", "caribou")),
+                       objectsFromSim = NA)
+  if (interactive()) {
+    # with an unevaluated string
+    p <- ggplot(df2, aes(x=saveTime, y=meanFireSize, group=simList, color=simList)) +
+      stat_summary(geom = "point", fun.y = mean) +
+      stat_summary(geom = "line", fun.y = mean) +
+      stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
+    print(p)
+
+  }
+
   fn <- quote({
     landscape$Fires[landscape$Fires[]==0] <- NA;
     a <- boundaries(landscape$Fires, type = "inner");
@@ -198,9 +216,17 @@ test_that("experiment2 test 1", {
   })
 
   df1 <- as.data.table(sims, byRep = TRUE,
-                       vals = c(perimToArea = fn,
-                                meanFireSize = quote(mean(table(landscape$Fires[])[-1]))),
-                       objectsFromOutputs = c("landscape"))
+                       vals = c("nPixelsBurned",
+                                perimToArea = fn,
+                                meanFireSize = quote(mean(table(landscape$Fires[])[-1])),
+                                caribouPerHaFire = quote({
+                                  NROW(caribou) /
+                                    mean(table(landscape$Fires[])[-1])
+                                })),
+                       objectsFromOutputs = list(NA, c("landscape"), c("landscape"),
+                                                 c("landscape", "caribou")),
+                       objectsFromSim = "nPixelsBurned")
+  #objectsFromOutputs = c("landscape"))
   if (interactive()) {
     # with an unevaluated string
     p <- ggplot(df1, aes(x=saveTime, y=perimToArea, group=simList, color=simList)) +

@@ -35,10 +35,14 @@
 #' @include simLists-class.R
 #'
 #' @example inst/examples/example_experiment2.R
-as.data.table.simLists <- function(x, byRep = TRUE, vals,
+as.data.table.simLists <- function(x, vals,
                                    objectsFromSim = NULL,
                                    objectsFromOutputs = NULL,  ...) {
-  if (!isTRUE(byRep)) stop("byRep must be TRUE, currently")
+  if (!is.null(objectsFromOutputs))
+    if (!is(objectsFromOutputs, "list")) {
+      stop("objectsFromOutputs must be a list")
+    }
+  # if (!isTRUE(byRep)) stop("byRep must be TRUE, currently")
   objs <- ls(x)
   names(objs) <- objs
   simLists <- gsub("_.*", "", objs)
@@ -61,54 +65,107 @@ as.data.table.simLists <- function(x, byRep = TRUE, vals,
   #   names(vals) <- valNames
   # }
 
+  if (!all(names(objectsFromOutputs) %in% names(vals))) {
+    stop("objectsFromOutputs must be a named list with same length and names as vals")
+  }
   # Evaluate the expression
   reps <- gsub(".*_", "", objs)
-  ll <- lapply(objs, vals = vals, function(sName, vals) {
-    n <- new.env(parent = .GlobalEnv)
-    if (!is.null(objectsFromOutputs)) {
-      outpts <- setDT(outputs(x[[sName]]))[objectsFromOutputs == objectName]
-      Times <- outpts$saveTime
-    } else {
-      Times <- SpaDES.core::end(x[[sName]])
-    }
-    names(Times) <- as.character(Times)
 
-    out <- lapply(Times, function(t) {
-      if (!is.null(objectsFromOutputs)) {
-        lapply(objectsFromOutputs, function(ob) {
-          theLine <- outpts[objectsFromOutputs == objectName & saveTime == t, ]
-          theFile <- theLine[, file]
-          ext <- file_ext(theFile)
-          dt1 <- data.table(exts = ext)
-          fun <- setDT(.fileExtensions())[dt1, on = "exts"]$fun
-          tmpObj <- get(fun)(theFile)
-          assign(theLine$objectName, tmpObj, envir = x[[sName]])
-        })
-      }
-      # get ALL objects from simList -- could be slow -- may need to limit
-      if (is.null(objectsFromSim)) {
-        objectsFromSim <- ls(x[[sName]])
-      }
-      list2env(mget(objectsFromSim, envir = envir(x[[sName]])), envir = n)
-      lapply(vals, n = n, function(o, n) {
-        if (is.call(o)) {
-          eval(o, envir = n)
-        } else {
-          eval(parse(text = o), envir = n)
-        }
-      })
-    })
-    if (length(Times) == 1) {
-      out <- out[[1]]
-    } else {
-      ll2 <- purrr::transpose(out)
-      labels <- seq_along(ll2)
-      names(labels) <- names(ll2)
-      ll3 <- lapply(labels, ll2 = ll2, function(n, ll2)  t(rbindlist(ll2[n])))
-      dt <- as.data.table(ll3)
-      out <- data.table(saveTime = Times, dt)
-    }
-    out
+  ll <- lapply(objs, vals = vals, ofos = objectsFromOutputs,
+               function(sName, vals, ofos) {
+                 #Times <- numeric()
+                 # THere will be 2 types -- those that need "Times" via outputs and
+                 #   those that don't. Separate them here and deal differently with each
+                 valsNoTime <- vals # default is all
+                 out <- NULL
+                 n <- new.env(parent = .GlobalEnv) # need this to be .GLobalEnv so eval will
+                                                   # find functions in search() (including base)
+                 if (is.null(objectsFromSim)) {
+                   # get ALL objects from simList -- could be slow --
+                   objectsFromSim <- ls(x[[sName]])
+                 }
+                 if (!all(is.na(objectsFromSim))) {
+                   list2env(mget(na.omit(objectsFromSim),
+                                 envir = envir(x[[sName]])), envir = n)
+                 }
+
+                 if (length(ofos)) {
+                   needTimes <- unlist(lapply(ofos, function(o) !all(is.na(o))))
+                   ofosNoTime <- ofos[!needTimes]
+                   valsNoTime <- vals[!needTimes]
+                   vals <- vals[needTimes]
+                   ofos <- ofos[needTimes]
+                   ofos <- unique(unlist(ofos))
+                   out <- list()
+                   if (!is.null(ofos)) {
+                     outpts <- if (is(ofos, "list")) {
+                       setDT(outputs(x[[sName]]))[objectName %in% unlist(ofos)]
+                     } else {
+                       setDT(outputs(x[[sName]]))[objectName %in% ofos]
+                     }
+
+                     innerTimes <- outpts$saveTime
+                   } else {
+                     innerTimes <- SpaDES.core::end(x[[sName]])
+                   }
+                   innerTimes <- unique(innerTimes)
+                   names(innerTimes) <- as.character(innerTimes)
+                   Times <- innerTimes
+
+                   #if (length(innerTimes)) {
+                     out <- lapply(innerTimes, function(t) {
+                       if (!is.null(ofos)) {
+                         theLine <- outpts[objectName %in% ofos & saveTime == t, ]
+                         theFile <- theLine[, file]
+                         ext <- file_ext(theFile)
+                         dt1 <- data.table(exts = ext)
+                         fun <- setDT(.fileExtensions())[dt1, on = "exts"]$fun
+                         tmp <- lapply(seq_along(fun), function(i) {
+                           tmpObj <- get(fun[i])(theFile[i])
+                           assign(theLine$objectName[i], tmpObj, envir = n)
+                         })
+                       }
+
+
+                       # get only some of the objects from x if don't need all
+                       out2 <- lapply(vals, function(val) {
+                         if (is.call(val)) {
+                           eval(val, envir = n)
+                         } else {
+                           eval(parse(text = val), envir = n)
+                         }
+                       })
+                     })
+                     if (length(Times) == 1) {
+                       out <- out[[1]]
+                     } else {
+                       ll2 <- purrr::transpose(out)
+                       labels <- seq_along(ll2)
+                       names(labels) <- names(ll2)
+                       ll3 <- lapply(labels, ll2 = ll2, function(n, ll2)  t(rbindlist(ll2[n])))
+                       dt <- as.data.table(ll3)
+                       out <- data.table(saveTime = Times, dt)
+                     }
+                     out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals")
+
+                 }
+
+                 if (length(valsNoTime)) {
+                   out2 <- lapply(valsNoTime, function(val) {
+                     out3 <- if (is.call(val)) {
+                       eval(val, envir = n)
+                     } else {
+                       eval(parse(text = val), envir = n)
+                     }
+                     dt <- as.data.table(out3)
+                     out3 <- data.table(saveTime = end(x[[sName]]), dt)
+                   })
+                   out2 <- rbindlist(out2, idcol = "vals")
+                   setnames(out2, old = "out3", new = "value")
+                   #out2 <- data.table::melt(out2, id.vars = "saveTime", variable.name = "vals")
+                   out <- rbindlist(list(out, out2), use.names = TRUE)
+
+                 }
   })
 
   if (!all(unlist(lapply(ll, is.data.table)))) {
@@ -132,6 +189,9 @@ as.data.table.simLists <- function(x, byRep = TRUE, vals,
     })
   }
   # dt <- data.table(simList = simLists, reps = reps, dt)
+  set(dt, NULL, "order", match(dt$vals, names(vals)))
+  setkeyv(dt, c("simName", "order"))
+  set(dt, NULL, "order", NULL)
   dt[]
 }
 

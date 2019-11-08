@@ -3,7 +3,8 @@ updateNames <- function(lst, newNames) {
   emptyChar <- nchar(namesVals) == 0
   if (is.null(namesVals) || any(emptyChar)) {
     if (missing(newNames))
-      newNames <- unlist(lapply(lst, function(x) format(x)))
+      newNames <- unlist(lapply(seq_along(lst), function(x)
+        paste(collapse = "_", format(lst[[x]]))))
     if (any(emptyChar)) {
       namesVals[emptyChar] <- newNames[emptyChar]
       newNames <- namesVals
