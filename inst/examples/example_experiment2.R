@@ -1,105 +1,49 @@
 \dontrun{
 
+  library(SpaDES.core)
+  tmpdir <- file.path(tempdir(), "examples")
   # Make 3 simLists -- set up scenarios
-  endTime <- 5
-  tmpdir <- file.path(tempdir(), "testing")
-  tmpCache <- file.path(tempdir(), "testingCache")
+  endTime <- 2
+
   # Example of changing parameter values
-  mySim1 <- simInit(
-    times = list(start = 0.0, end = endTime, timeunit = "year"),
-    params = list(
-      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned"),
-      # Turn off interactive plotting
-      fireSpread = list(.plotInitialTime = NA, spreadprob = c(0.2), nFires = c(10)),
-      caribouMovement = list(.plotInitialTime = NA),
-      randomLandscapes = list(.plotInitialTime = NA, .useCache = "init")
-    ),
-    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"),
-                 outputPath = tmpdir,
-                 cachePath = tmpCache),
-    # Save final state of landscape and caribou
-    outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                         saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
-                         stringsAsFactors = FALSE)
-  )
+  # Make 3 simLists with some differences between them
+  mySim <- lapply(c(10, 20, 30), function(nFires) {
+    simInit(
+      times = list(start = 0.0, end = endTime, timeunit = "year"),
+      params = list(
+        .globals = list(stackName = "landscape", burnStats = "nPixelsBurned"),
+        # Turn off interactive plotting
+        fireSpread = list(.plotInitialTime = NA, spreadprob = c(0.2), nFires = c(10)),
+        caribouMovement = list(.plotInitialTime = NA),
+        randomLandscapes = list(.plotInitialTime = NA, .useCache = "init")
+      ),
+      modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
+      paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"),
+                   outputPath = tmpdir),
+      # Save final state of landscape and caribou
+      outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
+                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
+                           stringsAsFactors = FALSE)
+    )
+  })
 
-  mySim2 <- simInit(
-    times = list(start = 0.0, end = endTime, timeunit = "year"),
-    params = list(
-      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned"),
-      # Turn off interactive plotting
-      fireSpread = list(.plotInitialTime = NA, spreadprob = c(0.2), nFires = c(20)),
-      caribouMovement = list(.plotInitialTime = NA),
-      randomLandscapes = list(.plotInitialTime = NA, .useCache = "init")
-    ),
-    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"),
-                 outputPath = tmpdir,
-                 cachePath = tmpCache),
-    # Save final state of landscape and caribou
-    outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                         saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
-                         stringsAsFactors = FALSE)
-  )
+  planTypes <- c("sequential") # try others! ?future::plan
+  sims <- experiment2(sim1 = mySim[[1]], sim2 = mySim[[2]], sim3 = mySim[[3]],
+                      replicates = 3)
 
-  mySim3 <- simInit(
-    times = list(start = 0.0, end = endTime, timeunit = "year"),
-    params = list(
-      .globals = list(stackName = "landscape", burnStats = "nPixelsBurned"),
-      # Turn off interactive plotting
-      fireSpread = list(.plotInitialTime = NA, spreadprob = c(0.2), nFires = c(30)),
-      caribouMovement = list(.plotInitialTime = NA),
-      randomLandscapes = list(.plotInitialTime = NA, .useCache = "init")
-    ),
-    modules = list("randomLandscapes", "fireSpread", "caribouMovement"),
-    paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"),
-                 outputPath = tmpdir,
-                 cachePath = tmpCache),
-    # Save final state of landscape and caribou
-    outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                         saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
-                         stringsAsFactors = FALSE)
-  )
+  # Try pulling out values from simulation experiments
+  # 2 variables
+  df1 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
 
-  # Run experiment -- can use parallelism, if desired. Default is plan("sequential"), meaning
-  #   "normal" sequential, single threaded runs
-  # library(future)
-  # plan("multiprocess")
-  sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
-                      replicates = 3, useCache = FALSE)
+  # Now use objects that were saved to disk at different times during spades call
+  df1 <- as.data.table(sims,
+                       vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
+                       objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
 
-  ### If spades already run -- can manually add to a simLists object
-  # simsManual <- new("simLists")
-  # simsManual$sim1_rep1 <- sims$sim1_rep1
 
-  # Convert to data.table so can do stuff with
-  # Just pull out a variable from the simLists -- simplest case
-  df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned"))
-
-  measure.cols <- grep("nPixelsBurned", names(df1), value = TRUE)
-  df1Short <- data.table::melt(df1, measure.vars = measure.cols, variable.name = "year")
-  df1Short[, year := as.numeric(gsub(".*V([[:digit:]])", "\\1", df1Short$year))]
-  library(ggplot2)
-  p<- ggplot(df1Short, aes(x=year, y=value, group=simList, color=simList)) +
-    stat_summary(geom = "point", fun.y = mean) +
-    stat_summary(geom = "line", fun.y = mean) +
-    stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
-
-  print(p)
-
-  # A quoted function -- do not prefix objects with 'sim' -- next two lines are identical
-  df1 <- as.data.table(sims, byRep = TRUE, vals = list(NCaribou = quote(length(caribou$x1))))
-  df1 <- as.data.table(sims, byRep = TRUE, vals = list(NCaribou = "length(caribou$x1)"))
-
-  p<- ggplot(df1, aes(x=simList, y=NCaribou, group=simList, color=simList)) +
-    stat_summary(geom = "point", fun.y = mean) +
-    stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
-  print(p)
-
-  # A much more complicated object to calculate -- an estimate of perimeter to area ratio of fires
-  library(raster)
-  perimToAreaRatioFn <- quote({
+  # now calculate 4 different values, some from data saved at different times
+  # Define new function -- this calculates perimeter to area ratio
+  fn <- quote({
     landscape$Fires[landscape$Fires[]==0] <- NA;
     a <- boundaries(landscape$Fires, type = "inner");
     a[landscape$Fires[] > 0 & a[] == 1] <- landscape$Fires[landscape$Fires[] > 0 & a[] == 1];
@@ -109,18 +53,37 @@
     mean(peri[keep]/area)
   })
 
-  df1 <- as.data.table(sims, byRep = TRUE,
-                       vals = c(perimToArea = perimToAreaRatioFn,
-                                meanFireSize = quote(mean(table(landscape$Fires[])[-1]))),
-                       objectsFromOutputs = c("landscape")) # need to get landscape obj from disk
+  df1 <- as.data.table(sims,
+                       vals = c("nPixelsBurned",
+                                perimToArea = fn,
+                                meanFireSize = quote(mean(table(landscape$Fires[])[-1])),
+                                caribouPerHaFire = quote({
+                                  NROW(caribou) /
+                                    mean(table(landscape$Fires[])[-1])
+                                })),
+                       objectsFromOutputs = list(NA, c("landscape"), c("landscape"),
+                                                 c("landscape", "caribou")),
+                       objectsFromSim = "nPixelsBurned")
+
   if (interactive()) {
     # with an unevaluated string
-    p <- ggplot(df1, aes(x=saveTime, y=perimToArea, group=simList, color=simList)) +
-      stat_summary(geom = "point", fun.y = mean) +
-      stat_summary(geom = "line", fun.y = mean) +
-      stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
-    print(p) # may have NAs, giving warning, if perimeter calculation couldn't be completed
-  }
+    library(ggplot2)
+    p <- lapply(unique(df1$vals), function(var) {
+      ggplot(df1[vals == var,],
+                  aes(x=saveTime, y=value, group=simList, color=simList)) +
+        stat_summary(geom = "point", fun.y = mean) +
+        stat_summary(geom = "line", fun.y = mean) +
+        stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
+        ylab(var)
 
+    })
+    # Arrange all 4 -- could use gridExtra::grid.arrange -- easier
+    pushViewport(viewport(layout = grid.layout(2, 2)))
+    vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+    print(p[[1]], vp = vplayout(1, 1))
+    print(p[[2]], vp = vplayout(1, 2))
+    print(p[[3]], vp = vplayout(2, 1))
+    print(p[[4]], vp = vplayout(2, 2))
+  }
 
 } # end /dontrun

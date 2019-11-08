@@ -145,9 +145,10 @@ as.data.table.simLists <- function(x, vals,
                        names(labels) <- names(ll2)
                        ll3 <- lapply(labels, ll2 = ll2, function(n, ll2)  t(rbindlist(ll2[n])))
                        dt <- as.data.table(ll3)
-                       out <- data.table(saveTime = Times, dt)
+                       out <- data.table(saveTime = Times, dt, stringsAsFactors = FALSE)
                      }
-                     out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals")
+                     out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals",
+                                             variable.factor = FALSE)
 
                  }
 
@@ -159,7 +160,7 @@ as.data.table.simLists <- function(x, vals,
                        eval(parse(text = val), envir = n)
                      }
                      dt <- as.data.table(out3)
-                     out3 <- data.table(saveTime = end(x[[sName]]), dt)
+                     out3 <- data.table(saveTime = end(x[[sName]]), dt, stringsAsFactors = FALSE)
                    })
                    out2 <- rbindlist(out2, idcol = "vals")
                    setnames(out2, old = "out3", new = "value")
@@ -177,7 +178,8 @@ as.data.table.simLists <- function(x, vals,
     labels <- seq_along(ll2)
     names(labels) <- names(ll2)
     ll3 <- lapply(labels, ll2 = ll2, function(n, ll2)  t(rbindlist(ll2[n])))
-    dt <- data.table(simName = rownames(ll3[[1]]), as.data.table(ll3))
+    dt <- data.table(simName = rownames(ll3[[1]]), as.data.table(ll3),
+                     stringsAsFactors = FALSE)
   } else {
     dt <- rbindlist(ll, use.names = TRUE, idcol = "simName", fill = TRUE)
   }
