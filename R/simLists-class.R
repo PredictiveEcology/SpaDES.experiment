@@ -87,9 +87,9 @@ setMethod(
       paste("with", uniqueLengths, "replicates each")
     } else if (isTRUE(uniqueLengths) == 1) {
       paste0("with only 1 replicate each")
-    } else {
-      paste("with", paste(uniqueLengths, collapse = ", "), "replicates respectively")
-    }
+    } #else {
+      #paste("with", paste(uniqueLengths, collapse = ", "), "replicates respectively")
+    #}
     out[[2]] <- capture.output(cat(out2, out3))
     ll <- lapply(simListsBySimList, function(s) {
       paste0(s[1], ", ..., ", tail(s,1))

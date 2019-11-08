@@ -230,3 +230,18 @@ test_that("experiment2 test 1", {
     warn <- capture_warnings(print(p))
   }
 })
+
+test_that("simLists tests", {
+  #if (!interactive())
+  testInitOut <- testInit("SpaDES.core",
+                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  on.exit({
+    testOnExit(testInitOut)
+  }, add = TRUE)
+
+  s <- simInit()
+  ss <- experiment2(s, s, s, replicates = c(1,2,1))
+  mess4 <- capture.output(ss)
+  expect_true(sum(grepl("with 1 replicate", mess4)) == 1)
+
+})
