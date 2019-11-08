@@ -70,6 +70,7 @@ test_that("experiment2 test 1", {
 
   planTypes <- c("sequential", "multiprocess")
   planTypes <- if (requireNamespace("future.callr")) c(planTypes, "callr")
+  #planTypes <- c("sequential")
   for (pl in planTypes) {
     cat(" -- testing future plan when", pl, "                ")
     warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
@@ -131,25 +132,21 @@ test_that("experiment2 test 1", {
   mess4 <- capture.output(sims)
   expect_true(sum(grepl("3 simLists", mess4)) == 1)
 
-  df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
-  df2 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
+  df1 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
+  df2 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
   expect_true(identical(df1, df2))
 
-  df1 <- as.data.table(sims, byRep = TRUE,
+  df1 <- as.data.table(sims,
                        vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
-                       objectsFromOutputs = c("caribou"))
+                       objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
 
 
-  df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned"))
+  df1 <- as.data.table(sims, vals = c("nPixelsBurned"))
 
-  measure.cols <- grep("nPixelsBurned", names(df1), value = TRUE)
-  df1Short <- data.table::melt(df1, measure.vars = measure.cols,
-                               variable.name = "year", variable.factor = FALSE)
-  # df1Short[, year := as.numeric(gsub(".*V([[:digit:]])", "\\1", df1Short$year))]
-  df1Short[, year := as.numeric(unlist(lapply(strsplit(year, split = "\\.V"), function(x) x[2])))]
+  df1[, year := rep(1:2, length.out = NROW(df1))]
 
   if (interactive()) {
-    p<- ggplot(df1Short, aes(x=year, y=value, group=simList, color=simList)) +
+    p<- ggplot(df1, aes(x=year, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -157,29 +154,26 @@ test_that("experiment2 test 1", {
     print(p)
   }
   # with an unevaluated string
-  df1 <- as.data.table(sims, byRep = TRUE, vals = list(NCaribou = "length(caribou$x1)"))
-  caribouColName <- grep("NCaribou", colnames(df1), value = TRUE)
-  expect_true(length(caribouColName) == 1)
+  df1 <- as.data.table(sims, vals = list(NCaribou = "length(caribou$x1)"))
 
   if (interactive()) {
-    p<- ggplot(df1, aes_string(x="simList", y=caribouColName, group="simList", color="simList")) +
+    p<- ggplot(df1, aes_string(x="simList", y="value", group="simList", color="simList")) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
   }
 
-
-  df1 <- as.data.table(sims, byRep = TRUE,
+  df1 <- as.data.table(sims,
                        vals = c(meanFireSize = quote(mean(table(landscape$Fires[])[-1]))),
-                       objectsFromOutputs = c("landscape"))
+                       objectsFromOutputs = list("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p<- ggplot(df1, aes(x=simList, y=meanFireSize, group=simList, color=simList)) +
+    p<- ggplot(df1, aes(x=simList, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
 
-    p <- ggplot(df1, aes(x=saveTime, y=meanFireSize, group=simList, color=simList)) +
+    p <- ggplot(df1, aes(x=saveTime, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -187,17 +181,17 @@ test_that("experiment2 test 1", {
 
   }
 
-  df2 <- as.data.table(sims, byRep = TRUE,
+  df2 <- as.data.table(sims,
                        vals = c("nPixelsBurned",
                                 meanFireSize = quote({
                                   mean(table(landscape$Fires[])[-1]) /
                                     NROW(caribou)
                                 })),
-                       objectsFromOutputs = list(NA, c("landscape", "caribou")),
-                       objectsFromSim = NA)
+                       objectsFromOutputs = list(NA, c("landscape", "caribou")))
   if (interactive()) {
     # with an unevaluated string
-    p <- ggplot(df2, aes(x=saveTime, y=meanFireSize, group=simList, color=simList)) +
+    p <- ggplot(df2[vals == "meanFireSize"],
+                aes(x=saveTime, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -215,7 +209,7 @@ test_that("experiment2 test 1", {
     mean(peri[keep]/area)
   })
 
-  df1 <- as.data.table(sims, byRep = TRUE,
+  df1 <- as.data.table(sims,
                        vals = c("nPixelsBurned",
                                 perimToArea = fn,
                                 meanFireSize = quote(mean(table(landscape$Fires[])[-1])),
@@ -229,7 +223,7 @@ test_that("experiment2 test 1", {
   #objectsFromOutputs = c("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p <- ggplot(df1, aes(x=saveTime, y=perimToArea, group=simList, color=simList)) +
+    p <- ggplot(df1[vals == "perimToArea",], aes(x=saveTime, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)

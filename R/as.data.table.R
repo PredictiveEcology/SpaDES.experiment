@@ -40,7 +40,7 @@ as.data.table.simLists <- function(x, vals,
                                    objectsFromOutputs = NULL,  ...) {
   if (!is.null(objectsFromOutputs))
     if (!is(objectsFromOutputs, "list")) {
-      stop("objectsFromOutputs must be a list")
+      stop("objectsFromOutputs must be a list of same length as vals")
     }
   # if (!isTRUE(byRep)) stop("byRep must be TRUE, currently")
   objs <- ls(x)
@@ -73,6 +73,7 @@ as.data.table.simLists <- function(x, vals,
 
   ll <- lapply(objs, vals = vals, ofos = objectsFromOutputs,
                function(sName, vals, ofos) {
+                 browser(expr = exists("aaaa", envir = .GlobalEnv))
                  #Times <- numeric()
                  # THere will be 2 types -- those that need "Times" via outputs and
                  #   those that don't. Separate them here and deal differently with each
@@ -166,7 +167,10 @@ as.data.table.simLists <- function(x, vals,
                    out <- rbindlist(list(out, out2), use.names = TRUE)
 
                  }
+                 browser(expr = exists("cccc"))
+                 out
   })
+  browser(expr = exists("bbbb", envir = .GlobalEnv))
 
   if (!all(unlist(lapply(ll, is.data.table)))) {
     ll2 <- purrr::transpose(ll)
