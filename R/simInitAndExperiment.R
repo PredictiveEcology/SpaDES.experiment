@@ -46,7 +46,7 @@ simInitAndExperiment <- function(times, params, modules, objects, paths, inputs,
   onlyInSpades <- setdiff(names(objsSpades), names(objsExperiment))
   if (length(onlyInSpades))
     objsExperiment[onlyInSpades] <- objsSpades[onlyInSpades]
-  sims <- do.call(experiment, objsExperiment)#AndX(scalls, "simInitAndExperiment", ...)
+  sims <- do.call("experiment", objsExperiment)#AndX(scalls, "simInitAndExperiment", ...)
 
   return(sims)
 }
