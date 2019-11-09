@@ -38,10 +38,6 @@
 as.data.table.simLists <- function(x, vals,
                                    objectsFromSim = NULL,
                                    objectsFromOutputs = NULL,  ...) {
-  if (!is.null(objectsFromOutputs))
-    if (!is(objectsFromOutputs, "list")) {
-      stop("objectsFromOutputs must be a list of same length as vals")
-    }
   # if (!isTRUE(byRep)) stop("byRep must be TRUE, currently")
   objs <- ls(x)
   names(objs) <- objs
@@ -54,6 +50,25 @@ as.data.table.simLists <- function(x, vals,
     }
   }
   vals <- updateNames(vals)
+  if (!is.null(objectsFromOutputs)) {
+    if (!is(objectsFromOutputs, "list")) {
+      stop("objectsFromOutputs must be a list of same length as vals")
+    }
+    if (length(objectsFromOutputs) < length(vals)) { # recycling
+      message("objectsFromOutputs is shorter than vals. Recycling values to create same length")
+      if (!is.null(names(objectsFromOutputs))) {
+        namesMatches <- match(names(objectsFromOutputs), names(vals))
+        namesMisMatches <- which(!seq_along(vals) %in% namesMatches)
+        if (length(namesMisMatches))
+          stop("objectsFromOutputs is shorter than vals, and the name order also does not match")
+      }
+      objectsFromOutputs <- rep(objectsFromOutputs, length.out = length(vals))
+      names(objectsFromOutputs) <- names(vals)
+    }
+    if (!all(names(objectsFromOutputs) == names(vals))) {
+      stop("objectsFromOutputs must be a named list with same length and names as vals")
+    }
+  }
   # namesVals <- names(vals)
   # emptyChar <- nchar(namesVals) == 0
   # if (is.null(namesVals) || any(emptyChar)) {
@@ -65,9 +80,6 @@ as.data.table.simLists <- function(x, vals,
   #   names(vals) <- valNames
   # }
 
-  if (!all(names(objectsFromOutputs) %in% names(vals))) {
-    stop("objectsFromOutputs must be a named list with same length and names as vals")
-  }
   # Evaluate the expression
   reps <- gsub(".*_", "", objs)
 
@@ -145,6 +157,23 @@ as.data.table.simLists <- function(x, vals,
                        ll3 <- lapply(labels, ll2 = ll2, function(n, ll2)  t(rbindlist(ll2[n])))
                        dt <- as.data.table(ll3)
                        out <- data.table(saveTime = Times, dt, stringsAsFactors = FALSE)
+                     }
+
+                     # deal with mismatching classes
+                     cla <- lapply(out[,!"saveTime"], is);
+                     claSame <- all(sapply(cla, identical, cla[[1]]))
+                     if (isFALSE(claSame)) {
+                       onlyNumerics <- sapply(out[,!"saveTime"], is.numeric)
+                       if (!all(onlyNumerics)) {
+                         stop("vals produce different class objects; them must all produce same class")
+                       } else {
+                         message("vals produce columns of classes integer and numeric; converting all to numerics")
+                         onlyInteger <- sapply(out[,!"saveTime"], is.integer)
+                         namesInteger <- names(out[,!"saveTime"][,..onlyInteger])
+                       }
+                       tmp <- lapply(namesInteger, function(col) {
+                         set(out, NULL, col, as.numeric(out[[col]]))
+                       })
                      }
                      out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals",
                                              variable.factor = FALSE)

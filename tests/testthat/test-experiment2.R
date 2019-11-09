@@ -2,7 +2,7 @@ test_that("experiment2 test 1", {
   #if (!interactive())
   skip_on_cran()
   skip_on_appveyor()
-  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2"),
+  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2", "data.table"),
                           smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
@@ -70,7 +70,7 @@ test_that("experiment2 test 1", {
 
   planTypes <- c("sequential", "multiprocess")
   planTypes <- if (requireNamespace("future.callr")) c(planTypes, "callr")
-  #planTypes <- c("sequential")
+  # planTypes <- c("sequential")
   for (pl in planTypes) {
     cat(" -- testing future plan when", pl, "                ")
     warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
@@ -136,10 +136,38 @@ test_that("experiment2 test 1", {
   df2 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
   expect_true(identical(df1, df2))
 
-  df1 <- as.data.table(sims,
-                       vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
-                       objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
+  #df1 <- as.data.table(sims,
+  #                     vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
+  #                     objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
+  expect_error(df1 <- as.data.table(sims,
+                       vals = c("nPixelsBurned"),
+                       objectsFromOutputs = c(nPixelsBurned = NA)), "must be a list")
+  expect_error(df1 <- as.data.table(sims,
+                                    vals = c("nPixelsBurned",
+                                             caribou2 = quote(NROW(caribou)),
+                                             caribou = quote(NROW(caribou))),
+                                    objectsFromOutputs = list(nPixelsBurned = NA, caribou = "caribou")),
+               "objectsFromOutputs is shorter than vals, and the name")
 
+  # This gets recycled -- which is wrong behaviour
+  mess <- capture_messages(df1 <- as.data.table(sims,
+                                    vals = c("nPixelsBurned",
+                                             caribou = quote(NROW(caribou)),
+                                             caribou2 = quote(NROW(caribou))),
+                                    objectsFromOutputs = list("caribou")))
+  expect_true(any(grepl("objectsFromOutputs is shorter than vals. Recycling", mess)))
+  expect_true(any(grepl("vals produce columns", mess)))
+
+  expect_error(df1 <- as.data.table(sims,
+                                    vals = c(caribou = quote(NROW(caribou)),
+                                             caribou2 = quote(as.character(NROW(caribou)))
+                                             ),
+                                    objectsFromOutputs = list(caribou = "caribou",
+                                                              caribou2 = "caribou")),
+               "vals produce different class objects; them must all produce")
+
+  df1 <- as.data.table(sims,vals = quote(nPixelsBurned) )
+  expect_true(is.data.table(df1))
 
   df1 <- as.data.table(sims, vals = c("nPixelsBurned"))
 
@@ -233,14 +261,14 @@ test_that("experiment2 test 1", {
 
 test_that("simLists tests", {
   #if (!interactive())
-  testInitOut <- testInit("SpaDES.core",
-                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  testInitOut <- testInit(smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
 
   s <- simInit()
-  ss <- experiment2(s, s, s, replicates = c(1,2,1))
+  ss <- experiment2(s, s, s, replicates = 1)
+  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
   mess4 <- capture.output(ss)
   expect_true(sum(grepl("with 1 replicate", mess4)) == 1)
 
