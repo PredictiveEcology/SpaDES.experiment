@@ -287,3 +287,34 @@ test_that("simLists tests", {
   lsClear <- ls(sClear, all.names = TRUE)
   expect_true(identical("hello", setdiff(lsOrig, lsClear)))
 })
+
+
+test_that("simLists tests", {
+  #if (!interactive())
+  testInitOut <- testInit("parallel",
+                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  on.exit({
+    testOnExit(testInitOut)
+  }, add = TRUE)
+  mess1 <- capture_messages(a <- .optimalClusterNum())
+  expect_true(a == 1)
+  dc <- detectCores()
+  free <- Sys.which("free") ## Linux only
+  if (!nzchar(free))
+    expect_true(sum(grepl("The OS", mess1)) == 1)
+  else
+    expect_true(sum(grepl("The OS", mess1)) == 0)
+  mess1 <- capture_messages(a <- .optimalClusterNum(maxNumClusters = 2, memRequiredMB = 10))
+  if (!nzchar(free))
+    expect_true(a == 1)
+  else
+    expect_true(a == 2)
+
+  mess1 <- capture_messages(a <- .optimalClusterNum(maxNumClusters = dc + 1, memRequiredMB = 10))
+  if (!nzchar(free))
+    expect_true(a == 1)
+  else
+    expect_true(a == dc)
+
+
+})
