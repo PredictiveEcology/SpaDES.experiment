@@ -48,9 +48,6 @@ Suggests:
     SpaDES.tools (>= 0.2.0),
     testthat (>= 1.0.2),
     spelling
-Remotes:
-    PredictiveEcology/reproducible@development,
-    PredictiveEcology/SpaDES.core@development
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
