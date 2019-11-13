@@ -261,15 +261,29 @@ test_that("experiment2 test 1", {
 
 test_that("simLists tests", {
   #if (!interactive())
-  testInitOut <- testInit(smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  testInitOut <- testInit("future",
+                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
 
   s <- simInit()
-  ss <- experiment2(s, s, s, replicates = 1)
-  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
+  mess5 <- capture_messages(ss <- experiment2(s, s, s, replicates = 1,
+                                     createUniquePaths = c("outputPaths", "modulePaths")))
+  expect_true(sum(grepl("createUniquePaths only", mess5)) == 1)
   mess4 <- capture.output(ss)
   expect_true(sum(grepl("with 1 replicate", mess4)) == 1)
 
+  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
+  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
+
+  plan("sequential")
+  mess6 <- capture_messages(.spades(s))
+  expect_true(sum(grepl("Copying simList prior", mess6)) == 1)
+
+  s$hello <- 1
+  sClear <- .spades(s, clearSimEnv = TRUE)
+  lsOrig <- ls(s, all.names = TRUE)
+  lsClear <- ls(sClear, all.names = TRUE)
+  expect_true(identical("hello", setdiff(lsOrig, lsClear)))
 })
