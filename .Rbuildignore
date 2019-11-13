@@ -4,6 +4,7 @@
 .*\.tar\.gz$
 .*\.toc$
 .*\.zip$
+^\.httr-oauth$
 ^\.lintr$
 ^\.travis\.yml$
 ^appveyor\.yml$
@@ -14,5 +15,4 @@ cran-comments\.md
 ^LICENSE$
 vignettes/.*_cache$
 vignettes/.*\.log$
-^\.httr-oauth$
 ^revdep$

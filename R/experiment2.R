@@ -2,7 +2,6 @@ if (getRversion() >= "3.1.0") {
   utils::globalVariables(c("simName", "objectName", "saveTime"))
 }
 
-
 ################################################################################
 #' Run experiment, algorithm 2, using \code{\link[SpaDES.core]{spades}}
 #'

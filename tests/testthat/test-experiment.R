@@ -222,5 +222,4 @@ test_that("simInitAndExperiment", {
     experiment(debug = FALSE)
 
   expect_true(all.equal(mySim, mySim2))
-
 })

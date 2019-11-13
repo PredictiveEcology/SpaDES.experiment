@@ -268,14 +268,20 @@ test_that("simLists tests", {
   }, add = TRUE)
 
   s <- simInit()
-  mess5 <- capture_messages(ss <- experiment2(s, s, s, replicates = 1,
-                                     createUniquePaths = c("outputPaths", "modulePaths")))
+  mess5 <- capture_messages({
+    ss <- experiment2(s, s, s, replicates = 1,
+                      createUniquePaths = c("outputPaths", "modulePaths"))
+  })
   expect_true(sum(grepl("createUniquePaths only", mess5)) == 1)
   mess4 <- capture.output(ss)
   expect_true(sum(grepl("with 1 replicate", mess4)) == 1)
 
-  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
-  expect_error(ss <- experiment2(s, s, s, replicates = c(1,2,1)))
+  expect_error({
+    ss <- experiment2(s, s, s, replicates = c(1, 2, 1))
+  })
+  expect_error({
+    ss <- experiment2(s, s, s, replicates = c(1, 2, 1))
+  })
 
   plan("sequential")
   mess6 <- capture_messages(.spades(s))
@@ -288,15 +294,15 @@ test_that("simLists tests", {
   expect_true(identical("hello", setdiff(lsOrig, lsClear)))
 })
 
-
 test_that("simLists tests", {
   #if (!interactive())
-  testInitOut <- testInit("parallel",
-                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  testInitOut <- testInit("parallel", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
-  mess1 <- capture_messages(a <- .optimalClusterNum())
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum()
+  })
   expect_true(a == 1)
   dc <- detectCores()
   free <- Sys.which("free") ## Linux only
@@ -304,17 +310,19 @@ test_that("simLists tests", {
     expect_true(sum(grepl("The OS", mess1)) == 1)
   else
     expect_true(sum(grepl("The OS", mess1)) == 0)
-  mess1 <- capture_messages(a <- .optimalClusterNum(maxNumClusters = 2, memRequiredMB = 10))
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum(maxNumClusters = 2, memRequiredMB = 10)
+  })
   if (!nzchar(free))
     expect_true(a == 1)
   else
     expect_true(a == 2)
 
-  mess1 <- capture_messages(a <- .optimalClusterNum(maxNumClusters = dc + 1, memRequiredMB = 10))
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum(maxNumClusters = dc + 1, memRequiredMB = 10)
+  })
   if (!nzchar(free))
     expect_true(a == 1)
   else
     expect_true(a == dc)
-
-
 })
