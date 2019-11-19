@@ -63,9 +63,11 @@ See examples.
       paths = list(modulePath = system.file("sampleModules", package = "SpaDES.core"),
                    outputPath = tmpdir),
       # Save final state of landscape and caribou
-      outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime / 2), endTime))),
-                           stringsAsFactors = FALSE)
+      outputs = data.frame(
+        objectName = c(rep("landscape", endTime), "caribou", "caribou"),
+        saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime / 2), endTime))),
+        stringsAsFactors = FALSE
+      )
     )
   })
 

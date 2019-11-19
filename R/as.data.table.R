@@ -170,9 +170,11 @@ as.data.table.simLists <- function(x, vals,
                      if (isFALSE(claSame)) {
                        onlyNumerics <- sapply(out[,!"saveTime"], is.numeric)
                        if (!all(onlyNumerics)) {
-                         stop("vals produce different class objects; them must all produce same class")
+                         stop("vals produce different class objects;",
+                              " they must all produce same class")
                        } else {
-                         message("vals produce columns of classes integer and numeric; converting all to numerics")
+                         message("vals produce columns of classes integer and numeric;",
+                                 " converting all to numerics")
                          onlyInteger <- sapply(out[,!"saveTime"], is.integer)
                          namesInteger <- names(out[,!"saveTime"][,..onlyInteger])
                        }
@@ -182,7 +184,6 @@ as.data.table.simLists <- function(x, vals,
                      }
                      out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals",
                                              variable.factor = FALSE)
-
                  }
 
                  if (length(valsNoTime)) {
