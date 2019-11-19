@@ -4,8 +4,7 @@
 \alias{as.data.table.simLists}
 \title{Coerce elements of a simLists object to a data.table}
 \usage{
-\method{as.data.table}{simLists}(x, vals, objectsFromSim = NULL,
-  objectsFromOutputs = NULL, ...)
+\method{as.data.table}{simLists}(x, vals, objectsFromSim = NULL, objectsFromOutputs = NULL, ...)
 }
 \arguments{
 \item{x}{An R object.}
@@ -42,6 +41,7 @@ This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg
 See examples.
 }
 \examples{
+
 \dontrun{
 
   library(SpaDES.core)
@@ -130,5 +130,6 @@ See examples.
     print(p[[4]], vp = vplayout(2, 2))
   }
 
-} # end /dontrun
+ # end /dontrun
+}
 }
