@@ -1,16 +1,21 @@
-#' Coerce elements of a simLists object to a data.table
+utils::globalVariables(c("..onlyInteger"))
+
+#' Coerce elements of a \code{simLists} object to a \code{data.table}
 #'
 #' This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg{ggplot2}.
-#' @importFrom purrr transpose
+#'
 #' @inheritParams data.table::as.data.table
+#'
 #' @param vals A (named) list of object names to extract from each
 #'   \code{simList}, or a named list of quoted expressions to calculate for each \code{simList},
 #'   or a mix of character and quoted expressions.
+#'
 #' @param objectsFromSim Character vector of objects to extract from the simLists. If
 #'   omitted, it will extract all objects from each simList in order to calculate the
 #'   \code{vals}. This may have a computational cost. If \code{NA}, then no objects will be
 #'   accessed from the \code{simList}. Objects identified here will only be as they are in
 #'   the \code{simList}, i.e., at \code{end(sim)}.
+#'
 #' @param objectsFromOutputs List of (named) character vectors of objects to load from the
 #'   \code{outputs(sim)} prior to evaluating \code{vals}. If there already is an object
 #'   with that same name in the \code{simList}, then it will be overwritten with
@@ -18,23 +23,25 @@
 #'   same name, specifically from several \code{saveTime} values in the \code{outputs(sim)},
 #'   these will all be loaded, one at a time, \code{vals} evaluated one at a time, and
 #'   each of the values will be returned from each \code{saveTime}.
-#'   A column, \code{saveTime}, will be
-#'   part of the returned \code{data.table}
+#'   A column, \code{saveTime}, will be part of the returned \code{data.table}.
 #'   For cases where more than one object is required at a given
-#'   \code{saveTime}, all should be identified here, without time specified. This function will
-#'   take all identified objects from the same time period.
+#'   \code{saveTime}, all should be identified here, without time specified.
+#'   This function will take all identified objects from the same time period.
 #'
 #' @param ... Additional arguments. Currently unused.
+#'
 #' @details
 #' See examples.
 #'
 #' @export
-#' @importFrom tools file_ext
-#' @importFrom data.table as.data.table is.data.table setDT := setnames set setkeyv
+#' @importFrom data.table := as.data.table is.data.table set setDT setkeyv setnames
+#' @importFrom purrr transpose
 #' @importFrom SpaDES.core .fileExtensions
+#' @importFrom tools file_ext
 #' @include simLists-class.R
 #'
 #' @example inst/examples/example_experiment2.R
+#'
 as.data.table.simLists <- function(x, vals,
                                    objectsFromSim = NULL,
                                    objectsFromOutputs = NULL,  ...) {
@@ -165,11 +172,13 @@ as.data.table.simLists <- function(x, vals,
                      if (isFALSE(claSame)) {
                        onlyNumerics <- sapply(out[,!"saveTime"], is.numeric)
                        if (!all(onlyNumerics)) {
-                         stop("vals produce different class objects; them must all produce same class")
+                         stop("vals produce different class objects;",
+                              " they must all produce same class")
                        } else {
-                         message("vals produce columns of classes integer and numeric; converting all to numerics")
-                         onlyInteger <- sapply(out[,!"saveTime"], is.integer)
-                         namesInteger <- names(out[,!"saveTime"][,..onlyInteger])
+                         message("vals produce columns of classes integer and numeric;",
+                                 " converting all to numerics")
+                         onlyInteger <- sapply(out[, !"saveTime"], is.integer)
+                         namesInteger <- names(out[, !"saveTime"][, ..onlyInteger])
                        }
                        tmp <- lapply(namesInteger, function(col) {
                          set(out, NULL, col, as.numeric(out[[col]]))
@@ -177,7 +186,6 @@ as.data.table.simLists <- function(x, vals,
                      }
                      out <- data.table::melt(out, id.vars = "saveTime", variable.name = "vals",
                                              variable.factor = FALSE)
-
                  }
 
                  if (length(valsNoTime)) {
@@ -226,4 +234,3 @@ as.data.table.simLists <- function(x, vals,
   set(dt, NULL, "order", NULL)
   dt[]
 }
-
