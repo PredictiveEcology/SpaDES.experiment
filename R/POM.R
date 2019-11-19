@@ -170,7 +170,7 @@
 #' @importFrom parallel clusterEvalQ clusterExport
 #' @importFrom raster getCluster getValues returnCluster
 #' @importFrom reproducible .grepSysCalls
-#' @importFrom SpaDES.core depends P
+#' @importFrom SpaDES.core depends P rndstr
 #' @importFrom stats optim
 #' @rdname POM
 #'

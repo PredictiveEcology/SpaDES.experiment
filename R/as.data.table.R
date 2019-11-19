@@ -1,3 +1,5 @@
+utils::globalVariables(c("..onlyInteger"))
+
 #' Coerce elements of a \code{simLists} object to a \code{data.table}
 #'
 #' This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg{ggplot2}.
@@ -175,8 +177,8 @@ as.data.table.simLists <- function(x, vals,
                        } else {
                          message("vals produce columns of classes integer and numeric;",
                                  " converting all to numerics")
-                         onlyInteger <- sapply(out[,!"saveTime"], is.integer)
-                         namesInteger <- names(out[,!"saveTime"][,..onlyInteger])
+                         onlyInteger <- sapply(out[, !"saveTime"], is.integer)
+                         namesInteger <- names(out[, !"saveTime"][, ..onlyInteger])
                        }
                        tmp <- lapply(namesInteger, function(col) {
                          set(out, NULL, col, as.numeric(out[[col]]))
