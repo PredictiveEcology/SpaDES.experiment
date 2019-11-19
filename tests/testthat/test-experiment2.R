@@ -139,32 +139,37 @@ test_that("experiment2 test 1", {
   #df1 <- as.data.table(sims,
   #                     vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
   #                     objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
-  expect_error(df1 <- as.data.table(sims,
-                       vals = c("nPixelsBurned"),
-                       objectsFromOutputs = c(nPixelsBurned = NA)), "must be a list")
-  expect_error(df1 <- as.data.table(sims,
-                                    vals = c("nPixelsBurned",
-                                             caribou2 = quote(NROW(caribou)),
-                                             caribou = quote(NROW(caribou))),
-                                    objectsFromOutputs = list(nPixelsBurned = NA, caribou = "caribou")),
-               "objectsFromOutputs is shorter than vals, and the name")
+  expect_error({
+    df1 <- as.data.table(sims,
+                         vals = c("nPixelsBurned"),
+                         objectsFromOutputs = c(nPixelsBurned = NA))
+  }, "must be a list")
+
+  expect_error({
+    df1 <- as.data.table(sims,
+                         vals = c("nPixelsBurned",
+                                  caribou2 = quote(NROW(caribou)),
+                                  caribou = quote(NROW(caribou))),
+                         objectsFromOutputs = list(nPixelsBurned = NA, caribou = "caribou"))
+  }, "objectsFromOutputs is shorter than vals, and the name")
 
   # This gets recycled -- which is wrong behaviour
-  mess <- capture_messages(df1 <- as.data.table(sims,
-                                    vals = c("nPixelsBurned",
-                                             caribou = quote(NROW(caribou)),
-                                             caribou2 = quote(NROW(caribou))),
-                                    objectsFromOutputs = list("caribou")))
+  mess <- capture_messages({
+    df1 <- as.data.table(sims,
+                         vals = c("nPixelsBurned",
+                                  caribou = quote(NROW(caribou)),
+                                  caribou2 = quote(NROW(caribou))),
+                         objectsFromOutputs = list("caribou"))
+  })
   expect_true(any(grepl("objectsFromOutputs is shorter than vals. Recycling", mess)))
   expect_true(any(grepl("vals produce columns", mess)))
 
-  expect_error(df1 <- as.data.table(sims,
-                                    vals = c(caribou = quote(NROW(caribou)),
-                                             caribou2 = quote(as.character(NROW(caribou)))
-                                             ),
-                                    objectsFromOutputs = list(caribou = "caribou",
-                                                              caribou2 = "caribou")),
-               "vals produce different class objects; them must all produce")
+  expect_error({
+    df1 <- as.data.table(sims,
+                         vals = c(caribou = quote(NROW(caribou)),
+                                  caribou2 = quote(as.character(NROW(caribou)))),
+                         objectsFromOutputs = list(caribou = "caribou", caribou2 = "caribou"))
+  }, "vals produce different class objects; they must all produce")
 
   df1 <- as.data.table(sims,vals = quote(nPixelsBurned) )
   expect_true(is.data.table(df1))
@@ -174,7 +179,7 @@ test_that("experiment2 test 1", {
   df1[, year := rep(1:2, length.out = NROW(df1))]
 
   if (interactive()) {
-    p<- ggplot(df1, aes(x=year, y=value, group=simList, color=simList)) +
+    p <- ggplot(df1, aes(x = year, y = value, group = simList, color = simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -185,7 +190,7 @@ test_that("experiment2 test 1", {
   df1 <- as.data.table(sims, vals = list(NCaribou = "length(caribou$x1)"))
 
   if (interactive()) {
-    p<- ggplot(df1, aes_string(x="simList", y="value", group="simList", color="simList")) +
+    p <- ggplot(df1, aes_string(x = "simList", y = "value", group = "simList", color = "simList")) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
@@ -196,17 +201,16 @@ test_that("experiment2 test 1", {
                        objectsFromOutputs = list("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p<- ggplot(df1, aes(x=simList, y=value, group=simList, color=simList)) +
+    p <- ggplot(df1, aes(x = simList, y = value, group = simList, color = simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
 
-    p <- ggplot(df1, aes(x=saveTime, y=value, group=simList, color=simList)) +
+    p <- ggplot(df1, aes(x = saveTime, y = value, group = simList, color = simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
-
   }
 
   df2 <- as.data.table(sims,
@@ -219,16 +223,15 @@ test_that("experiment2 test 1", {
   if (interactive()) {
     # with an unevaluated string
     p <- ggplot(df2[vals == "meanFireSize"],
-                aes(x=saveTime, y=value, group=simList, color=simList)) +
+                aes(x = saveTime, y = value, group = simList, color = simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
-
   }
 
   fn <- quote({
-    landscape$Fires[landscape$Fires[]==0] <- NA;
+    landscape$Fires[landscape$Fires[] == 0] <- NA;
     a <- boundaries(landscape$Fires, type = "inner");
     a[landscape$Fires[] > 0 & a[] == 1] <- landscape$Fires[landscape$Fires[] > 0 & a[] == 1];
     peri <- table(a[]);
@@ -251,7 +254,8 @@ test_that("experiment2 test 1", {
   #objectsFromOutputs = c("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p <- ggplot(df1[vals == "perimToArea",], aes(x=saveTime, y=value, group=simList, color=simList)) +
+    p <- ggplot(df1[vals == "perimToArea",],
+                aes(x = saveTime, y = value, group = simList, color = simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -261,8 +265,7 @@ test_that("experiment2 test 1", {
 
 test_that("simLists tests", {
   #if (!interactive())
-  testInitOut <- testInit("future",
-                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  testInitOut <- testInit("future", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
