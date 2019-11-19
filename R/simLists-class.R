@@ -18,13 +18,11 @@
 #'
 #'
 #' @aliases simLists
-#' @rdname simLists-class
-#' @rdname simLists
-#' @importFrom data.table as.data.table data.table
-#' @include helpers.R
-#'
 #' @author Eliot McIntire
 #' @exportClass simLists
+#' @importFrom data.table as.data.table data.table
+#' @include helpers.R
+#' @rdname simLists-class
 #'
 setClass(
   "simLists",
@@ -64,8 +62,8 @@ setMethod("initialize",
 #' @param object  \code{simLists}
 #'
 #' @author Eliot McIntire
-#' @include simLists-class.R
 #' @importFrom utils capture.output ls.str tail
+#' @include simLists-class.R
 #' @export
 setMethod(
   "show",

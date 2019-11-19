@@ -1,15 +1,15 @@
 ################################################################################
 #' Use Pattern Oriented Modeling to fit unknown parameters
 #'
-#' This is very much in alpha condition. It has been tested on simple problems,
-#' as shown in the examples, with up to 2 parameters.
+#' This is very much in alpha condition.
+#' It has been tested on simple problems, as shown in the examples, with up to 2 parameters.
 #' It appears that \code{DEoptim} is the superior package for the stochastic problems.
 #' This should be used with caution as with all optimization routines. This function
 #' can nevertheless take \code{optim} as optimizer, using \code{stats::optim}.
 #' However, these latter approaches do not seem appropriate for stochastic problems,
 #' and have not been widely tested and are not supported within \code{POM}.
 #'
-#' There are two ways to use this function, via 1) \code{objFn} or 2) \code{objects}.
+#' There are two ways to use this function: via 1) \code{objFn} or 2) \code{objects}.
 #'
 #' \enumerate{
 #'   \item The user can pass the entire objective function to the \code{objFn}
@@ -93,8 +93,8 @@
 #'           of \code{beginCluster()}, to use parallelism for this function, allowing for
 #'           more control over cluster use.
 #'
-#' @param params Character vector of parameter names that can be changed by the optimizer. These
-#'               must be accessible with \code{params(sim)} internally.
+#' @param params Character vector of parameter names that can be changed by the optimizer.
+#'               These must be accessible with \code{params(sim)} internally.
 #'
 #' @param objects A optional named list (must be specified if objFn is not).
 #'                The names of each list element must correspond to an object in the
@@ -170,11 +170,11 @@
 #' @author Eliot McIntire
 #' @export
 #' @importFrom DEoptim DEoptim DEoptim.control
-#' @importFrom stats optim
-#' @importFrom SpaDES.core depends P
-#' @importFrom raster getCluster returnCluster getValues
 #' @importFrom parallel clusterEvalQ clusterExport
+#' @importFrom raster getCluster getValues returnCluster
 #' @importFrom reproducible .grepSysCalls
+#' @importFrom SpaDES.core depends P
+#' @importFrom stats optim
 #' @rdname POM
 #'
 #' @example inst/examples/example_POM.R

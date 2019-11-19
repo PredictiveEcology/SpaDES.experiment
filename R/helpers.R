@@ -1,3 +1,4 @@
+#' @keywords internal
 updateNames <- function(lst, newNames) {
   namesVals <- names(lst)
   emptyChar <- nchar(namesVals) == 0
@@ -20,10 +21,10 @@ updateNames <- function(lst, newNames) {
   lst
 }
 
+#' @keywords internal
 .objNamesBySimList <- function(simLists) {
   objs <- ls(simLists)
   simLists <- gsub("_.*", "", objs)
   simListsBySimList <- split(objs, f = simLists)
   simListsBySimList <- lapply(simListsBySimList, sort)
 }
-
