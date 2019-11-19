@@ -35,6 +35,7 @@
 #' @include simLists-class.R
 #'
 #' @example inst/examples/example_experiment2.R
+#'
 as.data.table.simLists <- function(x, vals,
                                    objectsFromSim = NULL,
                                    objectsFromOutputs = NULL,  ...) {
