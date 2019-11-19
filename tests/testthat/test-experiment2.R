@@ -2,7 +2,7 @@ test_that("experiment2 test 1", {
   #if (!interactive())
   skip_on_cran()
   skip_on_appveyor()
-  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2"),
+  testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2", "data.table"),
                           smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
@@ -70,6 +70,7 @@ test_that("experiment2 test 1", {
 
   planTypes <- c("sequential", "multiprocess")
   planTypes <- if (requireNamespace("future.callr")) c(planTypes, "callr")
+  # planTypes <- c("sequential")
   for (pl in planTypes) {
     cat(" -- testing future plan when", pl, "                ")
     warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
@@ -90,7 +91,7 @@ test_that("experiment2 test 1", {
     mySim1Orig <- Copy(mySim1)
     mySim2Orig <- Copy(mySim2)
 
-    repNums <- c(2, 3, 3)
+    repNums <- c(3)
     cap1 <- capture.output(mess <- capture_messages(
       sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
                           replicates = repNums)
@@ -99,12 +100,12 @@ test_that("experiment2 test 1", {
     expect_true(isTRUE(all.equal(mySim1Orig, mySim1))) # can't use identical -- envs are different
 
     # Test replication -- can be a vector of replicates
-    expect_true(length(ls(sims)) == sum(repNums))
-    expect_true(sum(grepl("^sim1", sort(ls(sims)))) == repNums[1])
-    expect_true(sum(grepl("^sim2", sort(ls(sims)))) == repNums[2])
-    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == sum(repNums >= 1))
-    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == sum(repNums >= 2))
-    expect_true(sum(grepl("rep3$", sort(ls(sims)))) == sum(repNums >= 3))
+    expect_true(length(ls(sims)) == repNums * 3)
+    expect_true(sum(grepl("^sim1", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("^sim2", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep1$", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep2$", sort(ls(sims)))) == repNums)
+    expect_true(sum(grepl("rep3$", sort(ls(sims)))) == repNums)
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim1_rep2`$caribou$x1))
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep2`$caribou$x1))
     expect_false(identical(sims$`sim1_rep1`$caribou$x1, sims$`sim2_rep1`$caribou$x1))
@@ -131,25 +132,49 @@ test_that("experiment2 test 1", {
   mess4 <- capture.output(sims)
   expect_true(sum(grepl("3 simLists", mess4)) == 1)
 
-  df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
-  df2 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
+  df1 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))))
+  df2 <- as.data.table(sims, vals = c("nPixelsBurned", NCaribou = "length(caribou$x1)"))
   expect_true(identical(df1, df2))
 
-  df1 <- as.data.table(sims, byRep = TRUE,
-                       vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
-                       objectsFromOutputs = c("caribou"))
+  #df1 <- as.data.table(sims,
+  #                     vals = c("nPixelsBurned", NCaribou = quote(length(caribou$x1))),
+  #                     objectsFromOutputs = list(nPixelsBurned = NA, NCaribou = "caribou"))
+  expect_error(df1 <- as.data.table(sims,
+                       vals = c("nPixelsBurned"),
+                       objectsFromOutputs = c(nPixelsBurned = NA)), "must be a list")
+  expect_error(df1 <- as.data.table(sims,
+                                    vals = c("nPixelsBurned",
+                                             caribou2 = quote(NROW(caribou)),
+                                             caribou = quote(NROW(caribou))),
+                                    objectsFromOutputs = list(nPixelsBurned = NA, caribou = "caribou")),
+               "objectsFromOutputs is shorter than vals, and the name")
 
+  # This gets recycled -- which is wrong behaviour
+  mess <- capture_messages(df1 <- as.data.table(sims,
+                                    vals = c("nPixelsBurned",
+                                             caribou = quote(NROW(caribou)),
+                                             caribou2 = quote(NROW(caribou))),
+                                    objectsFromOutputs = list("caribou")))
+  expect_true(any(grepl("objectsFromOutputs is shorter than vals. Recycling", mess)))
+  expect_true(any(grepl("vals produce columns", mess)))
 
-  df1 <- as.data.table(sims, byRep = TRUE, vals = c("nPixelsBurned"))
+  expect_error(df1 <- as.data.table(sims,
+                                    vals = c(caribou = quote(NROW(caribou)),
+                                             caribou2 = quote(as.character(NROW(caribou)))
+                                             ),
+                                    objectsFromOutputs = list(caribou = "caribou",
+                                                              caribou2 = "caribou")),
+               "vals produce different class objects; them must all produce")
 
-  measure.cols <- grep("nPixelsBurned", names(df1), value = TRUE)
-  df1Short <- data.table::melt(df1, measure.vars = measure.cols,
-                               variable.name = "year", variable.factor = FALSE)
-  # df1Short[, year := as.numeric(gsub(".*V([[:digit:]])", "\\1", df1Short$year))]
-  df1Short[, year := as.numeric(unlist(lapply(strsplit(year, split = "\\.V"), function(x) x[2])))]
+  df1 <- as.data.table(sims,vals = quote(nPixelsBurned) )
+  expect_true(is.data.table(df1))
+
+  df1 <- as.data.table(sims, vals = c("nPixelsBurned"))
+
+  df1[, year := rep(1:2, length.out = NROW(df1))]
 
   if (interactive()) {
-    p<- ggplot(df1Short, aes(x=year, y=value, group=simList, color=simList)) +
+    p<- ggplot(df1, aes(x=year, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -157,29 +182,44 @@ test_that("experiment2 test 1", {
     print(p)
   }
   # with an unevaluated string
-  df1 <- as.data.table(sims, byRep = TRUE, vals = list(NCaribou = "length(caribou$x1)"))
-  caribouColName <- grep("NCaribou", colnames(df1), value = TRUE)
-  expect_true(length(caribouColName) == 1)
+  df1 <- as.data.table(sims, vals = list(NCaribou = "length(caribou$x1)"))
 
   if (interactive()) {
-    p<- ggplot(df1, aes_string(x="simList", y=caribouColName, group="simList", color="simList")) +
+    p<- ggplot(df1, aes_string(x="simList", y="value", group="simList", color="simList")) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
   }
 
-
-  df1 <- as.data.table(sims, byRep = TRUE,
+  df1 <- as.data.table(sims,
                        vals = c(meanFireSize = quote(mean(table(landscape$Fires[])[-1]))),
-                       objectsFromOutputs = c("landscape"))
+                       objectsFromOutputs = list("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p<- ggplot(df1, aes(x=simList, y=meanFireSize, group=simList, color=simList)) +
+    p<- ggplot(df1, aes(x=simList, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     print(p)
 
-    p <- ggplot(df1, aes(x=saveTime, y=meanFireSize, group=simList, color=simList)) +
+    p <- ggplot(df1, aes(x=saveTime, y=value, group=simList, color=simList)) +
+      stat_summary(geom = "point", fun.y = mean) +
+      stat_summary(geom = "line", fun.y = mean) +
+      stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
+    print(p)
+
+  }
+
+  df2 <- as.data.table(sims,
+                       vals = c("nPixelsBurned",
+                                meanFireSize = quote({
+                                  mean(table(landscape$Fires[])[-1]) /
+                                    NROW(caribou)
+                                })),
+                       objectsFromOutputs = list(NA, c("landscape", "caribou")))
+  if (interactive()) {
+    # with an unevaluated string
+    p <- ggplot(df2[vals == "meanFireSize"],
+                aes(x=saveTime, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
@@ -197,16 +237,92 @@ test_that("experiment2 test 1", {
     mean(peri[keep]/area)
   })
 
-  df1 <- as.data.table(sims, byRep = TRUE,
-                       vals = c(perimToArea = fn,
-                                meanFireSize = quote(mean(table(landscape$Fires[])[-1]))),
-                       objectsFromOutputs = c("landscape"))
+  df1 <- as.data.table(sims,
+                       vals = c("nPixelsBurned",
+                                perimToArea = fn,
+                                meanFireSize = quote(mean(table(landscape$Fires[])[-1])),
+                                caribouPerHaFire = quote({
+                                  NROW(caribou) /
+                                    mean(table(landscape$Fires[])[-1])
+                                })),
+                       objectsFromOutputs = list(NA, c("landscape"), c("landscape"),
+                                                 c("landscape", "caribou")),
+                       objectsFromSim = "nPixelsBurned")
+  #objectsFromOutputs = c("landscape"))
   if (interactive()) {
     # with an unevaluated string
-    p <- ggplot(df1, aes(x=saveTime, y=perimToArea, group=simList, color=simList)) +
+    p <- ggplot(df1[vals == "perimToArea",], aes(x=saveTime, y=value, group=simList, color=simList)) +
       stat_summary(geom = "point", fun.y = mean) +
       stat_summary(geom = "line", fun.y = mean) +
       stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2)
     warn <- capture_warnings(print(p))
   }
+})
+
+test_that("simLists tests", {
+  #if (!interactive())
+  testInitOut <- testInit("future",
+                          smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  on.exit({
+    testOnExit(testInitOut)
+  }, add = TRUE)
+
+  s <- simInit()
+  mess5 <- capture_messages({
+    ss <- experiment2(s, s, s, replicates = 1,
+                      createUniquePaths = c("outputPaths", "modulePaths"))
+  })
+  expect_true(sum(grepl("createUniquePaths only", mess5)) == 1)
+  mess4 <- capture.output(ss)
+  expect_true(sum(grepl("with 1 replicate", mess4)) == 1)
+
+  expect_error({
+    ss <- experiment2(s, s, s, replicates = c(1, 2, 1))
+  })
+  expect_error({
+    ss <- experiment2(s, s, s, replicates = c(1, 2, 1))
+  })
+
+  plan("sequential")
+  mess6 <- capture_messages(.spades(s))
+  expect_true(sum(grepl("Copying simList prior", mess6)) == 1)
+
+  s$hello <- 1
+  sClear <- .spades(s, clearSimEnv = TRUE)
+  lsOrig <- ls(s, all.names = TRUE)
+  lsClear <- ls(sClear, all.names = TRUE)
+  expect_true(identical("hello", setdiff(lsOrig, lsClear)))
+})
+
+test_that("simLists tests", {
+  #if (!interactive())
+  testInitOut <- testInit("parallel", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
+  on.exit({
+    testOnExit(testInitOut)
+  }, add = TRUE)
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum()
+  })
+  expect_true(a == 1)
+  dc <- detectCores()
+  free <- Sys.which("free") ## Linux only
+  if (!nzchar(free))
+    expect_true(sum(grepl("The OS", mess1)) == 1)
+  else
+    expect_true(sum(grepl("The OS", mess1)) == 0)
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum(maxNumClusters = 2, memRequiredMB = 10)
+  })
+  if (!nzchar(free))
+    expect_true(a == 1)
+  else
+    expect_true(a == 2)
+
+  mess1 <- capture_messages({
+    a <- .optimalClusterNum(maxNumClusters = dc + 1, memRequiredMB = 10)
+  })
+  if (!nzchar(free))
+    expect_true(a == 1)
+  else
+    expect_true(a == dc)
 })

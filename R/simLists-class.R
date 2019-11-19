@@ -21,6 +21,7 @@
 #' @rdname simLists-class
 #' @rdname simLists
 #' @importFrom data.table as.data.table data.table
+#' @include helpers.R
 #'
 #' @author Eliot McIntire
 #' @exportClass simLists
@@ -41,12 +42,12 @@ setClass(
 #' Given the name or the definition of a class, plus optionally data to be
 #' included in the object, \code{new} returns an object from that class.
 #'
-#' @export
-#' @importFrom SpaDES.core .paths
 #' @param .Object  A \code{simList} object.
 #' @param ... Optional Values passed to any or all slot
+#'
+#' @export
+#' @importFrom SpaDES.core .paths
 #' @rdname initialize-method
-#' @import methods
 setMethod("initialize",
           signature(.Object = "simLists"),
           definition = function(.Object, ...) {
@@ -86,9 +87,9 @@ setMethod(
       paste("with", uniqueLengths, "replicates each")
     } else if (isTRUE(uniqueLengths) == 1) {
       paste0("with only 1 replicate each")
-    } else {
-      paste("with", paste(uniqueLengths, collapse = ", "), "replicates respectively")
-    }
+    } #else {
+      #paste("with", paste(uniqueLengths, collapse = ", "), "replicates respectively")
+    #}
     out[[2]] <- capture.output(cat(out2, out3))
     ll <- lapply(simListsBySimList, function(s) {
       paste0(s[1], ", ..., ", tail(s,1))

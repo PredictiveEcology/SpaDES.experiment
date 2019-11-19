@@ -8,10 +8,10 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
   many `simList` objects. This package also includes tools to do post hoc 
   analyses of such `simLists` objects.
 URL:
-    http://spades-experiment.predictiveecology.org/,
+    https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2019-10-29
-Version: 0.0.1.9000
+Date: 2019-11-07
+Version: 0.0.1.9001
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
@@ -30,6 +30,7 @@ Imports:
     DEoptim (>= 2.2-4),
     future,
     future.apply,
+    googledrive,
     magrittr,
     methods,
     parallel,
@@ -47,6 +48,9 @@ Suggests:
     SpaDES.tools (>= 0.2.0),
     testthat (>= 1.0.2),
     spelling
+Remotes:
+    PredictiveEcology/reproducible@development,
+    PredictiveEcology/SpaDES.core@development
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
@@ -55,8 +59,11 @@ BugReports: https://github.com/PredictiveEcology/SpaDES.experiment/issues
 ByteCompile: yes
 Collate: 
     'POM.R'
-    'experiment.R'
+    'helpers.R'
     'simLists-class.R'
+    'as.data.table.R'
+    'experiment.R'
     'experiment2.R'
     'simInitAndExperiment.R'
+    'spades-experiment-package.R'
 RoxygenNote: 6.1.1

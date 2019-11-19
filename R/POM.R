@@ -217,7 +217,7 @@ setMethod(
 
     whParamsByMod <- unlist(lapply(whParams, na.omit))
     names(whParamsByMod) <- unlist(lapply(names(whModules), function(nam) {
-      rep(nam, sum(grepl(pattern = paste0("^", nam, "[0-9]"), names(whParamsByMod))))
+      rep(nam, sum(grepl(pattern = paste0("^", nam, "[0-9]*"), names(whParamsByMod))))
     }))
 
     if (missing(objects)) {
@@ -234,7 +234,7 @@ setMethod(
         keepGoing <- TRUE
         tryNum <- 1
         while (keepGoing) {
-          sim_ <- Copy(sim)
+          sim_ <- Copy(sim, filebackedDir = file.path(tempdir(), rndstr(1, 8)))
           whP <- 0
           for (wh in seq_along(whParamsByMod)) {
             whP <- whP + 1

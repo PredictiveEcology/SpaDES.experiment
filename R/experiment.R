@@ -175,6 +175,7 @@
 #' @author Eliot McIntire
 #' @export
 #' @importFrom magrittr %>%
+#' @importClassesFrom SpaDES.core simList
 #' @importFrom data.table rbindlist
 #' @importFrom SpaDES.core spades
 #' @importFrom parallel clusterApplyLB clusterEvalQ stopCluster
@@ -193,6 +194,7 @@ setGeneric(
   })
 
 #' @rdname experiment
+#' @exportMethod experiment
 #' @importFrom stats na.omit
 setMethod(
   "experiment",

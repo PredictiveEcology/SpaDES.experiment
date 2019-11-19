@@ -13,7 +13,7 @@
 Tools to build simulation experiments within the `SpaDES` ecosystem.
 This includes replication, parameter sweeps, scenario analysis, pattern oriented modeling, and simulation experiments.
 
-**Website:** [http://SpaDES.PredictiveEcology.org](http://SpaDES.PredictiveEcology.org)
+**Website:** [https://spades-experiment.PredictiveEcology.org](https://SpaDES-experiment.PredictiveEcology.org)
 
 **Wiki:** [https://github.com/PredictiveEcology/SpaDES/wiki](https://github.com/PredictiveEcology/SpaDES/wiki)
 
@@ -32,7 +32,7 @@ install.packages("SpaDES.experiment")
 ```r
 #install.packages("devtools")
 library("devtools")
-install_github("PredictiveEcology/SpaDES.experiment", dependencies = TRUE) # stable
+install_github("PredictiveEcology/SpaDES.experiment", dependencies = TRUE) # master
 ```
 
 ### Development version (unstable)
@@ -42,5 +42,9 @@ install_github("PredictiveEcology/SpaDES.experiment", dependencies = TRUE) # sta
 ```r
 #install.packages("devtools")
 library("devtools")
-install_github("PredictiveEcology/SpaDES.experiment", ref = "development", dependencies = TRUE) # unstable
+install_github("PredictiveEcology/SpaDES.experiment", ref = "development", dependencies = TRUE)
 ```
+
+## Contributions
+
+Please see `CONTRIBUTING.md` for information on how to contribute to this project.
