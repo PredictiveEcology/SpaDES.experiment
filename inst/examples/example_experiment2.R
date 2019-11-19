@@ -1,5 +1,5 @@
-\dontrun{
 
+\dontrun{
   library(SpaDES.core)
   tmpdir <- file.path(tempdir(), "examples")
   # Make 3 simLists -- set up scenarios
@@ -22,7 +22,7 @@
                    outputPath = tmpdir),
       # Save final state of landscape and caribou
       outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
+                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime / 2), endTime))),
                            stringsAsFactors = FALSE)
     )
   })
@@ -44,7 +44,7 @@
   # now calculate 4 different values, some from data saved at different times
   # Define new function -- this calculates perimeter to area ratio
   fn <- quote({
-    landscape$Fires[landscape$Fires[]==0] <- NA;
+    landscape$Fires[landscape$Fires[] == 0] <- NA;
     a <- boundaries(landscape$Fires, type = "inner");
     a[landscape$Fires[] > 0 & a[] == 1] <- landscape$Fires[landscape$Fires[] > 0 & a[] == 1];
     peri <- table(a[]);
@@ -70,13 +70,13 @@
     library(ggplot2)
     p <- lapply(unique(df1$vals), function(var) {
       ggplot(df1[vals == var,],
-                  aes(x=saveTime, y=value, group=simList, color=simList)) +
+             aes(x = saveTime, y = value, group = simList, color = simList)) +
         stat_summary(geom = "point", fun.y = mean) +
         stat_summary(geom = "line", fun.y = mean) +
         stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
         ylab(var)
-
     })
+
     # Arrange all 4 -- could use gridExtra::grid.arrange -- easier
     pushViewport(viewport(layout = grid.layout(2, 2)))
     vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
@@ -85,6 +85,4 @@
     print(p[[3]], vp = vplayout(2, 1))
     print(p[[4]], vp = vplayout(2, 2))
   }
-
- # end /dontrun
 }

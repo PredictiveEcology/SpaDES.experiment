@@ -191,7 +191,7 @@ setGeneric(
            experimentFile = "experiment.RData", clearSimEnv = FALSE, notOlderThan,
            cl, ...) {
     standardGeneric("experiment")
-  })
+})
 
 #' @rdname experiment
 #' @exportMethod experiment

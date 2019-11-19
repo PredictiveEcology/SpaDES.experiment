@@ -2,7 +2,7 @@
 % Please edit documentation in R/as.data.table.R
 \name{as.data.table.simLists}
 \alias{as.data.table.simLists}
-\title{Coerce elements of a simLists object to a data.table}
+\title{Coerce elements of a \code{simLists} object to a \code{data.table}}
 \usage{
 \method{as.data.table}{simLists}(x, vals, objectsFromSim = NULL, objectsFromOutputs = NULL, ...)
 }
@@ -26,11 +26,10 @@ the object loaded from \code{outputs(sim)}. If there are many objects with the
 same name, specifically from several \code{saveTime} values in the \code{outputs(sim)},
 these will all be loaded, one at a time, \code{vals} evaluated one at a time, and
 each of the values will be returned from each \code{saveTime}.
-A column, \code{saveTime}, will be
-part of the returned \code{data.table}
+A column, \code{saveTime}, will be part of the returned \code{data.table}.
 For cases where more than one object is required at a given
-\code{saveTime}, all should be identified here, without time specified. This function will
-take all identified objects from the same time period.}
+\code{saveTime}, all should be identified here, without time specified.
+This function will take all identified objects from the same time period.}
 
 \item{...}{Additional arguments. Currently unused.}
 }
@@ -43,7 +42,6 @@ See examples.
 \examples{
 
 \dontrun{
-
   library(SpaDES.core)
   tmpdir <- file.path(tempdir(), "examples")
   # Make 3 simLists -- set up scenarios
@@ -66,7 +64,7 @@ See examples.
                    outputPath = tmpdir),
       # Save final state of landscape and caribou
       outputs = data.frame(objectName = c(rep("landscape", endTime), "caribou", "caribou"),
-                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime/2),endTime))),
+                           saveTimes = c(seq_len(endTime), unique(c(ceiling(endTime / 2), endTime))),
                            stringsAsFactors = FALSE)
     )
   })
@@ -88,7 +86,7 @@ See examples.
   # now calculate 4 different values, some from data saved at different times
   # Define new function -- this calculates perimeter to area ratio
   fn <- quote({
-    landscape$Fires[landscape$Fires[]==0] <- NA;
+    landscape$Fires[landscape$Fires[] == 0] <- NA;
     a <- boundaries(landscape$Fires, type = "inner");
     a[landscape$Fires[] > 0 & a[] == 1] <- landscape$Fires[landscape$Fires[] > 0 & a[] == 1];
     peri <- table(a[]);
@@ -114,13 +112,13 @@ See examples.
     library(ggplot2)
     p <- lapply(unique(df1$vals), function(var) {
       ggplot(df1[vals == var,],
-                  aes(x=saveTime, y=value, group=simList, color=simList)) +
+             aes(x = saveTime, y = value, group = simList, color = simList)) +
         stat_summary(geom = "point", fun.y = mean) +
         stat_summary(geom = "line", fun.y = mean) +
         stat_summary(geom = "errorbar", fun.data = mean_se, width = 0.2) +
         ylab(var)
-
     })
+
     # Arrange all 4 -- could use gridExtra::grid.arrange -- easier
     pushViewport(viewport(layout = grid.layout(2, 2)))
     vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
@@ -129,7 +127,5 @@ See examples.
     print(p[[3]], vp = vplayout(2, 1))
     print(p[[4]], vp = vplayout(2, 2))
   }
-
- # end /dontrun
 }
 }

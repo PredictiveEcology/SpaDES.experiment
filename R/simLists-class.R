@@ -102,4 +102,4 @@ setMethod(
     out[[length(out) + 1]] <- capture.output(cat("\n"))
     ### print result
     cat(unlist(out), fill = FALSE, sep = "\n")
-  })
+})
