@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://spades-core.predictiveecology.org//index.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//index.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/as.data.table.simLists.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/as.data.table.simLists.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/dot-setupCl.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/dot-setupCl.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/experiment.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/experiment.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/experiment2.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/experiment2.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/initialize-method.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/initialize-method.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/POM.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/POM.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/show-simLists-method.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/show-simLists-method.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/simInitAnd.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/simInitAnd.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//reference/simLists-class.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/simLists-class.html</loc>
   </url>
   <url>
-    <loc>http://spades-core.predictiveecology.org//articles/v-experiments.html</loc>
+    <loc>http://spades-experiment.predictiveecology.org//reference/SpaDES.experiment-package.html</loc>
+  </url>
+  <url>
+    <loc>http://spades-experiment.predictiveecology.org//articles/v-experiments.html</loc>
   </url>
 </urlset>

@@ -36,8 +36,8 @@
 
 
 <meta property="og:title" content="Use Pattern Oriented Modeling to fit unknown parameters — POM" />
-<meta property="og:description" content="This is very much in alpha condition. It has been tested on simple problems,
-as shown in the examples, with up to 2 parameters.
+<meta property="og:description" content="This is very much in alpha condition.
+It has been tested on simple problems, as shown in the examples, with up to 2 parameters.
 It appears that DEoptim is the superior package for the stochastic problems.
 This should be used with caution as with all optimization routines. This function
 can nevertheless take optim as optimizer, using stats::optim.
@@ -85,7 +85,7 @@ and have not been widely tested and are not supported within POM." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpaDES.experiment</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -142,8 +142,8 @@ and have not been widely tested and are not supported within POM." />
     </div>
 
     <div class="ref-description">
-    <p>This is very much in alpha condition. It has been tested on simple problems,
-as shown in the examples, with up to 2 parameters.
+    <p>This is very much in alpha condition.
+It has been tested on simple problems, as shown in the examples, with up to 2 parameters.
 It appears that <code>DEoptim</code> is the superior package for the stochastic problems.
 This should be used with caution as with all optimization routines. This function
 can nevertheless take <code>optim</code> as optimizer, using <code><a href='https://rdrr.io/r/stats/optim.html'>stats::optim</a></code>.
@@ -151,15 +151,40 @@ However, these latter approaches do not seem appropriate for stochastic problems
 and have not been widely tested and are not supported within <code>POM</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>POM</span>(<span class='no'>sim</span>, <span class='no'>params</span>, <span class='kw'>objects</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>objFn</span>, <span class='no'>cl</span>, <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='st'>"DEoptim"</span>,
-  <span class='kw'>sterr</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>, <span class='kw'>objFnCompare</span> <span class='kw'>=</span> <span class='st'>"MAD"</span>, <span class='kw'>optimControl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>NaNRetries</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>logObjFnVals</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>weights</span>, <span class='kw'>useLog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>POM</span>(
+  <span class='no'>sim</span>,
+  <span class='no'>params</span>,
+  <span class='kw'>objects</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>objFn</span>,
+  <span class='no'>cl</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='st'>"DEoptim"</span>,
+  <span class='kw'>sterr</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>objFnCompare</span> <span class='kw'>=</span> <span class='st'>"MAD"</span>,
+  <span class='kw'>optimControl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>NaNRetries</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>logObjFnVals</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>weights</span>,
+  <span class='kw'>useLog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)
 
 <span class='co'># S4 method for simList,character</span>
-<span class='fu'>POM</span>(<span class='no'>sim</span>, <span class='no'>params</span>, <span class='kw'>objects</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>objFn</span>, <span class='no'>cl</span>,
-  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='st'>"DEoptim"</span>, <span class='kw'>sterr</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>, <span class='kw'>objFnCompare</span> <span class='kw'>=</span> <span class='st'>"MAD"</span>,
-  <span class='kw'>optimControl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>NaNRetries</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>logObjFnVals</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>weights</span>, <span class='kw'>useLog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>POM</span>(
+  <span class='no'>sim</span>,
+  <span class='no'>params</span>,
+  <span class='kw'>objects</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>objFn</span>,
+  <span class='no'>cl</span>,
+  <span class='kw'>optimizer</span> <span class='kw'>=</span> <span class='st'>"DEoptim"</span>,
+  <span class='kw'>sterr</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>objFnCompare</span> <span class='kw'>=</span> <span class='st'>"MAD"</span>,
+  <span class='kw'>optimControl</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>NaNRetries</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>logObjFnVals</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>weights</span>,
+  <span class='kw'>useLog</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,8 +195,8 @@ and have not been widely tested and are not supported within <code>POM</code>.</
     </tr>
     <tr>
       <th>params</th>
-      <td><p>Character vector of parameter names that can be changed by the optimizer. These
-must be accessible with <code>params(sim)</code> internally.</p></td>
+      <td><p>Character vector of parameter names that can be changed by the optimizer.
+These must be accessible with <code>params(sim)</code> internally.</p></td>
     </tr>
     <tr>
       <th>objects</th>
@@ -219,9 +244,9 @@ that hessian, assuming normality.</p></td>
     </tr>
     <tr>
       <th>objFnCompare</th>
-      <td><p>Character string. Either, "MAD" or "RMSE" indicating that inside the objective
-function, data and prediction will be compared by Mean Absolute Deviation or
-Root Mean Squared Error. Default is "MAD".</p></td>
+      <td><p>Character string. Either, <code>"MAD"</code> (default) or <code>"RMSE"</code> indicating
+that inside the objective function, data and prediction will be compared by
+Mean Absolute Deviation or Root Mean Squared Error.</p></td>
     </tr>
     <tr>
       <th>optimControl</th>
@@ -231,38 +256,34 @@ optimization routine. Currently, only passed to
     </tr>
     <tr>
       <th>NaNRetries</th>
-      <td><p>Numeric. If greater than 1, then the function will retry
-the objective function for a total of that number of times
-if it results in an <code>NaN</code>. In general
-this should not be used as the objective function should be
+      <td><p>Numeric. If greater than 1, then the function will retry the objective
+function for a total of that number of times if it results in an <code>NaN</code>.
+In general this should not be used as the objective function should be
 made so that it doesn't produce <code>NaN</code>. But, sometimes
 it is difficult to diagnose stochastic results.</p></td>
     </tr>
     <tr>
       <th>logObjFnVals</th>
       <td><p>Logical or Character string indicating a filename to log the outputs.
-Ignored if
-<code>objFn</code> is supplied.
-If TRUE (and there is no <code>objFn</code> supplied), then the
-value of the individual patterns will be output the console
-if being run interactively or to a tab delimited
-text file named <code>ObjectiveFnValues.txt</code> (or that passed by
-the user here) at each evaluation of the
+Ignored if <code>objFn</code> is supplied.
+If TRUE (and there is no <code>objFn</code> supplied), then the value of the
+individual patterns will be output the console if being run interactively
+or to a tab delimited text file named <code>ObjectiveFnValues.txt</code>
+(or that passed by the user here) at each evaluation of the
 POM created objective function. See details.</p></td>
     </tr>
     <tr>
       <th>weights</th>
       <td><p>Numeric. If provided, this vector will be multiplied by the standardized
-deviations (possibly MAD or RMSE) as described in <code>objects</code>. This has
-the effect of weighing
-each standardized deviation (pattern--data pair) to a user
-specified amount in the objective function.</p></td>
+deviations (possibly MAD or RMSE) as described in <code>objects</code>.
+This has the effect of weighing each standardized deviation (pattern--data pair)
+to a user specified amount in the objective function.</p></td>
     </tr>
     <tr>
       <th>useLog</th>
       <td><p>Logical. Should the data patterns and output patterns be logged (<code>log</code>)
-before calculating the <code>objFnCompare</code>. i.e.,
-<code><a href='https://rdrr.io/r/base/mean.html'>mean(abs(log(output) - log(data)))</a></code>.
+before calculating the <code>objFnCompare</code>.
+I.e., <code><a href='https://rdrr.io/r/base/mean.html'>mean(abs(log(output) - log(data)))</a></code>.
 This should be length 1 or length <code>objects</code>.
 It will be recycled if length &gt;1, less than <code>objects</code>.</p></td>
     </tr>
@@ -276,7 +297,7 @@ more than 2), named <code>args</code> is the set of arguments that were passed
 into the control of the optimizer.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>There are two ways to use this function, via 1) <code>objFn</code> or 2) <code>objects</code>.</p>
+    <p>There are two ways to use this function: via 1) <code>objFn</code> or 2) <code>objects</code>.</p>
 <ol>
 <li><p>The user can pass the entire objective function to the <code>objFn</code>
   argument that will be passed directly to the <code>optimizer</code>.
