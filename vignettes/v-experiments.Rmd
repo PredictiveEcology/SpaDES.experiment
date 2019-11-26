@@ -21,8 +21,9 @@ editor_options:
 ## Running a groups of simulations: the `experiment` function
 
 Once a simulation is properly initialized and runs correctly with the `spades` function, it is likely time to do things like run replicates.
-There is a function, `experiment` to do this, as well as building parameter and module "simulation experiments".
-For example, you can pass alternative values to parameters in modules and the `experiment` will build a fully factorial experiment, with replication and run them.
+There are two functions, `experiment` and `experiment2` to do this. These both give opportunities to create simulation experiments, such as through varying parameters and modules.
+`experiment` is for simpler "fully factorial" cases, and `experiment2` can take any `simList` class objects for the simulation experiment.
+With `experiment`, for example, you can pass alternative values to parameters in modules and the `experiment` will build a fully factorial experiment, with replication and run them.
 This function (as with `POM` and `splitRaster`) is parallel-aware and can either proceed with a cluster object (`cl` argument) or a cluster running in the background using the `raster::beginCluster`.
 
 ```{r experiment, eval=TRUE, echo=TRUE}

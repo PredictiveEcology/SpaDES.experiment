@@ -35,3 +35,5 @@ vignettes/*.pdf
 
 # reverse dependency checks cache
 revdep/.cache.rds
+doc
+Meta
