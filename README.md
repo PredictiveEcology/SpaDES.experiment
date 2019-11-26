@@ -1,5 +1,3 @@
-
-
 [![Build Status](https://travis-ci.org/PredictiveEcology/SpaDES.experiment.svg?branch=master)](https://travis-ci.org/PredictiveEcology/SpaDES.experiment)
 [![Appveyor Build status](https://ci.appveyor.com/api/projects/status/2fxqhgk6miv2fytd/branch/master?svg=true)](https://ci.appveyor.com/project/achubaty/spades-experiment/branch/master)
 [![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/SpaDES.experiment/badge.svg?branch=master)](https://coveralls.io/github/PredictiveEcology/SpaDES.experiment?branch=master)
