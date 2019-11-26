@@ -249,7 +249,7 @@ if (interactive()) {
   # In words, this says, "find the best value of spreadprob such that
   #  the proportion of the area burned in the simulation
   #  is as close as possible to the proportion area burned in
-  #  the "data", using \\code{DEoptim()}.
+  #  the "data", using \code{DEoptim()}.
 
   # Can use cluster if computer is multi-threaded.
   # This example can use parallelType = 1 in DEoptim. For this, you must manually
@@ -328,7 +328,7 @@ if (interactive()) {
     # cat(minimizeFn)
     # cat(" ")
     # cat(pars)
-    # cat("\\n")
+    # cat("\n")
 
     return(minimizeFn)
   }
