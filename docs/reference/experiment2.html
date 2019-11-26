@@ -84,7 +84,7 @@ for various backends and parallelism.0" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpaDES.experiment</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -149,13 +149,26 @@ in every <code>simList</code> run. This uses <code>future</code> internally, all
 for various backends and parallelism.0</p>
     </div>
 
-    <pre class="usage"><span class='fu'>experiment2</span>(<span class='no'>...</span>, <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>clearSimEnv</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>createUniquePaths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"outputPath"</span>), <span class='kw'>useCache</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>experiment2</span>(
+  <span class='no'>...</span>,
+  <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>clearSimEnv</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>createUniquePaths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"outputPath"</span>),
+  <span class='kw'>useCache</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"spades.debug"</span>),
+  <span class='no'>drive_auth_account</span>
+)
 
 <span class='co'># S4 method for simList</span>
-<span class='fu'>experiment2</span>(<span class='no'>...</span>, <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>clearSimEnv</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>createUniquePaths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"outputPath"</span>),
-  <span class='kw'>useCache</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>experiment2</span>(
+  <span class='no'>...</span>,
+  <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>clearSimEnv</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>createUniquePaths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"outputPath"</span>),
+  <span class='kw'>useCache</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"spades.debug"</span>),
+  <span class='kw'>drive_auth_account</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,7 +180,9 @@ for various backends and parallelism.0</p>
     <tr>
       <th>replicates</th>
       <td><p>The number of replicates to run of the same <code>simList</code>.
-See details and examples.</p></td>
+See details and examples. To minimize memory overhead, currently,
+this must be length 1, i.e., all <code>...</code> simList objects will
+receive the same number of replicates.</p></td>
     </tr>
     <tr>
       <th>clearSimEnv</th>
@@ -189,6 +204,18 @@ seen as a non-cached call to <code>spades</code>. This will, however, may preven
 calls from running a second time during second call to the same
 <code>experiment2</code> function.</p></td>
     </tr>
+    <tr>
+      <th>debug</th>
+      <td><p>Optional logical flag or character vector indicating what to print to
+console at each event. See details.
+Default is to use the value in <code><a href='https://rdrr.io/r/base/options.html'>getOption("spades.debug")</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>drive_auth_account</th>
+      <td><p>Optional character string. If provided, it will be passed
+to each worker and run as <code><a href='https://googledrive.tidyverse.org/reference/drive_auth.html'>googledrive::drive_auth(drive_auth_account)</a></code> to allow
+a specific user account for googledrive</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -199,8 +226,8 @@ contains <code>simList</code> objects.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function, because of its class formalism, allows for methods to be used. For example,
-<code><a href='as.data.table.simLists.html'>as.data.table.simLists</a></code> allows user to pull out specific objects (in
-the <code>simList</code> objects or on disk saved in <code>outputPath(sim)</code>).</p>
+<code>as.data.table.simLists</code> allows user to pull out specific objects (in
+the <code>simList</code> objects or on disk saved in <code><a href='http://spades-core.predictiveecology.org//reference/simList-accessors-paths.html'>outputPath(sim)</a></code>).</p>
 <p>The <code>outputPath</code> is changed so that every simulation puts outputs in a
 sub-directory
 of the original <code>outputPath</code> of each <code>simList</code>.</p>
@@ -210,136 +237,100 @@ of the original <code>outputPath</code> of each <code>simList</code>.</p>
 have already been run. See example, via <code>new("simLists")</code></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='as.data.table.simLists.html'>as.data.table.simLists</a></code>,
-  <code>simInit</code>, <code><a href='http://spades-core.predictiveecology.org//reference/spades.html'>spades</a></code>, <code><a href='experiment.html'>experiment</a></code></p></div>
+    <div class='dont-index'><p><code>as.data.table.simLists</code>,
+  <code><a href='http://spades-core.predictiveecology.org//reference/simInit.html'>simInit</a></code>, <code><a href='http://spades-core.predictiveecology.org//reference/spades.html'>spades</a></code>, <code><a href='http://spades-core.predictiveecology.org//reference/deprecated.html'>experiment</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-
+    <pre class="examples"><div class='input'>
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+  <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>SpaDES.core</span>)
+  <span class='no'>tmpdir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"examples"</span>)
   <span class='co'># Make 3 simLists -- set up scenarios</span>
-  <span class='no'>endTime</span> <span class='kw'>&lt;-</span> <span class='fl'>5</span>
-  <span class='no'>tmpdir</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"testing"</span>)
-  <span class='no'>tmpCache</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>(), <span class='st'>"testingCache"</span>)
+  <span class='no'>endTime</span> <span class='kw'>&lt;-</span> <span class='fl'>2</span>
+
   <span class='co'># Example of changing parameter values</span>
-  <span class='no'>mySim1</span> <span class='kw'>&lt;-</span> <span class='fu'>simInit</span>(
-    <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>start</span> <span class='kw'>=</span> <span class='fl'>0.0</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='no'>endTime</span>, <span class='kw'>timeunit</span> <span class='kw'>=</span> <span class='st'>"year"</span>),
-    <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-      <span class='kw'>.globals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>stackName</span> <span class='kw'>=</span> <span class='st'>"landscape"</span>, <span class='kw'>burnStats</span> <span class='kw'>=</span> <span class='st'>"nPixelsBurned"</span>),
-      <span class='co'># Turn off interactive plotting</span>
-      <span class='kw'>fireSpread</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>spreadprob</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>), <span class='kw'>nFires</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>)),
-      <span class='kw'>caribouMovement</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>),
-      <span class='kw'>randomLandscapes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.useCache</span> <span class='kw'>=</span> <span class='st'>"init"</span>)
-    ),
-    <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"randomLandscapes"</span>, <span class='st'>"fireSpread"</span>, <span class='st'>"caribouMovement"</span>),
-    <span class='kw'>paths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>modulePath</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sampleModules"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SpaDES.core"</span>),
-                 <span class='kw'>outputPath</span> <span class='kw'>=</span> <span class='no'>tmpdir</span>,
-                 <span class='kw'>cachePath</span> <span class='kw'>=</span> <span class='no'>tmpCache</span>),
-    <span class='co'># Save final state of landscape and caribou</span>
-    <span class='kw'>outputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>objectName</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='st'>"landscape"</span>, <span class='no'>endTime</span>), <span class='st'>"caribou"</span>, <span class='st'>"caribou"</span>),
-                         <span class='kw'>saveTimes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='no'>endTime</span>), <span class='fu'><a href='https://rdrr.io/pkg/raster/man/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='no'>endTime</span>/<span class='fl'>2</span>),<span class='no'>endTime</span>))),
-                         <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-  )
+  <span class='co'># Make 3 simLists with some differences between them</span>
+  <span class='no'>mySim</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>, <span class='fl'>20</span>, <span class='fl'>30</span>), <span class='kw'>function</span>(<span class='no'>nFires</span>) {
+    <span class='fu'><a href='http://spades-core.predictiveecology.org//reference/simInit.html'>simInit</a></span>(
+      <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>start</span> <span class='kw'>=</span> <span class='fl'>0.0</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='no'>endTime</span>, <span class='kw'>timeunit</span> <span class='kw'>=</span> <span class='st'>"year"</span>),
+      <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+        <span class='kw'>.globals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>stackName</span> <span class='kw'>=</span> <span class='st'>"landscape"</span>, <span class='kw'>burnStats</span> <span class='kw'>=</span> <span class='st'>"nPixelsBurned"</span>),
+        <span class='co'># Turn off interactive plotting</span>
+        <span class='kw'>fireSpread</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>spreadprob</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>), <span class='kw'>nFires</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>)),
+        <span class='kw'>caribouMovement</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>),
+        <span class='kw'>randomLandscapes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.useCache</span> <span class='kw'>=</span> <span class='st'>"init"</span>)
+      ),
+      <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"randomLandscapes"</span>, <span class='st'>"fireSpread"</span>, <span class='st'>"caribouMovement"</span>),
+      <span class='kw'>paths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>modulePath</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sampleModules"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SpaDES.core"</span>),
+                   <span class='kw'>outputPath</span> <span class='kw'>=</span> <span class='no'>tmpdir</span>),
+      <span class='co'># Save final state of landscape and caribou</span>
+      <span class='kw'>outputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+        <span class='kw'>objectName</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='st'>"landscape"</span>, <span class='no'>endTime</span>), <span class='st'>"caribou"</span>, <span class='st'>"caribou"</span>),
+        <span class='kw'>saveTimes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='no'>endTime</span>), <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='no'>endTime</span> / <span class='fl'>2</span>), <span class='no'>endTime</span>))),
+        <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+      )
+    )
+  })
 
-  <span class='no'>mySim2</span> <span class='kw'>&lt;-</span> <span class='fu'>simInit</span>(
-    <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>start</span> <span class='kw'>=</span> <span class='fl'>0.0</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='no'>endTime</span>, <span class='kw'>timeunit</span> <span class='kw'>=</span> <span class='st'>"year"</span>),
-    <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-      <span class='kw'>.globals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>stackName</span> <span class='kw'>=</span> <span class='st'>"landscape"</span>, <span class='kw'>burnStats</span> <span class='kw'>=</span> <span class='st'>"nPixelsBurned"</span>),
-      <span class='co'># Turn off interactive plotting</span>
-      <span class='kw'>fireSpread</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>spreadprob</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>), <span class='kw'>nFires</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>20</span>)),
-      <span class='kw'>caribouMovement</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>),
-      <span class='kw'>randomLandscapes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.useCache</span> <span class='kw'>=</span> <span class='st'>"init"</span>)
-    ),
-    <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"randomLandscapes"</span>, <span class='st'>"fireSpread"</span>, <span class='st'>"caribouMovement"</span>),
-    <span class='kw'>paths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>modulePath</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sampleModules"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SpaDES.core"</span>),
-                 <span class='kw'>outputPath</span> <span class='kw'>=</span> <span class='no'>tmpdir</span>,
-                 <span class='kw'>cachePath</span> <span class='kw'>=</span> <span class='no'>tmpCache</span>),
-    <span class='co'># Save final state of landscape and caribou</span>
-    <span class='kw'>outputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>objectName</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='st'>"landscape"</span>, <span class='no'>endTime</span>), <span class='st'>"caribou"</span>, <span class='st'>"caribou"</span>),
-                         <span class='kw'>saveTimes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='no'>endTime</span>), <span class='fu'><a href='https://rdrr.io/pkg/raster/man/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='no'>endTime</span>/<span class='fl'>2</span>),<span class='no'>endTime</span>))),
-                         <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-  )
+  <span class='no'>planTypes</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"sequential"</span>) <span class='co'># try others! ?future::plan</span>
+  <span class='no'>sims</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://spades-core.predictiveecology.org//reference/deprecated.html'>experiment2</a></span>(<span class='kw'>sim1</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>1</span>]], <span class='kw'>sim2</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>2</span>]], <span class='kw'>sim3</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>3</span>]],
+                      <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 
-  <span class='no'>mySim3</span> <span class='kw'>&lt;-</span> <span class='fu'>simInit</span>(
-    <span class='kw'>times</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>start</span> <span class='kw'>=</span> <span class='fl'>0.0</span>, <span class='kw'>end</span> <span class='kw'>=</span> <span class='no'>endTime</span>, <span class='kw'>timeunit</span> <span class='kw'>=</span> <span class='st'>"year"</span>),
-    <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-      <span class='kw'>.globals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>stackName</span> <span class='kw'>=</span> <span class='st'>"landscape"</span>, <span class='kw'>burnStats</span> <span class='kw'>=</span> <span class='st'>"nPixelsBurned"</span>),
-      <span class='co'># Turn off interactive plotting</span>
-      <span class='kw'>fireSpread</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>spreadprob</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>), <span class='kw'>nFires</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30</span>)),
-      <span class='kw'>caribouMovement</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>),
-      <span class='kw'>randomLandscapes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>.plotInitialTime</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>.useCache</span> <span class='kw'>=</span> <span class='st'>"init"</span>)
-    ),
-    <span class='kw'>modules</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"randomLandscapes"</span>, <span class='st'>"fireSpread"</span>, <span class='st'>"caribouMovement"</span>),
-    <span class='kw'>paths</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>modulePath</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"sampleModules"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"SpaDES.core"</span>),
-                 <span class='kw'>outputPath</span> <span class='kw'>=</span> <span class='no'>tmpdir</span>,
-                 <span class='kw'>cachePath</span> <span class='kw'>=</span> <span class='no'>tmpCache</span>),
-    <span class='co'># Save final state of landscape and caribou</span>
-    <span class='kw'>outputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>objectName</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='st'>"landscape"</span>, <span class='no'>endTime</span>), <span class='st'>"caribou"</span>, <span class='st'>"caribou"</span>),
-                         <span class='kw'>saveTimes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span>(<span class='no'>endTime</span>), <span class='fu'><a href='https://rdrr.io/pkg/raster/man/unique.html'>unique</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span>(<span class='no'>endTime</span>/<span class='fl'>2</span>),<span class='no'>endTime</span>))),
-                         <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-  )
+  <span class='co'># Try pulling out values from simulation experiments</span>
+  <span class='co'># 2 variables</span>
+  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>, <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nPixelsBurned"</span>, <span class='kw'>NCaribou</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>caribou</span>$<span class='no'>x1</span>))))
 
-  <span class='co'># Run experiment -- can use parallelism, if desired. Default is plan("sequential"), meaning</span>
-  <span class='co'>#   "normal" sequential, single threaded runs</span>
-  <span class='co'># library(future)</span>
-  <span class='co'># plan("multiprocess")</span>
-  <span class='no'>sims</span> <span class='kw'>&lt;-</span> <span class='fu'>experiment2</span>(<span class='kw'>sim1</span> <span class='kw'>=</span> <span class='no'>mySim1</span>, <span class='kw'>sim2</span> <span class='kw'>=</span> <span class='no'>mySim2</span>, <span class='kw'>sim3</span> <span class='kw'>=</span> <span class='no'>mySim3</span>,
-                      <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>useCache</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='co'># Now use objects that were saved to disk at different times during spades call</span>
+  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>,
+                       <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nPixelsBurned"</span>, <span class='kw'>NCaribou</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>caribou</span>$<span class='no'>x1</span>))),
+                       <span class='kw'>objectsFromOutputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>nPixelsBurned</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>NCaribou</span> <span class='kw'>=</span> <span class='st'>"caribou"</span>))
 
-  <span class='co'>### If spades already run -- can manually add to a simLists object</span>
-  <span class='co'># simsManual &lt;- new("simLists")</span>
-  <span class='co'># simsManual$sim1_rep1 &lt;- sims$sim1_rep1</span>
 
-  <span class='co'># Convert to data.table so can do stuff with</span>
-  <span class='co'># Just pull out a variable from the simLists -- simplest case</span>
-  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>, <span class='kw'>byRep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nPixelsBurned"</span>))
-
-  <span class='no'>measure.cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"nPixelsBurned"</span>, <span class='fu'><a href='https://rdrr.io/pkg/raster/man/names.html'>names</a></span>(<span class='no'>df1</span>), <span class='kw'>value</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-  <span class='no'>df1Short</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>data.table</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/data.table/man/melt.data.table.html'>melt</a></span>(<span class='no'>df1</span>, <span class='kw'>measure.vars</span> <span class='kw'>=</span> <span class='no'>measure.cols</span>, <span class='kw'>variable.name</span> <span class='kw'>=</span> <span class='st'>"year"</span>)
-  <span class='no'>df1Short</span>[, <span class='no'>year</span> <span class='kw'>:=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span>(<span class='st'>".*V([[:digit:]])"</span>, <span class='st'>"\\1"</span>, <span class='no'>df1Short</span>$<span class='no'>year</span>))]
-  <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-  <span class='no'>p</span><span class='kw'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>df1Short</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>year</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>value</span>, <span class='kw'>group</span><span class='kw'>=</span><span class='no'>simList</span>, <span class='kw'>color</span><span class='kw'>=</span><span class='no'>simList</span>)) +
-    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
-    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"line"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
-    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"errorbar"</span>, <span class='kw'>fun.data</span> <span class='kw'>=</span> <span class='no'>mean_se</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.2</span>)
-
-  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span>)
-
-  <span class='co'># A quoted function -- do not prefix objects with 'sim' -- next two lines are identical</span>
-  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>, <span class='kw'>byRep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>NCaribou</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>caribou</span>$<span class='no'>x1</span>))))
-  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>, <span class='kw'>byRep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>NCaribou</span> <span class='kw'>=</span> <span class='st'>"length(caribou$x1)"</span>))
-
-  <span class='no'>p</span><span class='kw'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>df1</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>simList</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>NCaribou</span>, <span class='kw'>group</span><span class='kw'>=</span><span class='no'>simList</span>, <span class='kw'>color</span><span class='kw'>=</span><span class='no'>simList</span>)) +
-    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
-    <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"errorbar"</span>, <span class='kw'>fun.data</span> <span class='kw'>=</span> <span class='no'>mean_se</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.2</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span>)
-
-  <span class='co'># A much more complicated object to calculate -- an estimate of perimeter to area ratio of fires</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>raster</span>)
-  <span class='no'>perimToAreaRatioFn</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>({
-    <span class='no'>landscape</span>$<span class='no'>Fires</span>[<span class='no'>landscape</span>$<span class='no'>Fires</span>[]<span class='kw'>==</span><span class='fl'>0</span>] <span class='kw'>&lt;-</span> <span class='fl'>NA</span>;
-    <span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/raster/man/boundaries.html'>boundaries</a></span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"inner"</span>);
+  <span class='co'># now calculate 4 different values, some from data saved at different times</span>
+  <span class='co'># Define new function -- this calculates perimeter to area ratio</span>
+  <span class='no'>fn</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>({
+    <span class='no'>landscape</span>$<span class='no'>Fires</span>[<span class='no'>landscape</span>$<span class='no'>Fires</span>[] <span class='kw'>==</span> <span class='fl'>0</span>] <span class='kw'>&lt;-</span> <span class='fl'>NA</span>;
+    <span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'>boundaries</span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"inner"</span>);
     <span class='no'>a</span>[<span class='no'>landscape</span>$<span class='no'>Fires</span>[] <span class='kw'>&gt;</span> <span class='fl'>0</span> <span class='kw'>&amp;</span> <span class='no'>a</span>[] <span class='kw'>==</span> <span class='fl'>1</span>] <span class='kw'>&lt;-</span> <span class='no'>landscape</span>$<span class='no'>Fires</span>[<span class='no'>landscape</span>$<span class='no'>Fires</span>[] <span class='kw'>&gt;</span> <span class='fl'>0</span> <span class='kw'>&amp;</span> <span class='no'>a</span>[] <span class='kw'>==</span> <span class='fl'>1</span>];
     <span class='no'>peri</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>a</span>[]);
     <span class='no'>area</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>[]);
-    <span class='no'>keep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/raster/man/match.html'>match</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/raster/man/names.html'>names</a></span>(<span class='no'>area</span>),<span class='fu'><a href='https://rdrr.io/pkg/raster/man/names.html'>names</a></span>(<span class='no'>peri</span>));
+    <span class='no'>keep</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/match.html'>match</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>area</span>),<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>peri</span>));
     <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>peri</span>[<span class='no'>keep</span>]/<span class='no'>area</span>)
   })
 
-  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>, <span class='kw'>byRep</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                       <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>perimToArea</span> <span class='kw'>=</span> <span class='no'>perimToAreaRatioFn</span>,
-                                <span class='kw'>meanFireSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>[])[-<span class='fl'>1</span>]))),
-                       <span class='kw'>objectsFromOutputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"landscape"</span>)) <span class='co'># need to get landscape obj from disk</span>
+  <span class='no'>df1</span> <span class='kw'>&lt;-</span> <span class='fu'>as.data.table</span>(<span class='no'>sims</span>,
+                       <span class='kw'>vals</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nPixelsBurned"</span>,
+                                <span class='kw'>perimToArea</span> <span class='kw'>=</span> <span class='no'>fn</span>,
+                                <span class='kw'>meanFireSize</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>[])[-<span class='fl'>1</span>])),
+                                <span class='kw'>caribouPerHaFire</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>quote</a></span>({
+                                  <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>NROW</a></span>(<span class='no'>caribou</span>) /
+                                    <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span>(<span class='no'>landscape</span>$<span class='no'>Fires</span>[])[-<span class='fl'>1</span>])
+                                })),
+                       <span class='kw'>objectsFromOutputs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fl'>NA</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"landscape"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"landscape"</span>),
+                                                 <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"landscape"</span>, <span class='st'>"caribou"</span>)),
+                       <span class='kw'>objectsFromSim</span> <span class='kw'>=</span> <span class='st'>"nPixelsBurned"</span>)
+
   <span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
     <span class='co'># with an unevaluated string</span>
-    <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>df1</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span><span class='kw'>=</span><span class='no'>saveTime</span>, <span class='kw'>y</span><span class='kw'>=</span><span class='no'>perimToArea</span>, <span class='kw'>group</span><span class='kw'>=</span><span class='no'>simList</span>, <span class='kw'>color</span><span class='kw'>=</span><span class='no'>simList</span>)) +
-      <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
-      <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"line"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
-      <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"errorbar"</span>, <span class='kw'>fun.data</span> <span class='kw'>=</span> <span class='no'>mean_se</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.2</span>)
-    <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span>) <span class='co'># may have NAs, giving warning, if perimeter calculation couldn't be completed</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+    <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span>(<span class='no'>df1</span>$<span class='no'>vals</span>), <span class='kw'>function</span>(<span class='no'>var</span>) {
+      <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>df1</span>[<span class='no'>vals</span> <span class='kw'>==</span> <span class='no'>var</span>,],
+             <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>saveTime</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>value</span>, <span class='kw'>group</span> <span class='kw'>=</span> <span class='no'>simList</span>, <span class='kw'>color</span> <span class='kw'>=</span> <span class='no'>simList</span>)) +
+        <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"point"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
+        <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"line"</span>, <span class='kw'>fun.y</span> <span class='kw'>=</span> <span class='no'>mean</span>) +
+        <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/stat_summary.html'>stat_summary</a></span>(<span class='kw'>geom</span> <span class='kw'>=</span> <span class='st'>"errorbar"</span>, <span class='kw'>fun.data</span> <span class='kw'>=</span> <span class='no'>mean_se</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>0.2</span>) +
+        <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ylab</a></span>(<span class='no'>var</span>)
+    })
+
+    <span class='co'># Arrange all 4 -- could use gridExtra::grid.arrange -- easier</span>
+    <span class='fu'>pushViewport</span>(<span class='fu'>viewport</span>(<span class='kw'>layout</span> <span class='kw'>=</span> <span class='fu'>grid.layout</span>(<span class='fl'>2</span>, <span class='fl'>2</span>)))
+    <span class='no'>vplayout</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>x</span>, <span class='no'>y</span>) <span class='fu'>viewport</span>(<span class='kw'>layout.pos.row</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>layout.pos.col</span> <span class='kw'>=</span> <span class='no'>y</span>)
+    <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span><span class='kw'>[[</span><span class='fl'>1</span>]], <span class='kw'>vp</span> <span class='kw'>=</span> <span class='fu'>vplayout</span>(<span class='fl'>1</span>, <span class='fl'>1</span>))
+    <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span><span class='kw'>[[</span><span class='fl'>2</span>]], <span class='kw'>vp</span> <span class='kw'>=</span> <span class='fu'>vplayout</span>(<span class='fl'>1</span>, <span class='fl'>2</span>))
+    <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span><span class='kw'>[[</span><span class='fl'>3</span>]], <span class='kw'>vp</span> <span class='kw'>=</span> <span class='fu'>vplayout</span>(<span class='fl'>2</span>, <span class='fl'>1</span>))
+    <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>p</span><span class='kw'>[[</span><span class='fl'>4</span>]], <span class='kw'>vp</span> <span class='kw'>=</span> <span class='fu'>vplayout</span>(<span class='fl'>2</span>, <span class='fl'>2</span>))
   }
-
-
-} <span class='co'># end /dontrun</span></div></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

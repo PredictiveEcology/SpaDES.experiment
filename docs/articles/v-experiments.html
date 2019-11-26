@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpaDES.experiment</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@
       <h1>05 Simulation Experiments</h1>
                         <h4 class="author">Eliot J. B. McIntire</h4>
             
-            <h4 class="date">October 28 2019</h4>
+            <h4 class="date">November 26 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/PredictiveEcology/SpaDES.experiment/blob/master/vignettes/v-experiments.Rmd"><code>vignettes/v-experiments.Rmd</code></a></small>
       <div class="hidden name"><code>v-experiments.Rmd</code></div>
@@ -104,11 +104,8 @@
 <h2 class="hasAnchor">
 <a href="#running-a-groups-of-simulations-the-experiment-function" class="anchor"></a>Running a groups of simulations: the <code>experiment</code> function</h2>
 <p>Once a simulation is properly initialized and runs correctly with the <code>spades</code> function, it is likely time to do things like run replicates. There is a function, <code>experiment</code> to do this, as well as building parameter and module “simulation experiments”. For example, you can pass alternative values to parameters in modules and the <code>experiment</code> will build a fully factorial experiment, with replication and run them. This function (as with <code>POM</code> and <code>splitRaster</code>) is parallel-aware and can either proceed with a cluster object (<code>cl</code> argument) or a cluster running in the background using the <code><a href="https://rdrr.io/pkg/raster/man/cluster.html">raster::beginCluster</a></code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(SpaDES.experiment)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(SpaDES.experiment)</code></pre></div>
 <pre><code>## Loading required package: reproducible</code></pre>
-<pre><code>## Registered S3 method overwritten by 'R.oo':
-##   method        from       
-##   throw.default R.methodsS3</code></pre>
 <pre><code>## Loading required package: SpaDES.core</code></pre>
 <pre><code>## Loading required package: quickPlot</code></pre>
 <pre><code>## 
@@ -123,30 +120,31 @@
 ## Attaching package: 'SpaDES.experiment'</code></pre>
 <pre><code>## The following objects are masked from 'package:SpaDES.core':
 ## 
-##     experiment, experiment2, POM</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">tmpdir &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(), <span class="st">"experiment"</span>)</a>
-<a class="sourceLine" id="cb11-2" title="2"></a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="co"># Copy Example 5 here:</span></a>
-<a class="sourceLine" id="cb11-4" title="4">mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(</a>
-<a class="sourceLine" id="cb11-5" title="5">  <span class="dt">times =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">start =</span> <span class="fl">0.0</span>, <span class="dt">end =</span> <span class="fl">2.0</span>, <span class="dt">timeunit =</span> <span class="st">"year"</span>),</a>
-<a class="sourceLine" id="cb11-6" title="6">  <span class="dt">params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">.globals =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">stackName =</span> <span class="st">"landscape"</span>, <span class="dt">burnStats =</span> <span class="st">"nPixelsBurned"</span>)),</a>
-<a class="sourceLine" id="cb11-7" title="7">  <span class="dt">modules =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"randomLandscapes"</span>, <span class="st">"fireSpread"</span>, <span class="st">"caribouMovement"</span>),</a>
-<a class="sourceLine" id="cb11-8" title="8">  <span class="dt">paths =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">modulePath =</span> <span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"sampleModules"</span>, <span class="dt">package =</span> <span class="st">"SpaDES.core"</span>),</a>
-<a class="sourceLine" id="cb11-9" title="9">               <span class="dt">outputPath =</span> tmpdir),</a>
-<a class="sourceLine" id="cb11-10" title="10">  <span class="co"># Save final state of landscape and caribou</span></a>
-<a class="sourceLine" id="cb11-11" title="11">  <span class="dt">outputs =</span> <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">objectName =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"landscape"</span>, <span class="st">"caribou"</span>), <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb11-12" title="12">)</a></code></pre></div>
+##     experiment, experiment2, POM, simInitAndExperiment</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tmpdir &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>(), <span class="st">"experiment"</span>)
+
+<span class="co"># Copy Example 5 here:</span>
+mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
+  <span class="dt">times =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">start =</span> <span class="fl">0.0</span>, <span class="dt">end =</span> <span class="fl">2.0</span>, <span class="dt">timeunit =</span> <span class="st">"year"</span>),
+  <span class="dt">params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">.globals =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">stackName =</span> <span class="st">"landscape"</span>, <span class="dt">burnStats =</span> <span class="st">"nPixelsBurned"</span>)),
+  <span class="dt">modules =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"randomLandscapes"</span>, <span class="st">"fireSpread"</span>, <span class="st">"caribouMovement"</span>),
+  <span class="dt">paths =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">modulePath =</span> <span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"sampleModules"</span>, <span class="dt">package =</span> <span class="st">"SpaDES.core"</span>),
+               <span class="dt">outputPath =</span> tmpdir),
+  <span class="co"># Save final state of landscape and caribou</span>
+  <span class="dt">outputs =</span> <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">objectName =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"landscape"</span>, <span class="st">"caribou"</span>), <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+)</code></pre></div>
 <pre><code>## Setting:
 ##   options(
-##     spades.outputPath = 'C:/Users/emcintir.L-VIC-A023744/AppData/Local/Temp/RtmpAt9Ce6/experiment'
-##     spades.modulePath = 'C:/Eliot/R/win-library/3.6/SpaDES.core/sampleModules'
+##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/experiment'
+##     spades.modulePath = 'C:/Eliot/R/win-library/4.0/SpaDES.core/sampleModules'
 ##   )</code></pre>
 <pre><code>## Paths set to:
 ##   options(
-##     reproducible.cachePath = 'C:/Users/emcintir.L-VIC-A023744/AppData/Local/Temp/RtmpAt9Ce6/reproducible/cache'
-##     spades.inputPath = 'C:/Users/emcintir.L-VIC-A023744/AppData/Local/Temp/RtmpeGgKdG/SpaDES/inputs'
-##     spades.outputPath = 'C:/Users/emcintir.L-VIC-A023744/AppData/Local/Temp/RtmpAt9Ce6/experiment'
-##     spades.modulePath = 'C:/Eliot/R/win-library/3.6/SpaDES.core/sampleModules'
+##     rasterTmpDir = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/raster'
+##     reproducible.cachePath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/reproducible/cache'
+##     spades.inputPath = 'C:/Users/emcintir/AppData/Local/Temp/Rtmp0SpbVo/SpaDES/inputs'
+##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/experiment'
+##     spades.modulePath = 'C:/Eliot/R/win-library/4.0/SpaDES.core/sampleModules'
 ##   )</code></pre>
 <pre><code>## Loading required package: raster</code></pre>
 <pre><code>## Loading required package: sp</code></pre>
@@ -170,66 +168,66 @@
 <pre><code>## fireSpread: inputObjects: stackName, DEM, Fires are used from sim inside doEvent.fireSpread, but are not declared in metadata inputObjects</code></pre>
 <pre><code>## caribouMovement: module code: landscape is declared in metadata inputObjects, but no default(s) is provided in .inputObjects</code></pre>
 <pre><code>## caribouMovement: inputObjects: habitatQuality is used from sim inside Move, but is not declared in metadata inputObjects</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1">sims &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>) <span class="co"># no plotting</span></a></code></pre></div>
-<pre><code>## [1] "2019-10-28 19:37:48 | total elpsd: 0.0035 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:37:48 | total elpsd: 0.0077 secs | 0 save init 0"
-## [1] "2019-10-28 19:37:48 | total elpsd: 0.013 secs | 0 progress init 0"
-## [1] "2019-10-28 19:37:48 | total elpsd: 0.016 secs | 0 load init 0"
-## [1] "2019-10-28 19:37:48 | total elpsd: 0.017 secs | 0 randomLandscapes init 1"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sims &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>) <span class="co"># no plotting</span></code></pre></div>
+<pre><code>## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:40 | total elpsd: 0.016 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:40 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"</code></pre>
 <pre><code>## Loading required namespace: RandomFields</code></pre>
-<pre><code>## [1] "2019-10-28 19:37:50 | total elpsd: 2 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.1 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.1 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.2 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:37:50 | total elpsd: 2.3 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:37:51 | total elpsd: 2.4 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:37:51 | total elpsd: 2.4 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.8 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:41 | total elpsd: 1.8 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:42 | total elpsd: 1.8 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-10-28 19:37:51 | total elpsd: 0.0051 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:37:51 | total elpsd: 0.0051 secs | 0 save init 0"
-## [1] "2019-10-28 19:37:51 | total elpsd: 0.0094 secs | 0 progress init 0"
-## [1] "2019-10-28 19:37:51 | total elpsd: 0.01 secs | 0 load init 0"
-## [1] "2019-10-28 19:37:51 | total elpsd: 0.01 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.3 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.3 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.3 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.4 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:37:52 | total elpsd: 1.5 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:43 | total elpsd: 0.94 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:43 | total elpsd: 0.96 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:43 | total elpsd: 0.97 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 0.99 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(sims, <span class="st">"experiment"</span>)<span class="op">$</span>expDesign <span class="co"># shows 2 replicates of same experiment</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(sims, <span class="st">"experiment"</span>)<span class="op">$</span>expDesign <span class="co"># shows 2 replicates of same experiment</span></code></pre></div>
 <pre><code>##   modules expLevel replicate
 ## 1       1        1         1
 ## 2       1        1         2</code></pre>
@@ -246,80 +244,78 @@
 <div id="using-cache-argument" class="section level3">
 <h3 class="hasAnchor">
 <a href="#using-cache-argument" class="anchor"></a>Using cache argument</h3>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({</a>
-<a class="sourceLine" id="cb38-2" title="2">  sims1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)</a>
-<a class="sourceLine" id="cb38-3" title="3">})</a></code></pre></div>
-<pre><code>## [1] "2019-10-28 19:37:53 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:37:53 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-10-28 19:37:53 | total elpsd: 0.004 secs | 0 progress init 0"
-## [1] "2019-10-28 19:37:53 | total elpsd: 0.004 secs | 0 load init 0"
-## [1] "2019-10-28 19:37:53 | total elpsd: 0.004 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.2 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.3 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.4 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.4 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.4 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.4 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:37:55 | total elpsd: 1.5 secs | 2 save spades 10"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
+  sims1 &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
+})</code></pre></div>
+<pre><code>## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.83 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.83 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.84 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.86 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.86 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.87 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.87 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.89 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.89 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.9 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:44 | total elpsd: 0.9 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.92 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.92 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.94 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.94 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.95 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.97 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.97 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.98 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0.98 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-10-28 19:37:58 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:37:58 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-10-28 19:37:58 | total elpsd: 0.004 secs | 0 progress init 0"
-## [1] "2019-10-28 19:37:58 | total elpsd: 0.004 secs | 0 load init 0"
-## [1] "2019-10-28 19:37:58 | total elpsd: 0.0081 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.3 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.4 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.5 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.5 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:38:00 | total elpsd: 1.5 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.9 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.9 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.92 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.94 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.97 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.97 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.98 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 0.98 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##    7.32    1.03    9.10</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># internal -- second time faster</span></a>
-<a class="sourceLine" id="cb45-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({</a>
-<a class="sourceLine" id="cb45-3" title="3">  sims2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)</a>
-<a class="sourceLine" id="cb45-4" title="4">})</a></code></pre></div>
-<pre><code>##   ...(Object to retrieve is large: 1.6 Mb)</code></pre>
+##    2.25    0.53    3.19</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># internal -- second time faster</span>
+<span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
+  sims2 &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
+})</code></pre></div>
 <pre><code>##   loading cached result from previous spades call, adding to memoised copy</code></pre>
-<pre><code>##   ...(Object to retrieve is large: 1.6 Mb)</code></pre>
 <pre><code>##   loading cached result from previous spades call, adding to memoised copy</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##    6.00    0.72    7.20</code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims1, sims2)</a></code></pre></div>
+##    0.06    0.10    0.19</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims1, sims2)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="wrapping-experiment-with-cache" class="section level3">
@@ -327,115 +323,115 @@
 <a href="#wrapping-experiment-with-cache" class="anchor"></a>Wrapping <code>experiment</code> with <code>Cache</code>
 </h3>
 <p>Here, the <code>simList</code> (and other arguments to experiment) is hashed once, and if it is found to be the same as previous, then the returned list of <code>simList</code> objects is recovered. This means that even a very large experiment, with many replicates and combinations of parameters and modules can be recovered very quickly. Here we show that you can output objects to disk, so the list of <code>simList</code> objects doesn’t get too big. Then, when we recover it in the Cached version, all the files are still there, the list of <code>simList</code> objects is small, so very fast to recover.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="co"># External</span></a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="kw">outputs</span>(mySim) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">objectName =</span> <span class="st">"landscape"</span>)</a>
-<a class="sourceLine" id="cb54-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({</a>
-<a class="sourceLine" id="cb54-4" title="4">  sims3 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb54-5" title="5">                 <span class="dt">clearSimEnv =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb54-6" title="6">})</a></code></pre></div>
-<pre><code>## [1] "2019-10-28 19:38:12 | total elpsd: 0.002 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:38:12 | total elpsd: 0.003 secs | 0 save init 0"
-## [1] "2019-10-28 19:38:12 | total elpsd: 0.007 secs | 0 progress init 0"
-## [1] "2019-10-28 19:38:12 | total elpsd: 0.0092 secs | 0 load init 0"
-## [1] "2019-10-28 19:38:12 | total elpsd: 0.011 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.2 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.3 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.3 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.3 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.3 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.3 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.4 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.5 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.5 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.5 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 2.5 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 3 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 3 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:38:15 | total elpsd: 3 secs | 2 save spades 10"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># External</span>
+<span class="kw">outputs</span>(mySim) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">objectName =</span> <span class="st">"landscape"</span>)
+<span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
+  sims3 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,
+                 <span class="dt">clearSimEnv =</span> <span class="ot">TRUE</span>)
+})</code></pre></div>
+<pre><code>## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.79 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.79 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.81 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.83 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.83 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.84 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.84 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.86 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.87 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.91 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.91 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.92 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.92 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.94 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.95 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.97 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.97 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-10-28 19:38:16 | total elpsd: 0.004 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:38:16 | total elpsd: 0.008 secs | 0 save init 0"
-## [1] "2019-10-28 19:38:16 | total elpsd: 0.016 secs | 0 progress init 0"
-## [1] "2019-10-28 19:38:16 | total elpsd: 0.024 secs | 0 load init 0"
-## [1] "2019-10-28 19:38:16 | total elpsd: 0.028 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.2 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.2 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.2 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.3 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.4 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.5 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.5 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.5 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:38:18 | total elpsd: 2.5 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-26 14:23:48 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.83 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.84 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.84 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.86 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.87 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.87 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.9 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.93 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.93 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.94 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.94 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.96 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.96 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.97 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.99 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.99 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:49 | total elpsd: 1 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-10-28 19:38:18 | total elpsd: 0.001 secs | 0 checkpoint init 0"
-## [1] "2019-10-28 19:38:18 | total elpsd: 0.005 secs | 0 save init 0"
-## [1] "2019-10-28 19:38:18 | total elpsd: 0.009 secs | 0 progress init 0"
-## [1] "2019-10-28 19:38:18 | total elpsd: 0.014 secs | 0 load init 0"
-## [1] "2019-10-28 19:38:18 | total elpsd: 0.017 secs | 0 randomLandscapes init 1"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.3 secs | 0 fireSpread init 1"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.4 secs | 0 caribouMovement init 1"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.4 secs | 1 fireSpread burn 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.4 secs | 1 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.5 secs | 1 fireSpread stats 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.5 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.5 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.5 secs | 1.25 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.5 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.6 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.6 secs | 1.5 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.6 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.6 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.6 secs | 1.75 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.7 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.7 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.7 secs | 2 fireSpread burn 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.8 secs | 2 caribouMovement move 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.8 secs | 2 fireSpread stats 5"
-## [1] "2019-10-28 19:38:21 | total elpsd: 2.8 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-26 14:23:49 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 progress init 0"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 load init 0"
+## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.93 secs | 0 fireSpread init 1"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.93 secs | 0 caribouMovement init 1"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.95 secs | 1 fireSpread burn 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.96 secs | 1 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1 fireSpread stats 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1.08333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1.16666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.99 secs | 1.25 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 0.99 secs | 1.33333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.41666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.5 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.75 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 1.83333333333333 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 1.91666666666667 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 fireSpread burn 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
+## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##   10.27    1.10   11.53</code></pre>
+##    2.87    0.34    3.50</code></pre>
 <p>The second time is way faster. We see the output files in the same location.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({</a>
-<a class="sourceLine" id="cb63-2" title="2">  sims4 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb63-3" title="3">                 <span class="dt">clearSimEnv =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb63-4" title="4">})</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
+  sims4 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,
+                 <span class="dt">clearSimEnv =</span> <span class="ot">TRUE</span>)
+})</code></pre></div>
 <pre><code>##   loading cached result from previous experiment call, adding to memoised copy</code></pre>
 <pre><code>##    user  system elapsed 
-##    5.15    0.72    6.18</code></pre>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="co"># test they are all equal</span></a>
-<a class="sourceLine" id="cb66-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims3[[x]], sims4[[x]])) </a></code></pre></div>
+##    0.03    0.02    0.04</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># test they are all equal</span>
+<span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims3[[x]], sims4[[x]])) </code></pre></div>
 <pre><code>## [[1]]
 ## [1] TRUE
 ## 
 ## [[2]]
 ## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span>(<span class="kw">outputPath</span>(mySim), <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span>(<span class="kw">outputPath</span>(mySim), <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] "experiment.RData"         "rep1/caribou_year2.rds"  
 ## [3] "rep1/landscape_year2.rds" "rep2/caribou_year2.rds"  
 ## [5] "rep2/landscape_year2.rds" "rep3/landscape_year2.rds"</code></pre>
@@ -446,9 +442,9 @@
 <h2 class="hasAnchor">
 <a href="#nested-caching" class="anchor"></a>Nested Caching</h2>
 <p>This is a continuation of the <code>Nested Caching</code> section in the <code>iv-caching</code> vignetted in the <code>SpaDES.core</code> package. - Imagine we have large model, with many modules, with replication and alternative module collections (e.g., alternative fire models) - To run this would have a nested structure with the following functions:</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">simInit <span class="op">-</span>-&gt;<span class="st"> </span>many .inputObjects calls</a>
-<a class="sourceLine" id="cb70-2" title="2"></a>
-<a class="sourceLine" id="cb70-3" title="3">experiment <span class="op">-</span>-&gt;<span class="st"> </span>many spades calls <span class="op">-</span>-&gt;<span class="st"> </span>many module calls <span class="op">-</span>-&gt;<span class="st"> </span>many event calls <span class="op">-</span>-&gt;<span class="st"> </span>many <span class="cf">function</span> calls</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simInit <span class="op">-</span>-&gt;<span class="st"> </span>many .inputObjects calls
+
+experiment <span class="op">-</span>-&gt;<span class="st"> </span>many spades calls <span class="op">-</span>-&gt;<span class="st"> </span>many module calls <span class="op">-</span>-&gt;<span class="st"> </span>many event calls <span class="op">-</span>-&gt;<span class="st"> </span>many <span class="cf">function</span> calls</code></pre></div>
 <p>Lets say we start to introduce caching to this structure. We start from the “inner” most functions that we could imaging Caching would be useful. Lets say there are some GIS operations, like <code><a href="https://rdrr.io/pkg/raster/man/projectRaster.html">raster::projectRaster</a></code>, which operates on an input shapefile. We can Cache the <code>projectRaster</code> call to make this much faster, since it will always be the same result for a given input raster.</p>
 <p>If we look back at our structure above, we see that we still have LOTS of places that are not Cached. That means that the experiment call will still spawn many spades calls, which will still spawn many module calls, and many event calls, just to get to the one <code>Cache(projectRaster)</code> call which is Cached. This function will likely be called hundreds of times (because <code>experiment</code> runs the <code>spades</code> call 100 times due to replication). This is good, but <strong><code>Cache</code> does take some time</strong>. So, even if <code>Cache(projectRaster)</code> takes only 0.02 seconds, calling it hundreds of times means maybe 4 seconds. If we are doing this for many functions, then this will be too slow.</p>
 <p>We can start putting <code>Cache</code> all up the sequence of calls. Unfortunately, the way we use Cache at each of these levels is a bit different, so we need a slightly different approach for each.</p>
@@ -463,7 +459,7 @@
 <h4 class="hasAnchor">
 <a href="#cache-the-spades-calls-inside-experiment" class="anchor"></a>Cache the <code>spades</code> calls inside <code>experiment</code>
 </h4>
-<p><code><a href="../reference/experiment.html">experiment(cache = TRUE)</a></code></p>
+<p><code><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment(cache = TRUE)</a></code></p>
 <p>This will cache each of the <code>spades</code> calls inside the <code>experiment</code> call. That means that there are as many cache events as there are replicates and experimental treatments, which, again could be a lot. Like caching the <code>experiment</code> call, stochasticity/randomness will be frozen. Note, one good use of this is when you are making iterative, incremental replication, e.g.,</p>
 <p><code>mySimOut &lt;- experiment(mySim, replicates = 5, cache = TRUE)</code></p>
 <p>You decide after waiting 10 minutes for it to finish, that you need more replication. Rather than start from zero replicates, you can just pick up where you left off:</p>
@@ -478,7 +474,7 @@
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
-      yes
+      true
     </div>
       </div>
 

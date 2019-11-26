@@ -10,8 +10,8 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
 URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2019-11-07
-Version: 0.0.1.9001
+Date: 2019-11-26
+Version: 0.0.1
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),

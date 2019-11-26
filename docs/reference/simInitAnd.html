@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SpaDES.experiment</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -139,9 +139,25 @@
     <p>Run <code>simInit</code> and <code>Experiment</code> in one step</p>
     </div>
 
-    <pre class="usage"><span class='fu'>simInitAndExperiment</span>(<span class='no'>times</span>, <span class='no'>params</span>, <span class='no'>modules</span>, <span class='no'>objects</span>, <span class='no'>paths</span>, <span class='no'>inputs</span>,
-  <span class='no'>outputs</span>, <span class='no'>loadOrder</span>, <span class='no'>notOlderThan</span>, <span class='no'>replicates</span>, <span class='no'>dirPrefix</span>, <span class='no'>substrLength</span>,
-  <span class='no'>saveExperiment</span>, <span class='no'>experimentFile</span>, <span class='no'>clearSimEnv</span>, <span class='no'>cl</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>simInitAndExperiment</span>(
+  <span class='no'>times</span>,
+  <span class='no'>params</span>,
+  <span class='no'>modules</span>,
+  <span class='no'>objects</span>,
+  <span class='no'>paths</span>,
+  <span class='no'>inputs</span>,
+  <span class='no'>outputs</span>,
+  <span class='no'>loadOrder</span>,
+  <span class='no'>notOlderThan</span>,
+  <span class='no'>replicates</span>,
+  <span class='no'>dirPrefix</span>,
+  <span class='no'>substrLength</span>,
+  <span class='no'>saveExperiment</span>,
+  <span class='no'>experimentFile</span>,
+  <span class='no'>clearSimEnv</span>,
+  <span class='no'>cl</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,7 +207,7 @@ in the first <code>modulePath</code>, then if it doesn't find it, in the second 
 columns with following column names: <code>objectName</code> (character, required),
 <code>file</code> (character), <code>fun</code> (character), <code>package</code> (character),
 <code>interval</code> (numeric), <code>loadTime</code> (numeric).
-See <code>inputs</code> and vignette("ii-modules") section about inputs.</p></td>
+See <code><a href='http://spades-core.predictiveecology.org//reference/simList-accessors-inout.html'>inputs</a></code> and vignette("ii-modules") section about inputs.</p></td>
     </tr>
     <tr>
       <th>outputs</th>
@@ -202,7 +218,7 @@ columns with following column names: <code>objectName</code> (character, require
 <code>eventPriority</code> is not set, it defaults to <code>.last()</code>. If <code>eventPriority</code>
 is set to a low value, e.g., 0, 1, 2 and <code>saveTime</code> is <code><a href='https://rdrr.io/r/stats/start.html'>start(sim)</a></code>,
 it should give "initial conditions".</p>
-<p>See <code>outputs</code> and
+<p>See <code><a href='http://spades-core.predictiveecology.org//reference/simList-accessors-inout.html'>outputs</a></code> and
 <code>vignette("ii-modules")</code> section about outputs.</p></td>
     </tr>
     <tr>
