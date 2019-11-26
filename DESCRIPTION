@@ -66,4 +66,4 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0

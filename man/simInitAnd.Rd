@@ -4,9 +4,25 @@
 \alias{simInitAndExperiment}
 \title{Run \code{simInit} and \code{Experiment} in one step}
 \usage{
-simInitAndExperiment(times, params, modules, objects, paths, inputs,
-  outputs, loadOrder, notOlderThan, replicates, dirPrefix, substrLength,
-  saveExperiment, experimentFile, clearSimEnv, cl, ...)
+simInitAndExperiment(
+  times,
+  params,
+  modules,
+  objects,
+  paths,
+  inputs,
+  outputs,
+  loadOrder,
+  notOlderThan,
+  replicates,
+  dirPrefix,
+  substrLength,
+  saveExperiment,
+  experimentFile,
+  clearSimEnv,
+  cl,
+  ...
+)
 }
 \arguments{
 \item{times}{A named list of numeric simulation start and end times
@@ -42,7 +58,7 @@ in the first \code{modulePath}, then if it doesn't find it, in the second etc.}
 columns with following column names: \code{objectName} (character, required),
 \code{file} (character), \code{fun} (character), \code{package} (character),
 \code{interval} (numeric), \code{loadTime} (numeric).
-See \code{\link{inputs}} and vignette("ii-modules") section about inputs.}
+See \code{\link[SpaDES.core]{inputs}} and vignette("ii-modules") section about inputs.}
 
 \item{outputs}{A \code{data.frame}. Can specify from 1 to 5
 columns with following column names: \code{objectName} (character, required),
@@ -52,7 +68,7 @@ columns with following column names: \code{objectName} (character, required),
 is set to a low value, e.g., 0, 1, 2 and \code{saveTime} is \code{start(sim)},
 it should give "initial conditions".
 
-See \code{\link{outputs}} and
+See \code{\link[SpaDES.core]{outputs}} and
 \code{vignette("ii-modules")} section about outputs.}
 
 \item{loadOrder}{An optional list of module names specifying the order in

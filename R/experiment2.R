@@ -60,7 +60,9 @@ if (getRversion() >= "3.1.0") {
 #' @author Eliot McIntire
 #' @export
 #' @rdname experiment2
+#'
 #' @example inst/examples/example_experiment2.R
+#'
 setGeneric(
   "experiment2",
   signature = "...",
@@ -68,12 +70,12 @@ setGeneric(
            createUniquePaths = c("outputPath"), useCache = FALSE,
            debug = getOption("spades.debug"), drive_auth_account) {
     standardGeneric("experiment2")
-  })
+})
 
-#' @rdname experiment2
 #' @importFrom future.apply future_lapply future_mapply
 #' @importFrom googledrive drive_auth
 #' @importFrom SpaDES.core packages
+#' @rdname experiment2
 setMethod(
   "experiment2",
   signature("simList"),
@@ -136,11 +138,11 @@ setMethod(
       FUN = experiment2Inner,
       SIMPLIFY = FALSE,
       future.packages = pkg
-    )#,
+    )
     names(out) <- namsExpanded
     list2env(out, envir = outSimLists@.xData)
     return(outSimLists)
-  })
+})
 
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
@@ -165,8 +167,8 @@ experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
   s
 }
 
-#' @importFrom reproducible Copy
 #' @importFrom future plan
+#' @importFrom reproducible Copy
 .spades <- function(sim, debug = getOption("spades.debug"),
                     clearSimEnv = FALSE, ...) {
   # don't make a copy if it is callr or multisession because future will make the copy
@@ -175,12 +177,10 @@ experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
     message("Copying simList prior to spades call")
     sim <- Copy(sim, filebackedDir = file.path(outputPath(sim), "rasterFiles"))
     b <- Sys.time()
-    message(format(b-a), " to Copy")
+    message(format(b - a), " to Copy")
   }
   s <- spades(sim, debug = debug, ...)
   if (isTRUE(clearSimEnv))
     rm(list = ls(s), envir = envir(s))
   return(s)
 }
-
-

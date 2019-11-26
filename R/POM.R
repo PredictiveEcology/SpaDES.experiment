@@ -1,15 +1,15 @@
 ################################################################################
 #' Use Pattern Oriented Modeling to fit unknown parameters
 #'
-#' This is very much in alpha condition. It has been tested on simple problems,
-#' as shown in the examples, with up to 2 parameters.
+#' This is very much in alpha condition.
+#' It has been tested on simple problems, as shown in the examples, with up to 2 parameters.
 #' It appears that \code{DEoptim} is the superior package for the stochastic problems.
 #' This should be used with caution as with all optimization routines. This function
 #' can nevertheless take \code{optim} as optimizer, using \code{stats::optim}.
 #' However, these latter approaches do not seem appropriate for stochastic problems,
 #' and have not been widely tested and are not supported within \code{POM}.
 #'
-#' There are two ways to use this function, via 1) \code{objFn} or 2) \code{objects}.
+#' There are two ways to use this function: via 1) \code{objFn} or 2) \code{objects}.
 #'
 #' \enumerate{
 #'   \item The user can pass the entire objective function to the \code{objFn}
@@ -93,8 +93,8 @@
 #'           of \code{beginCluster()}, to use parallelism for this function, allowing for
 #'           more control over cluster use.
 #'
-#' @param params Character vector of parameter names that can be changed by the optimizer. These
-#'               must be accessible with \code{params(sim)} internally.
+#' @param params Character vector of parameter names that can be changed by the optimizer.
+#'               These must be accessible with \code{params(sim)} internally.
 #'
 #' @param objects A optional named list (must be specified if objFn is not).
 #'                The names of each list element must correspond to an object in the
@@ -127,35 +127,32 @@
 #'
 #' @param ... All objects needed in objFn
 #'
-#' @param objFnCompare Character string. Either, "MAD" or "RMSE" indicating that inside the objective
-#'                     function, data and prediction will be compared by Mean Absolute Deviation or
-#'                     Root Mean Squared Error. Default is "MAD".
-#' @param NaNRetries Numeric. If greater than 1, then the function will retry
-#'                   the objective function for a total of that number of times
-#'                   if it results in an \code{NaN}. In general
-#'                   this should not be used as the objective function should be
+#' @param objFnCompare Character string. Either, \code{"MAD"} (default) or \code{"RMSE"} indicating
+#'                     that inside the objective function, data and prediction will be compared by
+#'                     Mean Absolute Deviation or Root Mean Squared Error.
+#'
+#' @param NaNRetries Numeric. If greater than 1, then the function will retry the objective
+#'                   function for a total of that number of times if it results in an \code{NaN}.
+#'                   In general this should not be used as the objective function should be
 #'                   made so that it doesn't produce \code{NaN}. But, sometimes
 #'                   it is difficult to diagnose stochastic results.
 #'
 #' @param logObjFnVals Logical or Character string indicating a filename to log the outputs.
-#'                       Ignored if
-#'                       \code{objFn} is supplied.
-#'                       If TRUE (and there is no \code{objFn} supplied), then the
-#'                       value of the individual patterns will be output the console
-#'                       if being run interactively or to a tab delimited
-#'                       text file named \code{ObjectiveFnValues.txt} (or that passed by
-#'                       the user here) at each evaluation of the
-#'                       POM created objective function. See details.
+#'                     Ignored if \code{objFn} is supplied.
+#'                     If TRUE (and there is no \code{objFn} supplied), then the value of the
+#'                     individual patterns will be output the console if being run interactively
+#'                     or to a tab delimited text file named \code{ObjectiveFnValues.txt}
+#'                     (or that passed by the user here) at each evaluation of the
+#'                     POM created objective function. See details.
 #'
 #' @param weights Numeric. If provided, this vector will be multiplied by the standardized
-#'                deviations (possibly MAD or RMSE) as described in \code{objects}. This has
-#'                the effect of weighing
-#'                each standardized deviation (pattern--data pair) to a user
-#'                specified amount in the objective function.
+#'                deviations (possibly MAD or RMSE) as described in \code{objects}.
+#'                This has the effect of weighing each standardized deviation (pattern--data pair)
+#'                to a user specified amount in the objective function.
 #'
 #' @param useLog Logical. Should the data patterns and output patterns be logged (\code{log})
-#'               before calculating the \code{objFnCompare}. i.e.,
-#'               \code{mean(abs(log(output) - log(data)))}.
+#'               before calculating the \code{objFnCompare}.
+#'               I.e., \code{mean(abs(log(output) - log(data)))}.
 #'               This should be length 1 or length \code{objects}.
 #'               It will be recycled if length >1, less than \code{objects}.
 #'
@@ -170,11 +167,11 @@
 #' @author Eliot McIntire
 #' @export
 #' @importFrom DEoptim DEoptim DEoptim.control
-#' @importFrom stats optim
-#' @importFrom SpaDES.core depends P
-#' @importFrom raster getCluster returnCluster getValues
 #' @importFrom parallel clusterEvalQ clusterExport
+#' @importFrom raster getCluster getValues returnCluster
 #' @importFrom reproducible .grepSysCalls
+#' @importFrom SpaDES.core depends P rndstr
+#' @importFrom stats optim
 #' @rdname POM
 #'
 #' @example inst/examples/example_POM.R
