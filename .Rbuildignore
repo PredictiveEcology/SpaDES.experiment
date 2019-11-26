@@ -18,3 +18,4 @@ vignettes/.*\.log$
 ^revdep$
 ^doc$
 ^Meta$
+^CRAN-RELEASE$
