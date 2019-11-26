@@ -1,7 +1,6 @@
 ## Updated release
 
-This is a maintenance release with several package improvments and bug fixes.
-See `NEWS.md` for a full list of changes.
+This is a new package.
 
 ## Test environments
 
@@ -30,7 +29,4 @@ There are no ERRORs nor WARNINGs.
 
 ## Downstream dependencies
 
-We checked 3 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
-
- * We saw 0 new problems
- * We failed to check 0 packages
+None as this is a new package
