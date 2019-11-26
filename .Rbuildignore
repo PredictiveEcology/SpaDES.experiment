@@ -16,3 +16,5 @@ cran-comments\.md
 vignettes/.*_cache$
 vignettes/.*\.log$
 ^revdep$
+^doc$
+^Meta$
