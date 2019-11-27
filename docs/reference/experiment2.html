@@ -226,7 +226,7 @@ contains <code>simList</code> objects.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function, because of its class formalism, allows for methods to be used. For example,
-<code>as.data.table.simLists</code> allows user to pull out specific objects (in
+<code><a href='as.data.table.simLists.html'>as.data.table.simLists</a></code> allows user to pull out specific objects (in
 the <code>simList</code> objects or on disk saved in <code><a href='http://spades-core.predictiveecology.org//reference/simList-accessors-paths.html'>outputPath(sim)</a></code>).</p>
 <p>The <code>outputPath</code> is changed so that every simulation puts outputs in a
 sub-directory
@@ -237,8 +237,8 @@ of the original <code>outputPath</code> of each <code>simList</code>.</p>
 have already been run. See example, via <code>new("simLists")</code></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>as.data.table.simLists</code>,
-  <code><a href='http://spades-core.predictiveecology.org//reference/simInit.html'>simInit</a></code>, <code><a href='http://spades-core.predictiveecology.org//reference/spades.html'>spades</a></code>, <code><a href='http://spades-core.predictiveecology.org//reference/deprecated.html'>experiment</a></code></p></div>
+    <div class='dont-index'><p><code><a href='as.data.table.simLists.html'>as.data.table.simLists</a></code>,
+  <code><a href='http://spades-core.predictiveecology.org//reference/simInit.html'>simInit</a></code>, <code><a href='http://spades-core.predictiveecology.org//reference/spades.html'>spades</a></code>, <code><a href='experiment.html'>experiment</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -273,7 +273,7 @@ have already been run. See example, via <code>new("simLists")</code></p>
   })
 
   <span class='no'>planTypes</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"sequential"</span>) <span class='co'># try others! ?future::plan</span>
-  <span class='no'>sims</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='http://spades-core.predictiveecology.org//reference/deprecated.html'>experiment2</a></span>(<span class='kw'>sim1</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>1</span>]], <span class='kw'>sim2</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>2</span>]], <span class='kw'>sim3</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>3</span>]],
+  <span class='no'>sims</span> <span class='kw'>&lt;-</span> <span class='fu'>experiment2</span>(<span class='kw'>sim1</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>1</span>]], <span class='kw'>sim2</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>2</span>]], <span class='kw'>sim3</span> <span class='kw'>=</span> <span class='no'>mySim</span><span class='kw'>[[</span><span class='fl'>3</span>]],
                       <span class='kw'>replicates</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 
   <span class='co'># Try pulling out values from simulation experiments</span>
