@@ -10,8 +10,8 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
 URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2019-11-07
-Version: 0.0.1.9001
+Date: 2019-11-26
+Version: 0.0.1
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
@@ -22,8 +22,8 @@ Authors@R: c(
     )
 Depends:
     R (>= 3.5),
-    reproducible (>= 0.2.10.9001),
-    SpaDES.core (>= 0.1.4)
+    reproducible (>= 0.2.11),
+    SpaDES.core (>= 0.2.7)
 Imports:
     crayon,
     data.table (>= 1.10.4),
@@ -48,9 +48,6 @@ Suggests:
     SpaDES.tools (>= 0.2.0),
     testthat (>= 1.0.2),
     spelling
-Remotes:
-    PredictiveEcology/reproducible@development,
-    PredictiveEcology/SpaDES.core@development
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
@@ -66,4 +63,4 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.1
