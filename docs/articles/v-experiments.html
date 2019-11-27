@@ -91,7 +91,7 @@
       <h1>05 Simulation Experiments</h1>
                         <h4 class="author">Eliot J. B. McIntire</h4>
             
-            <h4 class="date">November 26 2019</h4>
+            <h4 class="date">November 27 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/PredictiveEcology/SpaDES.experiment/blob/master/vignettes/v-experiments.Rmd"><code>vignettes/v-experiments.Rmd</code></a></small>
       <div class="hidden name"><code>v-experiments.Rmd</code></div>
@@ -103,7 +103,7 @@
 <div id="running-a-groups-of-simulations-the-experiment-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-a-groups-of-simulations-the-experiment-function" class="anchor"></a>Running a groups of simulations: the <code>experiment</code> function</h2>
-<p>Once a simulation is properly initialized and runs correctly with the <code>spades</code> function, it is likely time to do things like run replicates. There is a function, <code>experiment</code> to do this, as well as building parameter and module “simulation experiments”. For example, you can pass alternative values to parameters in modules and the <code>experiment</code> will build a fully factorial experiment, with replication and run them. This function (as with <code>POM</code> and <code>splitRaster</code>) is parallel-aware and can either proceed with a cluster object (<code>cl</code> argument) or a cluster running in the background using the <code><a href="https://rdrr.io/pkg/raster/man/cluster.html">raster::beginCluster</a></code>.</p>
+<p>Once a simulation is properly initialized and runs correctly with the <code>spades</code> function, it is likely time to do things like run replicates. There are two functions, <code>experiment</code> and <code>experiment2</code> to do this. These both give opportunities to create simulation experiments, such as through varying parameters and modules. <code>experiment</code> is for simpler “fully factorial” cases, and <code>experiment2</code> can take any <code>simList</code> class objects for the simulation experiment. With <code>experiment</code>, for example, you can pass alternative values to parameters in modules and the <code>experiment</code> will build a fully factorial experiment, with replication and run them. This function (as with <code>POM</code> and <code>splitRaster</code>) is parallel-aware and can either proceed with a cluster object (<code>cl</code> argument) or a cluster running in the background using the <code><a href="https://rdrr.io/pkg/raster/man/cluster.html">raster::beginCluster</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(SpaDES.experiment)</code></pre></div>
 <pre><code>## Loading required package: reproducible</code></pre>
 <pre><code>## Loading required package: SpaDES.core</code></pre>
@@ -135,15 +135,15 @@ mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
 )</code></pre></div>
 <pre><code>## Setting:
 ##   options(
-##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/experiment'
+##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/Rtmpc7R4oH/experiment'
 ##     spades.modulePath = 'C:/Eliot/R/win-library/4.0/SpaDES.core/sampleModules'
 ##   )</code></pre>
 <pre><code>## Paths set to:
 ##   options(
-##     rasterTmpDir = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/raster'
-##     reproducible.cachePath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/reproducible/cache'
-##     spades.inputPath = 'C:/Users/emcintir/AppData/Local/Temp/Rtmp0SpbVo/SpaDES/inputs'
-##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpqK92k2/experiment'
+##     rasterTmpDir = 'C:/Users/emcintir/AppData/Local/Temp/Rtmpc7R4oH/raster'
+##     reproducible.cachePath = 'C:/Users/emcintir/AppData/Local/Temp/Rtmpc7R4oH/reproducible/cache'
+##     spades.inputPath = 'C:/Users/emcintir/AppData/Local/Temp/RtmpiQEaVL/SpaDES/inputs'
+##     spades.outputPath = 'C:/Users/emcintir/AppData/Local/Temp/Rtmpc7R4oH/experiment'
 ##     spades.modulePath = 'C:/Eliot/R/win-library/4.0/SpaDES.core/sampleModules'
 ##   )</code></pre>
 <pre><code>## Loading required package: raster</code></pre>
@@ -168,61 +168,273 @@ mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
 <pre><code>## fireSpread: inputObjects: stackName, DEM, Fires are used from sim inside doEvent.fireSpread, but are not declared in metadata inputObjects</code></pre>
 <pre><code>## caribouMovement: module code: landscape is declared in metadata inputObjects, but no default(s) is provided in .inputObjects</code></pre>
 <pre><code>## caribouMovement: inputObjects: habitatQuality is used from sim inside Move, but is not declared in metadata inputObjects</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sims &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>) <span class="co"># no plotting</span></code></pre></div>
-<pre><code>## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:40 | total elpsd: 0 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:40 | total elpsd: 0.016 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:40 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sims &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>) <span class="co"># no plotting</span></code></pre></div>
+<pre><code>## [1] "2019-11-27 09:15:32 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:32 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:32 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:32 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:32 | total elpsd: 0 secs | 0 randomLandscapes init 1"</code></pre>
 <pre><code>## Loading required namespace: RandomFields</code></pre>
-<pre><code>## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.5 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.6 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.7 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.8 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:41 | total elpsd: 1.8 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:42 | total elpsd: 1.8 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:33 | total elpsd: 1.1 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.1 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.2 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.2 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:33 | total elpsd: 1.3 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.3 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.4 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.4 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:34 | total elpsd: 1.4 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:42 | total elpsd: 0 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:43 | total elpsd: 0.94 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:43 | total elpsd: 0.96 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:43 | total elpsd: 0.97 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 0.99 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:43 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:34 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.78 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.8 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.81 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.81 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.83 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:34 | total elpsd: 0.83 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.84 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.84 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.86 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.86 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.88 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.89 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.89 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.91 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.91 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.91 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.92 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.94 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.94 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.95 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
@@ -245,76 +457,288 @@ mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
 <h3 class="hasAnchor">
 <a href="#using-cache-argument" class="anchor"></a>Using cache argument</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
-  sims1 &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
+  sims1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
 })</code></pre></div>
-<pre><code>## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.83 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.83 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.84 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.86 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.86 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.87 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.87 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.89 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.89 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.9 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:44 | total elpsd: 0.9 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.92 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.92 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.94 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.94 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.95 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.97 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.97 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.98 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0.98 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:35 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:35 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.016 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.016 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:35 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.73 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.75 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.75 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.77 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.8 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.8 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.8 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.82 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.82 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.84 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.84 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.85 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.85 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.87 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.87 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.87 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.88 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.9 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.9 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.91 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:45 | total elpsd: 0 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.9 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.9 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.92 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.94 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.95 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.97 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.97 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.98 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 0.98 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:46 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:36 | total elpsd: 0.0013 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.0024 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.0034 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.0044 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:36 | total elpsd: 0.0044 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.74 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.74 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.76 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.76 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.77 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.77 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.79 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.79 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.81 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.81 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.82 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.82 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.85 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.85 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.85 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.86 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.86 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.88 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.89 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:37 | total elpsd: 0.89 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##    2.25    0.53    3.19</code></pre>
+##    2.19    0.36    2.78</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># internal -- second time faster</span>
 <span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
-  sims2 &lt;-<span class="st"> </span><span class="kw"><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
+  sims2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/experiment.html">experiment</a></span>(mySim, <span class="dt">replicates =</span> <span class="dv">2</span>, <span class="dt">cache =</span> <span class="ot">TRUE</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>)
 })</code></pre></div>
 <pre><code>##   loading cached result from previous spades call, adding to memoised copy</code></pre>
 <pre><code>##   loading cached result from previous spades call, adding to memoised copy</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.06    0.10    0.19</code></pre>
+##    0.11    0.05    0.15</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims1, sims2)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
@@ -329,93 +753,411 @@ mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
   sims3 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,
                  <span class="dt">clearSimEnv =</span> <span class="ot">TRUE</span>)
 })</code></pre></div>
-<pre><code>## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:47 | total elpsd: 0 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.79 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.79 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.81 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.83 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.83 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.84 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.84 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.86 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.87 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.89 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.91 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.91 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.92 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.92 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.94 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.95 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.97 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.97 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:38 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:38 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:38 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:38 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:38 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.73 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.73 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.73 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.75 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.75 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.76 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.76 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.76 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.78 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.78 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.8 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.8 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.81 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.81 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.83 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.83 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.84 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.86 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.86 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0.86 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-11-26 14:23:48 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:48 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.83 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.84 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.84 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.86 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.87 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.87 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.9 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.91 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.93 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.93 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.94 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.94 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.96 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.96 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.97 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.99 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.99 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:49 | total elpsd: 1 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:39 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:39 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.72 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.74 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.75 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.75 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.77 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.77 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.78 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.78 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.78 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.8 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.8 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.81 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.81 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.83 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.83 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.85 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.85 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.86 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.89 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0.89 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
-<pre><code>## [1] "2019-11-26 14:23:49 | total elpsd: 0 secs | 0 checkpoint init 0"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0 secs | 0 save init 0"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 progress init 0"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 load init 0"
-## [1] "2019-11-26 14:23:49 | total elpsd: 0.016 secs | 0 randomLandscapes init 1"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.93 secs | 0 fireSpread init 1"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.93 secs | 0 caribouMovement init 1"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.95 secs | 1 fireSpread burn 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.96 secs | 1 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1 fireSpread stats 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1.08333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.98 secs | 1.16666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.99 secs | 1.25 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 0.99 secs | 1.33333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.41666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.5 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.58333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.66666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1 secs | 1.75 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 1.83333333333333 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 1.91666666666667 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 fireSpread burn 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 caribouMovement move 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 fireSpread stats 5"
-## [1] "2019-11-26 14:23:50 | total elpsd: 1.1 secs | 2 save spades 10"</code></pre>
+<pre><code>## [1] "2019-11-27 09:15:40 | total elpsd: 0 secs | 0 checkpoint init 0"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0 secs | 0 save init 0"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0 secs | 0 progress init 0"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0 secs | 0 load init 0"
+## [1] "2019-11-27 09:15:40 | total elpsd: 0 secs | 0 randomLandscapes init 1"
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.74 secs | 0 fireSpread init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$startTime, "fireSpread", 
+##     "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.75 secs | 0 caribouMovement init 1"
+## Called from: scheduleEvent(sim, SpaDES.core::P(sim)$moveInitialTime, "caribouMovement", 
+##     "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.75 secs | 1 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$returnInterval, 
+##     "fireSpread", "burn")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.76 secs | 1 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.78 secs | 1 fireSpread stats 5"
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.79 secs | 1.08333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.79 secs | 1.16666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.79 secs | 1.25 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.79 secs | 1.33333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.81 secs | 1.41666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.81 secs | 1.5 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.83 secs | 1.58333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.83 secs | 1.66666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.84 secs | 1.75 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.84 secs | 1.83333333333333 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.86 secs | 1.91666666666667 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.86 secs | 2 fireSpread burn 5"
+## Called from: scheduleEvent(sim, time(sim), "fireSpread", "stats")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.87 secs | 2 caribouMovement move 5"
+## Called from: scheduleEvent(sim, time(sim) + SpaDES.core::P(sim)$moveInterval, 
+##     "caribouMovement", "move")
+## debug: ord &lt;- order(unlist(lapply(sim@events, function(x) x$eventTime)), 
+##     unlist(lapply(sim@events, function(x) x$eventPriority)))
+## debug: slot(sim, "events") &lt;- sim@events[ord]
+## debug: return(invisible(sim))
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.89 secs | 2 fireSpread stats 5"
+## [1] "2019-11-27 09:15:41 | total elpsd: 0.89 secs | 2 save spades 10"</code></pre>
 <pre><code>## simList saved in
 ##  SpaDES.core:::.pkgEnv$.sim 
 ## It will be deleted at next spades() call.</code></pre>
 <pre><code>## shutting down parallel nodes</code></pre>
 <pre><code>##    user  system elapsed 
-##    2.87    0.34    3.50</code></pre>
+##    2.58    0.35    3.03</code></pre>
 <p>The second time is way faster. We see the output files in the same location.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>({
   sims4 &lt;-<span class="st"> </span><span class="kw">Cache</span>(experiment, mySim, <span class="dt">replicates =</span> <span class="dv">3</span>, <span class="dt">.plotInitialTime =</span> <span class="ot">NA</span>,
@@ -423,7 +1165,7 @@ mySim &lt;-<span class="st"> </span><span class="kw">simInit</span>(
 })</code></pre></div>
 <pre><code>##   loading cached result from previous experiment call, adding to memoised copy</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.03    0.02    0.04</code></pre>
+##    0.03    0.01    0.05</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># test they are all equal</span>
 <span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>, <span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(sims3[[x]], sims4[[x]])) </code></pre></div>
 <pre><code>## [[1]]
@@ -459,7 +1201,7 @@ experiment <span class="op">-</span>-&gt;<span class="st"> </span>many spades ca
 <h4 class="hasAnchor">
 <a href="#cache-the-spades-calls-inside-experiment" class="anchor"></a>Cache the <code>spades</code> calls inside <code>experiment</code>
 </h4>
-<p><code><a href="http://spades-core.predictiveecology.org//reference/experiment.html">experiment(cache = TRUE)</a></code></p>
+<p><code><a href="../reference/experiment.html">experiment(cache = TRUE)</a></code></p>
 <p>This will cache each of the <code>spades</code> calls inside the <code>experiment</code> call. That means that there are as many cache events as there are replicates and experimental treatments, which, again could be a lot. Like caching the <code>experiment</code> call, stochasticity/randomness will be frozen. Note, one good use of this is when you are making iterative, incremental replication, e.g.,</p>
 <p><code>mySimOut &lt;- experiment(mySim, replicates = 5, cache = TRUE)</code></p>
 <p>You decide after waiting 10 minutes for it to finish, that you need more replication. Rather than start from zero replicates, you can just pick up where you left off:</p>

@@ -416,7 +416,7 @@ in the <code class="file">ObjectiveFnValues.txt</code> file.</p>
   <span class='co'># In words, this says, "find the best value of spreadprob such that</span>
   <span class='co'>#  the proportion of the area burned in the simulation</span>
   <span class='co'>#  is as close as possible to the proportion area burned in</span>
-  <span class='co'>#  the "data", using \code{DEoptim()}.</span>
+  <span class='co'>#  the "data", using DEoptim().</span>
 
   <span class='co'># Can use cluster if computer is multi-threaded.</span>
   <span class='co'># This example can use parallelType = 1 in DEoptim. For this, you must manually</span>
@@ -495,7 +495,6 @@ in the <code class="file">ObjectiveFnValues.txt</code> file.</p>
     <span class='co'># cat(minimizeFn)</span>
     <span class='co'># cat(" ")</span>
     <span class='co'># cat(pars)</span>
-    <span class='co'># cat("\n")</span>
 
     <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='no'>minimizeFn</span>)
   }

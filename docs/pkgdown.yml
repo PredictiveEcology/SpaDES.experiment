@@ -1,7 +1,8 @@
 pandoc: 1.19.2.1
 pkgdown: 1.4.1
 pkgdown_sha: ~
-articles: []
+articles:
+  v-experiments: v-experiments.html
 urls:
   reference: http://spades-experiment.predictiveecology.org//reference
   article: http://spades-experiment.predictiveecology.org//articles
