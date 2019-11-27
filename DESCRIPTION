@@ -1,6 +1,6 @@
 Package: SpaDES.experiment
 Type: Package
-Title: Tools to build simulation experiments within the `SpaDES` ecosystem
+Title: Simulation Experiments Within The SpaDES Ecosystem
 Description: Tools to do simulation experiments within the SpaDES ecosystem. 
   This includes replication, parameter sweeps, scenario analysis, 
   pattern oriented modeling, and simulation experiments. The package introduces
@@ -11,7 +11,7 @@ URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
 Date: 2019-11-26
-Version: 0.0.1
+Version: 0.0.2.9000
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
