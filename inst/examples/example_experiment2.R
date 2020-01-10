@@ -1,6 +1,7 @@
 
 \dontrun{
   library(SpaDES.core)
+  library(SpaDES.experiment)
   tmpdir <- file.path(tempdir(), "examples")
   # Make 3 simLists -- set up scenarios
   endTime <- 2
