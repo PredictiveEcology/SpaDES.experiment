@@ -47,8 +47,8 @@ seen as a non-cached call to \code{spades}. This will, however, may prevent \cod
 calls from running a second time during second call to the same
 \code{experiment2} function.}
 
-\item{debug}{Optional logical flag or character vector indicating what to print to
-console at each event. See details.
+\item{debug}{Optional tools for invoking debugging. Supplying a \code{list}
+will invoke the more powerful \code{logging} package. See details.
 Default is to use the value in \code{getOption("spades.debug")}.}
 
 \item{drive_auth_account}{Optional character string. If provided, it will be passed
