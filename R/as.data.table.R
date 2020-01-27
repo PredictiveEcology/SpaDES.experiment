@@ -37,7 +37,6 @@ utils::globalVariables(c("..onlyInteger"))
 #' This returns a \code{data.table} class object with
 #'
 #' @export
-#' @exportMethod as.data.table
 #' @importFrom data.table := as.data.table is.data.table set setDT setkeyv setnames
 #' @importFrom purrr transpose
 #' @importFrom SpaDES.core .fileExtensions
