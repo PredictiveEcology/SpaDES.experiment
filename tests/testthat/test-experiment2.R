@@ -75,12 +75,12 @@ test_that("experiment2 test 1", {
     cat(" -- testing future plan when", pl, "                ")
     warn <- capture_warnings(plan(pl, workers = 2)) # just about "workers" not defined in "sequential"
     # Test Caching
-    cap0 <- capture_output(mess <- capture_messages(spades(Copy(mySim1), debug = 2)))
+    mess <- capture_messages(spades(Copy(mySim1), debug = 2))
     expects <- if (is(plan(), "sequential")) 0 else 1 # sequential has no concurrent spades
-    expect_true(sum(grepl("cached", cap0))==expects)
-    cap1 <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2)))
+    expect_true(sum(grepl("cached", mess))==expects)
+    mess <- capture_messages(sims <- experiment2(mySim1, mySim2))
     expects <- if (is(plan(), "sequential")) 2 else 2 # sequential has no concurrent spades
-    expect_true(sum(grepl("cached", cap1))==expects) # b/c they are at the same time. If sequential, one would be memoised
+    expect_true(sum(grepl("cached", mess))==expects) # b/c they are at the same time. If sequential, one would be memoised
     # cap <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2,
     #                                                                    mySim3)))
     # expects <- 3 # uses a new session each call
