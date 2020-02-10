@@ -27,7 +27,7 @@ jobs:
     services:
       - xvfb
     before_script:
-      - Rscript -e 'install.packages(c("devtools"), type = "source")'
+      - Rscript -e 'install.packages(c("devtools", "qs"), type = "source")'
       - Rscript -e 'devtools::install_github("PredictiveEcology/reproducible@DBI", dependencies = FALSE)'
       - Rscript -e 'devtools::install_github("PredictiveEcology/SpaDES.core@DBI", dependencies = FALSE)'
     r_binary_packages:
@@ -57,7 +57,7 @@ jobs:
       - travis_wait 15 Rscript -e 'covr::coveralls(type = "all", quiet = FALSE)'
       - Rscript -e 'lintr::lint_package()'
     before_script:
-      - Rscript -e 'install.packages(c("devtools"), type = "source")'
+      - Rscript -e 'install.packages(c("devtools", "qs"), type = "source")'
       - Rscript -e 'devtools::install_github("PredictiveEcology/reproducible@DBI", dependencies = FALSE)'
       - Rscript -e 'devtools::install_github("PredictiveEcology/SpaDES.core@DBI", dependencies = FALSE)'
     r_binary_packages:
@@ -89,7 +89,7 @@ jobs:
     services:
       - xvfb
     before_script:
-      - Rscript -e 'install.packages(c("devtools"), type = "source")'
+      - Rscript -e 'install.packages(c("devtools", "qs"), type = "source")'
       - Rscript -e 'devtools::install_github("PredictiveEcology/reproducible@DBI", dependencies = FALSE)'
       - Rscript -e 'devtools::install_github("PredictiveEcology/SpaDES.core@DBI", dependencies = FALSE)'
     r_binary_packages:
@@ -118,7 +118,7 @@ jobs:
     before_install:
       - Rscript -e 'install.packages(c("digest", "igraph", "rgdal", "rgeos"), type = "source")'
     before_script:
-      - Rscript -e 'install.packages(c("devtools"), type = "source")'
+      - Rscript -e 'install.packages(c("devtools", "qs"), type = "source")'
       - Rscript -e 'devtools::install_github("PredictiveEcology/reproducible@DBI", dependencies = FALSE)'
       - Rscript -e 'devtools::install_github("PredictiveEcology/SpaDES.core@DBI", dependencies = FALSE)'
   - os: osx
@@ -138,7 +138,7 @@ jobs:
     r_build_args: "--no-build-vignettes"
     r_check_args: "--as-cran --ignore-vignettes --no-examples"
     before_script:
-      - Rscript -e 'install.packages(c("digest", "igraph", "rgdal", "rgeos"), type = "source")'
+      - Rscript -e 'install.packages(c("digest", "igraph", "rgdal", "rgeos", "qs"), type = "source")'
       - Rscript -e 'devtools::install_github("PredictiveEcology/reproducible@DBI", dependencies = FALSE)'
       - Rscript -e 'devtools::install_github("PredictiveEcology/SpaDES.core@DBI", dependencies = FALSE)'
 r_build_args: " "
