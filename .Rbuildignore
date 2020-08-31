@@ -17,3 +17,4 @@ vignettes/.*\.log$
 ^Meta$
 ^\.github$
 ^CRAN-RELEASE$
+^codecov\.yml$
