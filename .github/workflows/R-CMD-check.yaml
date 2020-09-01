@@ -3,7 +3,6 @@ on:
     branches:
       - master
       - development
-      - LandWeb
   pull_request:
     branches:
       - master
@@ -53,7 +52,6 @@ jobs:
 
       - name: Install additional dependencies
         run: |
-          remotes::install_github('traversc/stringfish')
           remotes::install_github('PredictiveEcology/Require@development')
           remotes::install_github('PredictiveEcology/reproducible@development')
         shell: Rscript {0}
@@ -77,10 +75,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if (R.version$major < 4) {
-            remotes::install_cran("versions")
-            versions::install.versions("XML", "3.99-0.3")
-          }
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
