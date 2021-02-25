@@ -123,7 +123,7 @@ setMethod(
     # rather than 1 copy per sim
     names(namsExpanded) <- namsExpanded
 
-    staggersInSecs <- cumsum(c(0, rnorm(length(pids)-1, mean = meanStaggerIntervalInSecs,
+    staggersInSecs <- cumsum(c(0, rnorm(length(nbrOfWorkers())-1, mean = meanStaggerIntervalInSecs,
                               sd = meanStaggerIntervalInSecs/10)))
 
     out <- future_mapply(
