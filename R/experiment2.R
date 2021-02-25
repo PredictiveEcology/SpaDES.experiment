@@ -33,6 +33,9 @@ if (getRversion() >= "3.1.0") {
 #' @param drive_auth_account Optional character string. If provided, it will be passed
 #'    to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to allow
 #'    a specific user account for googledrive
+#' @param meanStaggerIntervalInSecs If used, this will use
+#'   \code{Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,}
+#'   \code{sd = meanStaggerIntervalInSecs/10))))} and distribute these delays to the workers.
 #'
 #' @inheritParams SpaDES.core::spades
 #'
@@ -68,7 +71,8 @@ setGeneric(
   signature = "...",
   function(..., replicates = 1, clearSimEnv = FALSE,
            createUniquePaths = c("outputPath"), useCache = FALSE,
-           debug = getOption("spades.debug"), drive_auth_account) {
+           debug = getOption("spades.debug"), drive_auth_account,
+           meanStaggerIntervalInSecs) {
     standardGeneric("experiment2")
 })
 
@@ -82,7 +86,7 @@ setMethod(
   definition = function(..., replicates, clearSimEnv,
                         createUniquePaths = c("outputPath"),
                         useCache = FALSE, debug = getOption("spades.debug"),
-                        drive_auth_account = NULL) {
+                        drive_auth_account = NULL, meanStaggerIntervalInSecs = 1) {
     # determine packages to load in the workers
     if (any(createUniquePaths != "outputPath")) {
       message("createUniquePaths only accepts outputPath, currently",
@@ -104,9 +108,6 @@ setMethod(
     }
 
     if (!missing(replicates)) {
-      #if (length(replicates) == 1) replicates <- rep(replicates, length(ll))
-
-      #simNames <- unlist(Map(x = simNames, times = replicates, rep))
       simNames <- rep(simNames, times = replicates) # keep them alternating for mapply
       repNums <- unlist(lapply(replicates, seq_len))
       repNums <- rep(repNums, each = length(ll))
@@ -118,16 +119,17 @@ setMethod(
       namsExpanded <- simNames
     }
 
-      # do copy of sim inside workers, so there is only 1 copy per worker,
-      # rather than 1 copy per sim
-    #iters <- seq_along(namsExpanded)
+    # do copy of sim inside workers, so there is only 1 copy per worker,
+    # rather than 1 copy per sim
     names(namsExpanded) <- namsExpanded
-    #out <- mapply(
-      #list2env(
+
+    staggersInSecs <- cumsum(c(0, rnorm(length(pids)-1, mean = meanStaggerIntervalInSecs,
+                              sd = meanStaggerIntervalInSecs/10)))
+
     out <- future_mapply(
-      #X = iters,
       name = namsExpanded,
       simName = simNames,
+      staggerInSecs = staggersInSecs,
       sim = ll,  # recycled by replicates -- maybe this reduces copying ...?
       MoreArgs = list(clearSimEnv = clearSimEnv,
                       createUniquePaths = createUniquePaths,
@@ -137,7 +139,8 @@ setMethod(
                       drive_auth_account = drive_auth_account),
       FUN = experiment2Inner,
       SIMPLIFY = FALSE,
-      future.packages = pkg
+      future.packages = pkg,
+      future.seed = TRUE
     )
     names(out) <- namsExpanded
     list2env(out, envir = outSimLists@.xData)
@@ -146,22 +149,17 @@ setMethod(
 
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
-experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
+experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
                              simName, name, useCache = FALSE,
                              debug = getOption("spades.debug"), drive_auth_account,
                              ...) {
-  # a <- rbindlist(inputObjects(sim), fill = TRUE, use.names = TRUE)
-  # na <- ls(sim)[ls(sim) %in% a$objectName]
-  # names(na) <- na; lapply(na, function(nn) grep(paste0(nn, "$"), names(b), value = TRUE))
-
-  #simName <- simNames[X]
-  #name <- names[X]
+  message(paste0("Sleeping ", round(staggerInSecs, 1), " seconds"))
+  Sys.sleep(staggerInSecs)
   outputPath(sim) <- checkPath(file.path(outputPath(sim), name),
                                    create = TRUE)
   if (!is.null(drive_auth_account))
     drive_auth(drive_auth_account)
 
-  # drive_deauth()
   s <- Cache(.spades, sim, useCache = useCache, simName,
              debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
   s
@@ -181,6 +179,6 @@ experiment2Inner <- function(sim, clearSimEnv, createUniquePaths,
   }
   s <- spades(sim, debug = debug, ...)
   if (isTRUE(clearSimEnv))
-    rm(list = ls(s), envir = envir(s))
+    rm(list = ls(s, all.names = TRUE), envir = envir(s))
   return(s)
 }
