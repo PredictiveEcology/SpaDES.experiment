@@ -12,7 +12,8 @@ experiment2(
   createUniquePaths = c("outputPath"),
   useCache = FALSE,
   debug = getOption("spades.debug"),
-  drive_auth_account
+  drive_auth_account,
+  meanStaggerIntervalInSecs
 )
 
 \S4method{experiment2}{simList}(
@@ -22,7 +23,8 @@ experiment2(
   createUniquePaths = c("outputPath"),
   useCache = FALSE,
   debug = getOption("spades.debug"),
-  drive_auth_account = NULL
+  drive_auth_account = NULL,
+  meanStaggerIntervalInSecs = 1
 )
 }
 \arguments{
@@ -54,6 +56,10 @@ Default is to use the value in \code{getOption("spades.debug")}.}
 \item{drive_auth_account}{Optional character string. If provided, it will be passed
 to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to allow
 a specific user account for googledrive}
+
+\item{meanStaggerIntervalInSecs}{If used, this will use
+\code{Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,}
+\code{sd = meanStaggerIntervalInSecs/10))))} and distribute these delays to the workers.}
 }
 \value{
 Invisibly returns a \code{simLists} object. This class
