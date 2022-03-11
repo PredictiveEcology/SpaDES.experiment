@@ -77,6 +77,7 @@ setGeneric(
 })
 
 #' @importFrom future.apply future_lapply future_mapply
+#' @importFrom future nbrOfWorkers
 #' @importFrom googledrive drive_auth
 #' @importFrom SpaDES.core packages
 #' @rdname experiment2
