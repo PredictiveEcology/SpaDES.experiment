@@ -1,7 +1,8 @@
 test_that("test cache", {
   testInitOut <- testInit(c("SpaDES.experiment", "SpaDES.core"),
                           opts = list(spades.moduleCodeChecks = FALSE,
-                                      spades.useRequire = FALSE),
+                                      spades.useRequire = FALSE,
+                                      reproducible.useDBI = TRUE),
                           setPaths = FALSE)
 
   try(clearCache(tmpdir), silent = TRUE)
@@ -34,10 +35,11 @@ test_that("test cache", {
   sims <- eval(expr)
   out <- showCache(sims[[1]])
   expect_true(NROW(out[tagValue == "spades"]) == 2) # 2 cached copies, one for each "experiment"
-  expect_true(NROW(unique(out$artifact)) == 2) # 2 cached copies
+  expect_true(NROW(unique(out$cacheId)) == 2) # 2 cached copies
   expect_output(print(out), "cacheId")
   expect_output(print(out), "simList")
-  expect_true(NROW(out[!tagKey %in% c("preDigest", "otherFunctions")]) == 16) #
+  expect_true(NROW(out[!tagKey %in% reproducible:::.ignoreTagKeys()]) ==
+                2*reproducible:::.cacheNumDefaultTags()) #
   # 1st - number of slots, minus the "dot" slots
   expect_true(NROW(out[tagKey %in% "preDigest"]) ==
                 (length(grep("^\\.", slotNames(sims[[1]]), value = TRUE, invert = TRUE)) * 2 +
@@ -51,7 +53,7 @@ test_that("test cache", {
   expect_true(NROW(out2[tagKey == "accessed"]) == 4)
 
   # 2 cached copies of spades
-  expect_true(NROW(unique(out2$artifact)) == 2)
+  expect_true(NROW(unique(out2$cacheId)) == 2)
 
   clearCache(sims[[1]], ask = FALSE)
   out <- showCache(sims[[1]])
