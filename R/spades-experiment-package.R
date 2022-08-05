@@ -1,8 +1,7 @@
-#
-#  SpaDES.experiment/R/SpaDES-experiment-package.R by Alex M Chubaty and Eliot J B McIntire
-#  Copyright (C) 2015-2019 Her Majesty the Queen in Right of Canada,
-#   as represented by the Minister of Natural Resources Canada
-#
+##  SpaDES.experiment/R/SpaDES-experiment-package.R by Alex M Chubaty and Eliot J B McIntire
+##  Copyright (C) 2015-2022 Her Majesty the Queen in Right of Canada,
+##   as represented by the Minister of Natural Resources Canada
+##
 
 #' Categorized overview of the \code{SpaDES.experiment} package
 #'
