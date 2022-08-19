@@ -25,7 +25,7 @@ will be prepended to the relative paths of each \code{simList}}
 
 None yet defined:
 \tabular{ll}{
-  \code{\link{simList-accessors-envir}} \tab Simulation environment. \cr
+\code{\link[=simList-accessors-envir]{simList-accessors-envir()}} \tab Simulation environment. \cr
 }
 }
 

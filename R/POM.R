@@ -3,32 +3,32 @@
 #'
 #' This is very much in alpha condition.
 #' It has been tested on simple problems, as shown in the examples, with up to 2 parameters.
-#' It appears that \code{DEoptim} is the superior package for the stochastic problems.
+#' It appears that `DEoptim` is the superior package for the stochastic problems.
 #' This should be used with caution as with all optimization routines. This function
-#' can nevertheless take \code{optim} as optimizer, using \code{stats::optim}.
+#' can nevertheless take `optim` as optimizer, using `stats::optim`.
 #' However, these latter approaches do not seem appropriate for stochastic problems,
-#' and have not been widely tested and are not supported within \code{POM}.
+#' and have not been widely tested and are not supported within `POM`.
 #'
-#' There are two ways to use this function: via 1) \code{objFn} or 2) \code{objects}.
+#' There are two ways to use this function: via 1) `objFn` or 2) `objects`.
 #'
 #' \enumerate{
-#'   \item The user can pass the entire objective function to the \code{objFn}
-#'   argument that will be passed directly to the \code{optimizer}.
-#'   For this, the user will likely need to pass named objects as part of the \code{...}.
+#'   \item The user can pass the entire objective function to the `objFn`
+#'   argument that will be passed directly to the `optimizer`.
+#'   For this, the user will likely need to pass named objects as part of the `...`.
 #'
 #'   \item The slightly simpler approach is to pass a list of 'actual data--simulated data'
-#'   pairs as a named list in \code{objects} and specify how these objects should be
-#'   compared via \code{objFnCompare} (whose default is Mean Absolute Deviation or "MAD").
+#'   pairs as a named list in `objects` and specify how these objects should be
+#'   compared via `objFnCompare` (whose default is Mean Absolute Deviation or "MAD").
 #' }
 #'
 #' Option 1 offers more control to the user, but may require more knowledge.
-#' Option 1 should likely contain a call to \code{simInit(Copy(simList))} and
-#' \code{spades} internally.
+#' Option 1 should likely contain a call to `simInit(Copy(simList))` and
+#' `spades` internally.
 #' See examples that show simple examples of each type, option 1 and option 2.
-#' In both cases, \code{params} is required to indicate which parameters can be
+#' In both cases, `params` is required to indicate which parameters can be
 #' varied in order to achieve the fit.
 #'
-#' Currently, option 1 only exists when optimizer is \code{"DEoptim"}, the default.
+#' Currently, option 1 only exists when optimizer is `"DEoptim"`, the default.
 #'
 #' The upper and lower limits for parameter values are taken from the
 #' metadata in the module. Thus, if the module metadata does not define the
@@ -37,132 +37,132 @@
 #' and lower limits; the module metadata should be changed if there needs
 #' to be different parameter limits for optimization.
 #'
-#' \code{objects} is a named list of data--pattern pairs.
+#' `objects` is a named list of data--pattern pairs.
 #' Each of these pairs will be assessed against one another using
-#' the \code{objFnCompare}, after standardizing each independently. The
+#' the `objFnCompare`, after standardizing each independently. The
 #' standardization, which only occurs if the abs(data value < 1),
-#' is: \code{mean(abs(derived value - data value))/mean(data value)}. If
+#' is: `mean(abs(derived value - data value))/mean(data value)`. If
 #' the data value is between -1 and 1, then there is no standardization.
 #' If there is more than one data--pattern
 #' pair, then they will simply be added together in the objective
 #' function. This gives equal weight to each pair. If the user wishes to
-#' put different weight on each pattern, a \code{weights} vector can be
+#' put different weight on each pattern, a `weights` vector can be
 #' provided. This will be used to multiply the standardized values described above.
 #' Alternatively, the user
 #' may wish to weight them differently, in which case, their relative
 #' scales can be adjusted.
 #'
-#' There are many options that can be passed to \code{\link[DEoptim]{DEoptim}},
-#' (the details of which are in the help), using \code{optimControl}. The defaults
-#' sent from \code{POM} to \code{DEoptim} are: steptol = 3 (meaning it will start
-#' assessing convergence after 3 iterations (WHICH MAY NOT BE SUFFICIENT FOR YOUR PROBLEM),
-#' \code{NP = 10 * length(params)}
-#' (meaning the population size is 10 x the number of parameters) and itermax =
-#' 200 (meaning it won't go past 200 iterations). These and others may need to be adjusted to
-#' obtain good values.
-#' NOTE: \code{DEoptim} does not provide a direct estimate of confidence intervals.
-#' Also, convergence may be unreliable, and may occur because \code{itermax} is reached.
+#' There are many options that can be passed to [DEoptim::DEoptim()],
+#' (the details of which are in the help), using `optimControl`.
+#' The defaults sent from `POM` to `DEoptim` are: steptol = 3 (meaning it will start
+#' assessing convergence after 3 iterations (*which may not be sufficient for your problem*),
+#' `NP = 10 * length(params)`
+#' (meaning the population size is 10 x the number of parameters) and `itermax = 200`
+#' (meaning it won't go past 200 iterations).
+#' These and others may need to be adjusted to obtain good values.
+#' **NOTE:** `DEoptim` does not provide a direct estimate of confidence intervals.
+#' Also, convergence may be unreliable, and may occur because `itermax` is reached.
 #' Even when convergence is indicated, the estimates are not guaranteed to be global
 #' optima. This is different than other optimizers that will normally indicate
 #' if convergence was not achieved at termination of the optimization.
 #'
 #' Using this function with a parallel cluster currently requires that you pass
-#' \code{optimControl = list(parallelType = 1)}, and possibly package and variable names
-#'  (and does not yet accept the \code{cl} argument). See examples.
+#' `optimControl = list(parallelType = 1)`, and possibly package and variable names
+#'  (and does not yet accept the `cl` argument). See examples.
 #' This setting will use all available threads on your computer.
-#' Future versions of this will allow passing of a custom cluster object via \code{cl} argument.
-#' \code{POM} will automatically determine packages to load in the spawned cluster
-#' (via \code{\link{packages}}) and it will load all objects in the cluster that are
-#' necessary, by sending \code{names(objects)} to \code{parVar} in \code{DEoptim.control}.
+#' Future versions of this will allow passing of a custom cluster object via `cl` argument.
+#' `POM` will automatically determine packages to load in the spawned cluster
+#' (via [packages()]) and it will load all objects in the cluster that are
+#' necessary, by sending `names(objects)` to `parVar` in `DEoptim.control`.
 #'
-#' Setting \code{logObjFnVals} to \code{TRUE} may help diagnosing some problems.
+#' Setting `logObjFnVals` to `TRUE` may help diagnosing some problems.
 #' Using the POM derived objective function, essentially all patterns are treated equally.
 #' This may not give the correct behaviour for the objective function.
-#' Because \code{POM} weighs the patterns equally, it may be useful to use the
+#' Because `POM` weighs the patterns equally, it may be useful to use the
 #' log files to examine the behaviour of the pattern--data pairs.
 #' The first file, ObjectiveFnValues.txt, shows the result of each of the
 #' (possibly logged), pattern--data deviations, standardized, and weighted.
 #' The second file, \file{ObjectiveFnValues_RawPatterns.txt}, shows the actual
 #' value of the pattern (unstandardized, unweighted, unlogged).
-#' If \code{weights} is passed, then these weighted values will be reflected
+#' If `weights` is passed, then these weighted values will be reflected
 #' in the \file{ObjectiveFnValues.txt} file.
 #'
 #' @inheritParams SpaDES.core::spades
 #' @param cl A cluster object. Optional. This would generally be created using
 #'           parallel::makeCluster or equivalent. This is an alternative way, instead
-#'           of \code{beginCluster()}, to use parallelism for this function, allowing for
+#'           of `beginCluster()`, to use parallelism for this function, allowing for
 #'           more control over cluster use.
 #'
 #' @param params Character vector of parameter names that can be changed by the optimizer.
-#'               These must be accessible with \code{params(sim)} internally.
+#'               These must be accessible with `params(sim)` internally.
 #'
 #' @param objects A optional named list (must be specified if objFn is not).
 #'                The names of each list element must correspond to an object in the
-#'                \code{.GlobalEnv} and the list elements must be objects or
+#'                `.GlobalEnv` and the list elements must be objects or
 #'                functions of objects that can be accessed in
 #'                the ls(sim) internally. These will be used to create the
 #'                objective function passed to the optimizer. See details and examples.
 #'
-#' @param objFn An optional objective function to be passed into \code{optimizer}.
-#'              If missing, then \code{POM} will use \code{objFnCompare} and
-#'              \code{objects} instead. If using \code{POM} with a SpaDES
+#' @param objFn An optional objective function to be passed into `optimizer`.
+#'              If missing, then `POM` will use `objFnCompare` and
+#'              `objects` instead. If using `POM` with a SpaDES
 #'              simulation, this objFn must contain a spades call internally,
 #'              followed by a derivation of a value that can be minimized
-#'              but the \code{optimizer}. It must have, as first argument, the
+#'              but the `optimizer`. It must have, as first argument, the
 #'              values for the parameters. See example.
 #'
-#' @param optimizer The function to use to optimize. Default is \code{"DEoptim"}.
-#'                  Currently it can also be \code{"optim"},
-#'                  which uses \code{stats::optim}.
+#' @param optimizer The function to use to optimize. Default is `"DEoptim"`.
+#'                  Currently it can also be `"optim"`,
+#'                  which uses `stats::optim`.
 #'                  The latter two do not seem optimal for stochastic problems and have
 #'                  not been widely tested.
 #'
-#' @param sterr Logical. If using \code{optimizer = "optim"}, the hessian can be calculated.
+#' @param sterr Logical. If using `optimizer = "optim"`, the hessian can be calculated.
 #'              If this is TRUE, then the standard errors can be estimated using
 #'              that hessian, assuming normality.
 #'
 #' @param optimControl List of control arguments passed into the control of each
 #'                     optimization routine. Currently, only passed to
-#'                     \code{\link{DEoptim.control}} when \code{optimizer} is \code{"DEoptim"}
+#'                     [DEoptim.control()] when `optimizer` is `"DEoptim"`
 #'
 #' @param ... All objects needed in objFn
 #'
-#' @param objFnCompare Character string. Either, \code{"MAD"} (default) or \code{"RMSE"} indicating
+#' @param objFnCompare Character string. Either, `"MAD"` (default) or `"RMSE"` indicating
 #'                     that inside the objective function, data and prediction will be compared by
 #'                     Mean Absolute Deviation or Root Mean Squared Error.
 #'
 #' @param NaNRetries Numeric. If greater than 1, then the function will retry the objective
-#'                   function for a total of that number of times if it results in an \code{NaN}.
+#'                   function for a total of that number of times if it results in an `NaN`.
 #'                   In general this should not be used as the objective function should be
-#'                   made so that it doesn't produce \code{NaN}. But, sometimes
+#'                   made so that it doesn't produce `NaN`. But, sometimes
 #'                   it is difficult to diagnose stochastic results.
 #'
 #' @param logObjFnVals Logical or Character string indicating a filename to log the outputs.
-#'                     Ignored if \code{objFn} is supplied.
-#'                     If TRUE (and there is no \code{objFn} supplied), then the value of the
+#'                     Ignored if `objFn` is supplied.
+#'                     If TRUE (and there is no `objFn` supplied), then the value of the
 #'                     individual patterns will be output the console if being run interactively
-#'                     or to a tab delimited text file named \code{ObjectiveFnValues.txt}
+#'                     or to a tab delimited text file named `ObjectiveFnValues.txt`
 #'                     (or that passed by the user here) at each evaluation of the
 #'                     POM created objective function. See details.
 #'
 #' @param weights Numeric. If provided, this vector will be multiplied by the standardized
-#'                deviations (possibly MAD or RMSE) as described in \code{objects}.
+#'                deviations (possibly MAD or RMSE) as described in `objects`.
 #'                This has the effect of weighing each standardized deviation (pattern--data pair)
 #'                to a user specified amount in the objective function.
 #'
-#' @param useLog Logical. Should the data patterns and output patterns be logged (\code{log})
-#'               before calculating the \code{objFnCompare}.
-#'               I.e., \code{mean(abs(log(output) - log(data)))}.
-#'               This should be length 1 or length \code{objects}.
-#'               It will be recycled if length >1, less than \code{objects}.
+#' @param useLog Logical. Should the data patterns and output patterns be logged (`log`)
+#'               before calculating the `objFnCompare`.
+#'               I.e., `mean(abs(log(output) - log(data)))`.
+#'               This should be length 1 or length `objects`.
+#'               It will be recycled if length >1, less than `objects`.
 #'
 #' @return A list with at least 2 elements. The first (or first several) will
 #' be the returned object from the optimizer. The second (or last if there are
-#' more than 2), named \code{args} is the set of arguments that were passed
+#' more than 2), named `args` is the set of arguments that were passed
 #' into the control of the optimizer.
 #'
-#' @seealso \code{\link[SpaDES.core]{spades}}, \code{\link[parallel]{makeCluster}},
-#' \code{\link{simInit}}
+#' @seealso [SpaDES.core::spades()], [parallel::makeCluster()],
+#' [simInit()]
 #'
 #' @author Eliot McIntire
 #' @export

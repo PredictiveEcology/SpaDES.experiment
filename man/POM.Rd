@@ -83,7 +83,7 @@ Mean Absolute Deviation or Root Mean Squared Error.}
 
 \item{optimControl}{List of control arguments passed into the control of each
 optimization routine. Currently, only passed to
-\code{\link{DEoptim.control}} when \code{optimizer} is \code{"DEoptim"}}
+\code{\link[=DEoptim.control]{DEoptim.control()}} when \code{optimizer} is \code{"DEoptim"}}
 
 \item{NaNRetries}{Numeric. If greater than 1, then the function will retry the objective
 function for a total of that number of times if it results in an \code{NaN}.
@@ -129,13 +129,13 @@ and have not been widely tested and are not supported within \code{POM}.
 There are two ways to use this function: via 1) \code{objFn} or 2) \code{objects}.
 
 \enumerate{
-  \item The user can pass the entire objective function to the \code{objFn}
-  argument that will be passed directly to the \code{optimizer}.
-  For this, the user will likely need to pass named objects as part of the \code{...}.
+\item The user can pass the entire objective function to the \code{objFn}
+argument that will be passed directly to the \code{optimizer}.
+For this, the user will likely need to pass named objects as part of the \code{...}.
 
-  \item The slightly simpler approach is to pass a list of 'actual data--simulated data'
-  pairs as a named list in \code{objects} and specify how these objects should be
-  compared via \code{objFnCompare} (whose default is Mean Absolute Deviation or "MAD").
+\item The slightly simpler approach is to pass a list of 'actual data--simulated data'
+pairs as a named list in \code{objects} and specify how these objects should be
+compared via \code{objFnCompare} (whose default is Mean Absolute Deviation or "MAD").
 }
 
 Option 1 offers more control to the user, but may require more knowledge.
@@ -158,7 +158,7 @@ to be different parameter limits for optimization.
 Each of these pairs will be assessed against one another using
 the \code{objFnCompare}, after standardizing each independently. The
 standardization, which only occurs if the abs(data value < 1),
-is: \code{mean(abs(derived value - data value))/mean(data value)}. If
+is: \verb{mean(abs(derived value - data value))/mean(data value)}. If
 the data value is between -1 and 1, then there is no standardization.
 If there is more than one data--pattern
 pair, then they will simply be added together in the objective
@@ -169,15 +169,15 @@ Alternatively, the user
 may wish to weight them differently, in which case, their relative
 scales can be adjusted.
 
-There are many options that can be passed to \code{\link[DEoptim]{DEoptim}},
-(the details of which are in the help), using \code{optimControl}. The defaults
-sent from \code{POM} to \code{DEoptim} are: steptol = 3 (meaning it will start
-assessing convergence after 3 iterations (WHICH MAY NOT BE SUFFICIENT FOR YOUR PROBLEM),
+There are many options that can be passed to \code{\link[DEoptim:DEoptim]{DEoptim::DEoptim()}},
+(the details of which are in the help), using \code{optimControl}.
+The defaults sent from \code{POM} to \code{DEoptim} are: steptol = 3 (meaning it will start
+assessing convergence after 3 iterations (\emph{which may not be sufficient for your problem}),
 \code{NP = 10 * length(params)}
-(meaning the population size is 10 x the number of parameters) and itermax =
-200 (meaning it won't go past 200 iterations). These and others may need to be adjusted to
-obtain good values.
-NOTE: \code{DEoptim} does not provide a direct estimate of confidence intervals.
+(meaning the population size is 10 x the number of parameters) and \code{itermax = 200}
+(meaning it won't go past 200 iterations).
+These and others may need to be adjusted to obtain good values.
+\strong{NOTE:} \code{DEoptim} does not provide a direct estimate of confidence intervals.
 Also, convergence may be unreliable, and may occur because \code{itermax} is reached.
 Even when convergence is indicated, the estimates are not guaranteed to be global
 optima. This is different than other optimizers that will normally indicate
@@ -185,11 +185,11 @@ if convergence was not achieved at termination of the optimization.
 
 Using this function with a parallel cluster currently requires that you pass
 \code{optimControl = list(parallelType = 1)}, and possibly package and variable names
- (and does not yet accept the \code{cl} argument). See examples.
+(and does not yet accept the \code{cl} argument). See examples.
 This setting will use all available threads on your computer.
 Future versions of this will allow passing of a custom cluster object via \code{cl} argument.
 \code{POM} will automatically determine packages to load in the spawned cluster
-(via \code{\link{packages}}) and it will load all objects in the cluster that are
+(via \code{\link[=packages]{packages()}}) and it will load all objects in the cluster that are
 necessary, by sending \code{names(objects)} to \code{parVar} in \code{DEoptim.control}.
 
 Setting \code{logObjFnVals} to \code{TRUE} may help diagnosing some problems.
@@ -375,8 +375,8 @@ if (interactive()) {
 }
 }
 \seealso{
-\code{\link[SpaDES.core]{spades}}, \code{\link[parallel]{makeCluster}},
-\code{\link{simInit}}
+\code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}, \code{\link[parallel:makeCluster]{parallel::makeCluster()}},
+\code{\link[=simInit]{simInit()}}
 }
 \author{
 Eliot McIntire

@@ -10,18 +10,19 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
 URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2021-02-25
-Version: 0.0.2.9002
+Date: 2021-08-19
+Version: 0.0.2.9003
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
-    role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
+           role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
     person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
-    role = c("aut"), comment = c(ORCID = "0000-0001-7146-8135")),
-    person("Her Majesty the Queen in Right of Canada, as represented by the Minister of Natural Resources Canada",
-    role = "cph")
+           role = c("aut"), comment = c(ORCID = "0000-0001-7146-8135")),
+    person(paste("Her Majesty the Queen in Right of Canada,",
+                 "as represented by the Minister of Natural Resources Canada"),
+           role = "cph")
     )
 Depends:
-    R (>= 3.6),
+    R (>= 4.0),
     reproducible (>= 0.2.11),
     SpaDES.core (>= 0.2.7)
 Imports:
@@ -47,7 +48,6 @@ Suggests:
     rmarkdown,
     sf,
     SpaDES.tools (>= 0.2.0),
-    spelling,
     testthat (>= 1.0.2)
 Remotes:
     PredictiveEcology/reproducible@development,
@@ -67,4 +67,5 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
+Roxygen: list(markdown = TRUE)

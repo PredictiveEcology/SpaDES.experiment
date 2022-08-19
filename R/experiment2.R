@@ -3,62 +3,62 @@ if (getRversion() >= "3.1.0") {
 }
 
 ################################################################################
-#' Run experiment, algorithm 2, using \code{\link[SpaDES.core]{spades}}
+#' Run experiment, algorithm 2, using [SpaDES.core::spades()]
 #'
-#' Given one or more \code{simList} objects, run a series of \code{spades} calls
+#' Given one or more `simList` objects, run a series of `spades` calls
 #' in a structured, organized way. Methods are available to deal with outputs,
-#' such as \code{as.data.table.simLists} which can pull out simple to complex
-#' values from every resulting \code{simList} or object saved by \code{outputs}
-#' in every \code{simList} run. This uses \code{future} internally, allowing
+#' such as `as.data.table.simLists` which can pull out simple to complex
+#' values from every resulting `simList` or object saved by `outputs`
+#' in every `simList` run. This uses `future` internally, allowing
 #' for various backends and parallelism.0
 #'
-#' @param ... One or more \code{simList} objects
-#' @param replicates The number of replicates to run of the same \code{simList}.
+#' @param ... One or more `simList` objects
+#' @param replicates The number of replicates to run of the same `simList`.
 #'                   See details and examples. To minimize memory overhead, currently,
-#'                   this must be length 1, i.e., all \code{...} simList objects will
+#'                   this must be length 1, i.e., all `...` simList objects will
 #'                   receive the same number of replicates.
 #'
 #' @param clearSimEnv Logical. If TRUE, then the envir(sim) of each simList in the return list
 #'                    is emptied. This is to reduce RAM load of large return object.
 #'                    Default FALSE.
-#' @param createUniquePaths A character vector of the \code{paths} passed to \code{simInit},
+#' @param createUniquePaths A character vector of the `paths` passed to `simInit`,
 #'   indicating which should create a new, unique path, as a sub-path to the original
-#'   \code{paths} of \code{simInit}. Default, and currently only option, is \code{"outputPath"}
+#'   `paths` of `simInit`. Default, and currently only option, is `"outputPath"`
 #'
-#' @param useCache Logical. Passed to \code{spades}. This will be passed with the \code{simList}
-#'   name and replicate number, allowing each replicate and each \code{simList} to be
-#'   seen as a non-cached call to \code{spades}. This will, however, may prevent \code{spades}
+#' @param useCache Logical. Passed to `spades`. This will be passed with the `simList`
+#'   name and replicate number, allowing each replicate and each `simList` to be
+#'   seen as a non-cached call to `spades`. This will, however, may prevent `spades`
 #'   calls from running a second time during second call to the same
-#'   \code{experiment2} function.
+#'   `experiment2` function.
 #' @param drive_auth_account Optional character string. If provided, it will be passed
-#'    to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to allow
+#'    to each worker and run as `googledrive::drive_auth(drive_auth_account)` to allow
 #'    a specific user account for googledrive
 #' @param meanStaggerIntervalInSecs If used, this will use
-#'   \code{Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,}
-#'   \code{sd = meanStaggerIntervalInSecs/10))))} and distribute these delays to the workers.
+#'   `Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,`
+#'   `sd = meanStaggerIntervalInSecs/10))))` and distribute these delays to the workers.
 #'
 #' @inheritParams SpaDES.core::spades
 #'
 #' @details
 #'
 #' This function, because of its class formalism, allows for methods to be used. For example,
-#' \code{\link{as.data.table.simLists}} allows user to pull out specific objects (in
-#' the \code{simList} objects or on disk saved in \code{outputPath(sim)}).
+#' [as.data.table.simLists()] allows user to pull out specific objects (in
+#' the `simList` objects or on disk saved in `outputPath(sim)`).
 #'
-#' The \code{outputPath} is changed so that every simulation puts outputs in a
+#' The `outputPath` is changed so that every simulation puts outputs in a
 #' sub-directory
-#' of the original \code{outputPath} of each \code{simList}.
+#' of the original `outputPath` of each `simList`.
 #'
 #' @note
-#' A \code{simLists} object can be made manually, if, say, many manual \code{spades} calls
-#' have already been run. See example, via \code{new("simLists")}
+#' A `simLists` object can be made manually, if, say, many manual `spades` calls
+#' have already been run. See example, via `new("simLists")`
 #'
-#' @return Invisibly returns a \code{simLists} object. This class
-#' extends the \code{environment} class and
-#' contains \code{simList} objects.
+#' @return Invisibly returns a `simLists` object. This class
+#' extends the `environment` class and
+#' contains `simList` objects.
 #'
-#' @seealso \code{\link{as.data.table.simLists}},
-#'   \code{\link{simInit}}, \code{\link[SpaDES.core]{spades}}, \code{\link{experiment}}
+#' @seealso [as.data.table.simLists()],
+#'   [simInit()], [SpaDES.core::spades()], [experiment()]
 #'
 #' @author Eliot McIntire
 #' @export

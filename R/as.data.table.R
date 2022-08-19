@@ -1,31 +1,31 @@
 utils::globalVariables(c("..onlyInteger"))
 
-#' Coerce elements of a \code{simLists} object to a \code{data.table}
+#' Coerce elements of a `simLists` object to a `data.table`
 #'
 #' This is particularly useful to build plots using the \pkg{tidyverse}, e.g., \pkg{ggplot2}.
 #'
 #' @inheritParams data.table::as.data.table
 #'
 #' @param vals A (named) list of object names to extract from each
-#'   \code{simList}, or a named list of quoted expressions to calculate for each \code{simList},
+#'   `simList`, or a named list of quoted expressions to calculate for each `simList`,
 #'   or a mix of character and quoted expressions.
 #'
 #' @param objectsFromSim Character vector of objects to extract from the simLists. If
 #'   omitted, it will extract all objects from each simList in order to calculate the
-#'   \code{vals}. This may have a computational cost. If \code{NA}, then no objects will be
-#'   accessed from the \code{simList}. Objects identified here will only be as they are in
-#'   the \code{simList}, i.e., at \code{end(sim)}.
+#'   `vals`. This may have a computational cost. If `NA`, then no objects will be
+#'   accessed from the `simList`. Objects identified here will only be as they are in
+#'   the `simList`, i.e., at `end(sim)`.
 #'
 #' @param objectsFromOutputs List of (named) character vectors of objects to load from the
-#'   \code{outputs(sim)} prior to evaluating \code{vals}. If there already is an object
-#'   with that same name in the \code{simList}, then it will be overwritten with
-#'   the object loaded from \code{outputs(sim)}. If there are many objects with the
-#'   same name, specifically from several \code{saveTime} values in the \code{outputs(sim)},
-#'   these will all be loaded, one at a time, \code{vals} evaluated one at a time, and
-#'   each of the values will be returned from each \code{saveTime}.
-#'   A column, \code{saveTime}, will be part of the returned \code{data.table}.
+#'   `outputs(sim)` prior to evaluating `vals`. If there already is an object
+#'   with that same name in the `simList`, then it will be overwritten with
+#'   the object loaded from `outputs(sim)`. If there are many objects with the
+#'   same name, specifically from several `saveTime` values in the `outputs(sim)`,
+#'   these will all be loaded, one at a time, `vals` evaluated one at a time, and
+#'   each of the values will be returned from each `saveTime`.
+#'   A column, `saveTime`, will be part of the returned `data.table`.
 #'   For cases where more than one object is required at a given
-#'   \code{saveTime}, all should be identified here, without time specified.
+#'   `saveTime`, all should be identified here, without time specified.
 #'   This function will take all identified objects from the same time period.
 #'
 #' @param ... Additional arguments. Currently unused.
@@ -34,7 +34,7 @@ utils::globalVariables(c("..onlyInteger"))
 #' See examples.
 #'
 #' @return
-#' This returns a \code{data.table} class object with
+#' This returns a `data.table` class object with
 #'
 #' @export
 #' @importFrom data.table := as.data.table is.data.table set setDT setkeyv setnames
