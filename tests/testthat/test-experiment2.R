@@ -1,13 +1,12 @@
 test_that("experiment2 test 1", {
   #if (!interactive())
   skip_on_cran()
-  skip_on_appveyor()
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
   testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2", "data.table"),
                           smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
-
 
   endTime <- 2
   # Example of changing parameter values
@@ -69,7 +68,7 @@ test_that("experiment2 test 1", {
   )
 
   planTypes <- c("sequential", "multiprocess")
-  planTypes <- if (requireNamespace("future.callr")) c(planTypes, "callr")
+  planTypes <- if (requireNamespace("future.callr", quietly = TRUE)) c(planTypes, "callr")
   # planTypes <- c("sequential")
   for (pl in planTypes) {
     cat(" -- testing future plan when", pl, "                ")
@@ -77,10 +76,12 @@ test_that("experiment2 test 1", {
     # Test Caching
     mess <- capture_messages(spades(Copy(mySim1), debug = 2))
     expects <- if (is(plan(), "sequential")) 0 else 1 # sequential has no concurrent spades
-    expect_true(sum(grepl("cached", mess))==expects)
-    mess <- capture_messages(sims <- experiment2(mySim1, mySim2))
+    expect_true(sum(grepl("cached", mess)) == expects)
+    mess <- capture_messages({
+      sims <- experiment2(mySim1, mySim2)
+    })
     expects <- if (is(plan(), "sequential")) 2 else 2 # sequential has no concurrent spades
-    expect_true(sum(grepl("cached", mess))==expects) # b/c they are at the same time. If sequential, one would be memoised
+    expect_true(sum(grepl("cached", mess)) == expects) # b/c they are at the same time. If sequential, one would be memoised
     # cap <- capture.output(mess <- capture_messages(sims <- experiment2(mySim1, mySim2,
     #                                                                    mySim3)))
     # expects <- 3 # uses a new session each call
@@ -92,10 +93,11 @@ test_that("experiment2 test 1", {
     mySim2Orig <- Copy(mySim2)
 
     repNums <- c(3)
-    cap1 <- capture.output(mess <- capture_messages(
-      sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3,
-                          replicates = repNums)
-    ))
+    cap1 <- capture.output({
+      mess <- capture_messages({
+        sims <- experiment2(sim1 = mySim1, sim2 = mySim2, sim3 = mySim3, replicates = repNums)
+      })
+    })
     # Test don't need to use Copy
     expect_true(isTRUE(all.equal(mySim1Orig, mySim1))) # can't use identical -- envs are different
 
@@ -264,7 +266,6 @@ test_that("experiment2 test 1", {
 })
 
 test_that("simLists tests", {
-  #if (!interactive())
   testInitOut <- testInit("future", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
@@ -298,7 +299,6 @@ test_that("simLists tests", {
 })
 
 test_that("simLists tests", {
-  #if (!interactive())
   testInitOut <- testInit("parallel", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)

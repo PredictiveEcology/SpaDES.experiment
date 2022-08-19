@@ -1,4 +1,4 @@
-if (interactive()) {
+if (interactive() && require("NLMR", quietly = TRUE)) {
   set.seed(89462)
   library(parallel)
   library(raster)

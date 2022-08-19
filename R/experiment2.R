@@ -57,11 +57,12 @@ if (getRversion() >= "3.1.0") {
 #' extends the `environment` class and
 #' contains `simList` objects.
 #'
-#' @seealso [as.data.table.simLists()],
-#'   [simInit()], [SpaDES.core::spades()], [experiment()]
+#' @seealso [as.data.table.simLists()], [simInit()], [SpaDES.core::spades()], [experiment()]
 #'
 #' @author Eliot McIntire
 #' @export
+#' @importFrom future nbrOfWorkers
+#' @importFrom stats rnorm
 #' @rdname experiment2
 #'
 #' @example inst/examples/example_experiment2.R

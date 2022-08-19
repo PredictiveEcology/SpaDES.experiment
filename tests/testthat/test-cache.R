@@ -1,4 +1,6 @@
 test_that("test cache", {
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
+
   testInitOut <- testInit(c("SpaDES.experiment", "SpaDES.core"),
                           opts = list(spades.moduleCodeChecks = FALSE,
                                       spades.useRequire = FALSE,

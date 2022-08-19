@@ -26,7 +26,6 @@ Depends:
     reproducible (>= 0.2.11),
     SpaDES.core (>= 0.2.7)
 Imports:
-    crayon,
     data.table (>= 1.10.4),
     DEoptim (>= 2.2-4),
     future,
@@ -34,6 +33,7 @@ Imports:
     googledrive,
     magrittr,
     methods,
+    NLMR (>= 1.1.1),
     parallel,
     purrr,
     raster (>= 2.5-8),
@@ -44,14 +44,16 @@ Suggests:
     igraph,
     knitr,
     quickPlot,
-    RandomFields (>= 3.3.4),
     rmarkdown,
     sf,
     SpaDES.tools (>= 0.2.0),
     testthat (>= 1.0.2)
 Remotes:
+    achubaty/NLMR,
+    PredictiveEcology/quickPlot@development,
     PredictiveEcology/reproducible@development,
-    PredictiveEcology/SpaDES.core@development
+    PredictiveEcology/SpaDES.core@development,
+    PredictiveEcology/SpaDES.tools@development
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3

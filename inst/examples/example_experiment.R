@@ -1,4 +1,4 @@
-if (interactive() && requireNamespace(igraph)) {
+if (interactive() && require(igraph, quietly = TRUE) && require("NLMR", quietly = TRUE)) {
   # use %>% in a few examples
   library(raster)
 
