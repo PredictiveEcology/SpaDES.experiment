@@ -1,4 +1,4 @@
-#' Run \code{simInit} and \code{Experiment} in one step
+#' Run `simInit` and `Experiment` in one step
 #'
 #' @export
 #' @aliases simInitAndExperiment
@@ -9,10 +9,10 @@
 #' @importFrom utils getFromNamespace
 #' @include simLists-class.R
 #' @details
-#' \code{simInitAndExperiment} cannot pass modules or params to \code{experiment} because
-#' these are also in \code{simInit}. If the \code{experiment} is being used
-#' to vary these arguments, it must be done separately (i.e., \code{simInit} then
-#' \code{experiment}).
+#' `simInitAndExperiment` cannot pass modules or params to `experiment` because
+#' these are also in `simInit`. If the `experiment` is being used
+#' to vary these arguments, it must be done separately (i.e., `simInit` then
+#' `experiment`).
 simInitAndExperiment <- function(times, params, modules, objects, paths, inputs, outputs, loadOrder,
                                  notOlderThan, replicates,
                                  dirPrefix, substrLength, saveExperiment,

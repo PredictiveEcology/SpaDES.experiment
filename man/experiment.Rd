@@ -3,7 +3,7 @@
 \name{experiment}
 \alias{experiment}
 \alias{experiment,simList-method}
-\title{Run an experiment using \code{\link[SpaDES.core]{spades}}}
+\title{Run an experiment using \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}}
 \usage{
 experiment(
   sim,
@@ -45,16 +45,16 @@ experiment(
 \item{replicates}{The number of replicates to run of the same \code{simList}.
 See details and examples.}
 
-\item{params}{Like for \code{\link{simInit}}, but for each parameter, provide a list of
+\item{params}{Like for \code{\link[=simInit]{simInit()}}, but for each parameter, provide a list of
 alternative values. See details and examples.}
 
-\item{modules}{Like for \code{\link{simInit}}, but a list of \code{module} names (as strings).
+\item{modules}{Like for \code{\link[=simInit]{simInit()}}, but a list of \code{module} names (as strings).
 See details and examples.}
 
-\item{objects}{Like for \code{\link{simInit}}, but a list of named lists of named objects.
+\item{objects}{Like for \code{\link[=simInit]{simInit()}}, but a list of named lists of named objects.
 See details and examples.}
 
-\item{inputs}{Like for \code{\link{simInit}}, but a list of \code{inputs} data.frames.
+\item{inputs}{Like for \code{\link[=simInit]{simInit()}}, but a list of \code{inputs} data.frames.
 See details and examples.}
 
 \item{dirPrefix}{String vector. This will be concatenated as a prefix on the
@@ -100,12 +100,12 @@ It is named whatever is passed into \code{experimentFile}.
 Since returned list of \code{simList} objects may be large, the user is not obliged to
 return this object (as it is returned invisibly).
 Clearly, there may be objects saved during simulations. This would be determined as per a
-normal \code{\link[SpaDES.core]{spades}} call, using \code{outputs} like, say, \code{outputs(sims[[1]])}.
+normal \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}} call, using \code{outputs} like, say, \code{outputs(sims[[1]])}.
 }
 \description{
 This is essentially a wrapper around the \code{spades} call that allows for
 multiple calls to \code{spades}. This function will use a single processor,
-or multiple processors if \code{\link[raster]{beginCluster}} has been run
+or multiple processors if \code{\link[raster:cluster]{raster::beginCluster()}} has been run
 first or a cluster object is passed in the \code{cl} argument (gives more control to user).
 }
 \details{
@@ -120,7 +120,6 @@ combinations of parameters and inputs may not be the desired behaviour. The func
 requires a \code{simList} object, acting as the basis for the experiment,
 plus optional inputs and/or objects and/or params and/or modules and/or replications.
 
-
 This function requires a complete simList: this simList will form the basis of
 the modifications as passed by params, modules, inputs, and objects.
 All params, modules, inputs or objects passed into this function will override
@@ -128,25 +127,20 @@ the corresponding params, modules, inputs, or identically named objects that
 are in the \code{sim} argument.
 
 This function is parallel aware, using the same mechanism as used in the \code{raster}
-package. Specifically, if you start a cluster using \code{\link{beginCluster}}, then
+package. Specifically, if you start a cluster using \code{\link[=beginCluster]{beginCluster()}}, then
 this experiment function will automatically use that cluster. It is always a good
-idea to stop the cluster when finished, using \code{\link{endCluster}}.
+idea to stop the cluster when finished, using \code{\link[=endCluster]{endCluster()}}.
 
 Here are generic examples of how \code{params}, \code{modules}, \code{objects},
 and \code{inputs} should be structured.
 
-  \code{params = list(moduleName = list(paramName = list(val1, val2)))}.
+\code{params = list(moduleName = list(paramName = list(val1, val2)))}.
 
-  \code{modules = list(c("module1","module2"), c("module1","module3"))}
+\code{modules = list(c("module1","module2"), c("module1","module3"))}
 
-  \code{objects = list(objName = list(object1=object1, object2=object2))}
+\code{objects = list(objName = list(object1=object1, object2=object2))}
 
-  \code{inputs = list(
-        data.frame(file = pathToFile1, loadTime = 0, objectName = "landscape",
-                   stringsAsFactors = FALSE),
-        data.frame(file = pathToFile2, loadTime = 0, objectName = "landscape",
-                   stringsAsFactors = FALSE)
-  )}
+\code{inputs = list( data.frame(file = pathToFile1, loadTime = 0, objectName = "landscape", stringsAsFactors = FALSE), data.frame(file = pathToFile2, loadTime = 0, objectName = "landscape", stringsAsFactors = FALSE) )}
 
 Output directories are changed using this function: this is one of the dominant
 side effects of this function. If there are only replications, then a set of
@@ -159,25 +153,21 @@ Replicates will be one level below this.
 The subdirectory names will include the module(s), parameter names, the parameter values,
 and input index number (i.e., which row of the inputs data.frame).
 The default rule for naming is a concatenation of:
-
-1. The experiment level (arbitrarily starting at 1). This is padded with zeros if there are
+\enumerate{
+\item The experiment level (arbitrarily starting at 1). This is padded with zeros if there are
 many experiment levels.
-
-2. The module, parameter name and parameter experiment level (not the parameter value,
+\item The module, parameter name and parameter experiment level (not the parameter value,
 as values could be complex), for each parameter that is varying.
-
-3. The module set.
-
-4. The input index number
-
-5. Individual identifiers are separated by a dash.
-
-6. Module - Parameter - Parameter index triplets are separated by underscore.
+\item The module set.
+\item The input index number
+\item Individual identifiers are separated by a dash.
+\item Module - Parameter - Parameter index triplets are separated by underscore.
+}
 
 e.g., a folder called: \code{01-fir_spr_1-car_N_1-inp_1} would be the first
-experiment level (01), the first parameter value for the \code{spr*} parameter
-of the \code{fir*} module, the first parameter value of the N parameter of the
-\code{car*} module, and the first input dataset provided.
+experiment level (01), the first parameter value for the \verb{spr*} parameter
+of the \verb{fir*} module, the first parameter value of the N parameter of the
+\verb{car*} module, and the first input dataset provided.
 
 This subdirectory name could be long if there are many dimensions to the experiment.
 The parameter \code{substrLength}  determines the level of truncation of the
@@ -185,7 +175,7 @@ parameter, module and input names for  these subdirectories.
 For example, the  resulting directory name for changes to the \code{spreadprob}
 parameter in the \code{fireSpread} module and the \code{N} parameter in the
 \code{caribouMovement} module  would be:
-\code{1_fir_spr_1-car_N_1} if \code{substrLength} is 3, the default.
+\verb{1_fir_spr_1-car_N_1} if \code{substrLength} is 3, the default.
 
 Replication is treated slightly differently. \code{outputPath} is always 1 level below the
 experiment level for a replicate.
@@ -452,7 +442,7 @@ if (interactive() && requireNamespace(igraph)) {
 }
 }
 \seealso{
-\code{\link{simInit}}
+\code{\link[=simInit]{simInit()}}
 }
 \author{
 Eliot McIntire

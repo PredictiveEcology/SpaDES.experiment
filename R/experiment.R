@@ -1,10 +1,10 @@
 ################################################################################
-#' Run an experiment using \code{\link[SpaDES.core]{spades}}
+#' Run an experiment using [SpaDES.core::spades()]
 #'
-#' This is essentially a wrapper around the \code{spades} call that allows for
-#' multiple calls to \code{spades}. This function will use a single processor,
-#' or multiple processors if \code{\link[raster]{beginCluster}} has been run
-#' first or a cluster object is passed in the \code{cl} argument (gives more control to user).
+#' This is essentially a wrapper around the `spades` call that allows for
+#' multiple calls to `spades`. This function will use a single processor,
+#' or multiple processors if [raster::beginCluster()] has been run
+#' first or a cluster object is passed in the `cl` argument (gives more control to user).
 #'
 #' Generally, there are 2 reasons to do this: replication and varying simulation inputs
 #' to accomplish some sort of simulation experiment. This function deals with both of these
@@ -14,23 +14,23 @@
 #' and some of the parameters don't exist in all combinations of modules, then the function
 #' will do an "all meaningful combinations" factorial experiment. Likewise, fully factorial
 #' combinations of parameters and inputs may not be the desired behaviour. The function
-#' requires a \code{simList} object, acting as the basis for the experiment,
+#' requires a `simList` object, acting as the basis for the experiment,
 #' plus optional inputs and/or objects and/or params and/or modules and/or replications.
 #'
 #' @inheritParams SpaDES.core::spades
 #'
-#' @param inputs Like for \code{\link{simInit}}, but a list of \code{inputs} data.frames.
+#' @param inputs Like for [simInit()], but a list of `inputs` data.frames.
 #'               See details and examples.
-#' @param objects Like for \code{\link{simInit}}, but a list of named lists of named objects.
+#' @param objects Like for [simInit()], but a list of named lists of named objects.
 #'               See details and examples.
-#' @param params Like for \code{\link{simInit}}, but for each parameter, provide a list of
+#' @param params Like for [simInit()], but for each parameter, provide a list of
 #'               alternative values. See details and examples.
-#' @param modules Like for \code{\link{simInit}}, but a list of \code{module} names (as strings).
+#' @param modules Like for [simInit()], but a list of `module` names (as strings).
 #'                See details and examples.
-#' @param replicates The number of replicates to run of the same \code{simList}.
+#' @param replicates The number of replicates to run of the same `simList`.
 #'                   See details and examples.
 #'
-#' @param substrLength Numeric. While making \code{outputPath} for each spades call, this
+#' @param substrLength Numeric. While making `outputPath` for each spades call, this
 #'                     is the number of characters kept from each factor level.
 #'                     See details and examples.
 #'
@@ -39,17 +39,17 @@
 #'
 #' @param saveExperiment Logical. Should params, modules, inputs, sim, and resulting
 #' experimental design be saved to a file. If TRUE are saved to a single list
-#' called \code{experiment}. Default TRUE.
+#' called `experiment`. Default TRUE.
 #'
-#' @param experimentFile String. Filename if \code{saveExperiment} is TRUE; saved to
-#' \code{outputPath(sim)} in \code{.RData} format. See Details.
+#' @param experimentFile String. Filename if `saveExperiment` is TRUE; saved to
+#' `outputPath(sim)` in `.RData` format. See Details.
 #'
 #' @param clearSimEnv Logical. If TRUE, then the envir(sim) of each simList in the return list
 #'                    is emptied. This is to reduce RAM load of large return object.
 #'                    Default FALSE.
 #'
-#' @param ... Passed to \code{spades}. Specifically, \code{debug}, \code{.plotInitialTime},
-#'            \code{.saveInitialTime}, \code{cache} and/or \code{notOlderThan}. Caching
+#' @param ... Passed to `spades`. Specifically, `debug`, `.plotInitialTime`,
+#'            `.saveInitialTime`, `cache` and/or `notOlderThan`. Caching
 #'            is still experimental. It is tested to work under some conditions, but not
 #'            all. See details.
 #'
@@ -61,33 +61,33 @@
 #' the modifications as passed by params, modules, inputs, and objects.
 #' All params, modules, inputs or objects passed into this function will override
 #' the corresponding params, modules, inputs, or identically named objects that
-#' are in the \code{sim} argument.
+#' are in the `sim` argument.
 #'
-#' This function is parallel aware, using the same mechanism as used in the \code{raster}
-#' package. Specifically, if you start a cluster using \code{\link{beginCluster}}, then
+#' This function is parallel aware, using the same mechanism as used in the `raster`
+#' package. Specifically, if you start a cluster using [beginCluster()], then
 #' this experiment function will automatically use that cluster. It is always a good
-#' idea to stop the cluster when finished, using \code{\link{endCluster}}.
+#' idea to stop the cluster when finished, using [endCluster()].
 #'
-#' Here are generic examples of how \code{params}, \code{modules}, \code{objects},
-#' and \code{inputs} should be structured.
+#' Here are generic examples of how `params`, `modules`, `objects`,
+#' and `inputs` should be structured.
 #'
-#'   \code{params = list(moduleName = list(paramName = list(val1, val2)))}.
+#'   `params = list(moduleName = list(paramName = list(val1, val2)))`.
 #'
-#'   \code{modules = list(c("module1","module2"), c("module1","module3"))}
+#'   `modules = list(c("module1","module2"), c("module1","module3"))`
 #'
-#'   \code{objects = list(objName = list(object1=object1, object2=object2))}
+#'   `objects = list(objName = list(object1=object1, object2=object2))`
 #'
-#'   \code{inputs = list(
+#'   `inputs = list(
 #'         data.frame(file = pathToFile1, loadTime = 0, objectName = "landscape",
 #'                    stringsAsFactors = FALSE),
 #'         data.frame(file = pathToFile2, loadTime = 0, objectName = "landscape",
 #'                    stringsAsFactors = FALSE)
-#'   )}
+#'   )`
 #'
 #' Output directories are changed using this function: this is one of the dominant
 #' side effects of this function. If there are only replications, then a set of
 #' subdirectories will be created, one for each replicate.
-#' If there are varying parameters and or modules, \code{outputPath} is updated
+#' If there are varying parameters and or modules, `outputPath` is updated
 #' to include a subdirectory for each level of the experiment.
 #' These are not nested, i.e., even if there are nested factors, all subdirectories
 #' due to the experimental setup will be at the same level.
@@ -110,67 +110,67 @@
 #'
 #' 6. Module - Parameter - Parameter index triplets are separated by underscore.
 #'
-#' e.g., a folder called: \code{01-fir_spr_1-car_N_1-inp_1} would be the first
-#' experiment level (01), the first parameter value for the \code{spr*} parameter
-#' of the \code{fir*} module, the first parameter value of the N parameter of the
-#' \code{car*} module, and the first input dataset provided.
+#' e.g., a folder called: `01-fir_spr_1-car_N_1-inp_1` would be the first
+#' experiment level (01), the first parameter value for the `spr*` parameter
+#' of the `fir*` module, the first parameter value of the N parameter of the
+#' `car*` module, and the first input dataset provided.
 #'
 #' This subdirectory name could be long if there are many dimensions to the experiment.
-#' The parameter \code{substrLength}  determines the level of truncation of the
+#' The parameter `substrLength`  determines the level of truncation of the
 #' parameter, module and input names for  these subdirectories.
-#' For example, the  resulting directory name for changes to the \code{spreadprob}
-#' parameter in the \code{fireSpread} module and the \code{N} parameter in the
-#' \code{caribouMovement} module  would be:
-#' \code{1_fir_spr_1-car_N_1} if \code{substrLength} is 3, the default.
+#' For example, the  resulting directory name for changes to the `spreadprob`
+#' parameter in the `fireSpread` module and the `N` parameter in the
+#' `caribouMovement` module  would be:
+#' `1_fir_spr_1-car_N_1` if `substrLength` is 3, the default.
 #'
-#' Replication is treated slightly differently. \code{outputPath} is always 1 level below the
+#' Replication is treated slightly differently. `outputPath` is always 1 level below the
 #' experiment level for a replicate.
-#' If the call to \code{experiment} is not a factorial experiment (i.e., it is just
+#' If the call to `experiment` is not a factorial experiment (i.e., it is just
 #' replication), then the
-#' default is to put the replicate subdirectories at the top level of \code{outputPath}.
-#' To force this one level down, \code{dirPrefix} can be used or a manual change to
-#' \code{outputPath} before the call to experiment.
+#' default is to put the replicate subdirectories at the top level of `outputPath`.
+#' To force this one level down, `dirPrefix` can be used or a manual change to
+#' `outputPath` before the call to experiment.
 #'
-#' \code{dirPrefix} can be used to give custom names to directories for outputs.
-#' There is a special value, \code{"simNum"}, that is used as default, which is
+#' `dirPrefix` can be used to give custom names to directories for outputs.
+#' There is a special value, `"simNum"`, that is used as default, which is
 #' an arbitrary number  associated with the experiment.
-#' This corresponds to the row number in the \code{attr(sims, "experiment")}.
-#' This \code{"simNum"} can be used with other strings, such as
-#' \code{dirPrefix = c("expt", "simNum")}.
+#' This corresponds to the row number in the `attr(sims, "experiment")`.
+#' This `"simNum"` can be used with other strings, such as
+#' `dirPrefix = c("expt", "simNum")`.
 #'
 #' The experiment structure is kept in two places: the return object has an attribute,
-#' and a file named \code{experiment.RData} (see argument \code{experimentFile})
-#' located in \code{outputPath(sim)}.
+#' and a file named `experiment.RData` (see argument `experimentFile`)
+#' located in `outputPath(sim)`.
 #'
-#' \code{substrLength}, if \code{0}, will eliminate the subdirectory naming
-#' convention and use only \code{dirPrefix}.
+#' `substrLength`, if `0`, will eliminate the subdirectory naming
+#' convention and use only `dirPrefix`.
 #'
-#' If \code{cache = TRUE} is passed, then this will pass this to \code{spades},
-#' with the additional argument \code{replicate = x}, where x is the replicate number.
-#' That means that if a user runs \code{experiment} with \code{replicate = 4} and
-#' \code{cache = TRUE}, then SpaDES will run 4 replicates, caching the results,
+#' If `cache = TRUE` is passed, then this will pass this to `spades`,
+#' with the additional argument `replicate = x`, where x is the replicate number.
+#' That means that if a user runs `experiment` with `replicate = 4` and
+#' `cache = TRUE`, then SpaDES will run 4 replicates, caching the results,
 #' including replicate = 1, replicate = 2, replicate = 3, and replicate = 4.
 #' Thus, if a second call to experiment with the exact same simList is passed,
-#' and \code{replicates = 6}, the first 4 will be taken from the cached copies,
+#' and `replicates = 6`, the first 4 will be taken from the cached copies,
 #' and replicate 5 and 6 will be run (and cached) as normal.
-#' If \code{notOlderThan} used with a time that is more recent than the cached copy,
+#' If `notOlderThan` used with a time that is more recent than the cached copy,
 #' then a new spades will be done, and the cached copy will be deleted from the
 #' cache repository, so there will only ever be one copy of a particular replicate
 #' for a particular simList.
 #' NOTE: caching may not work as desired on a Windows machine because the sqlite
 #' database can only be written to one at a time, so there may be collisions.
 #'
-#' @return Invisibly returns a list of the resulting \code{simList} objects from the fully
+#' @return Invisibly returns a list of the resulting `simList` objects from the fully
 #' factorial experiment. This list has an attribute, which a list with 2 elements:
 #' the experimental design provided in a wide data.frame and the experiment values
 #' in a long data.frame. There is also a file saved with these two data.frames.
-#' It is named whatever is passed into \code{experimentFile}.
-#' Since returned list of \code{simList} objects may be large, the user is not obliged to
+#' It is named whatever is passed into `experimentFile`.
+#' Since returned list of `simList` objects may be large, the user is not obliged to
 #' return this object (as it is returned invisibly).
 #' Clearly, there may be objects saved during simulations. This would be determined as per a
-#' normal \code{\link[SpaDES.core]{spades}} call, using \code{outputs} like, say, \code{outputs(sims[[1]])}.
+#' normal [SpaDES.core::spades()] call, using `outputs` like, say, `outputs(sims[[1]])`.
 #'
-#' @seealso \code{\link{simInit}}
+#' @seealso [simInit()]
 #'
 #' @author Eliot McIntire
 #' @export
@@ -550,23 +550,23 @@ FunDef <- function(ind, sim, factorialExp, modules, params,
 #' Start and/or setup a parallel cluster
 #'
 #' This is mostly a wrapper around several functions in the \pkg{parallel} package:
-#' \code{makeCluster}, \code{clusterSetRNGStream}, \code{detectCores}.
+#' `makeCluster`, `clusterSetRNGStream`, `detectCores`.
 #'
 #' @param cl Either NULL, cluster, logical, or numeric. NULL returns NULL,
-#'   a \code{TRUE} logical or numeric will spawn a new SOCK cluster with
-#'   an "optimal" cluster number or \code{cl} cluster nodes respectively.
+#'   a `TRUE` logical or numeric will spawn a new SOCK cluster with
+#'   an "optimal" cluster number or `cl` cluster nodes respectively.
 #'   In the three latter cases, all necessary packages and objects will
 #'   be sent to each of the nodes.
 #' @param numClus The desired number of child clusters, passed to
-#'   \code{.optimalClusterNum} via \code{maxNumClusters}. If not provided,
-#'   \code{cl} must be provided.
+#'   `.optimalClusterNum` via `maxNumClusters`. If not provided,
+#'   `cl` must be provided.
 #'
 #' @param sim An optional simList object; this will be used to find the
 #'   packages required via setting
-#'   \code{packages = SpaDES.core::packages(sim, clean = TRUE)}
+#'   `packages = SpaDES.core::packages(sim, clean = TRUE)`
 #'
 #' @param packages a character vector indicating which packages to load in the
-#'   cluster. Will ignore this if the \code{sim} is provided.
+#'   cluster. Will ignore this if the `sim` is provided.
 #'
 #' @param outfile The location of the log file
 #'

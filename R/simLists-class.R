@@ -1,19 +1,19 @@
-#' The \code{simLists} class
+#' The `simLists` class
 #'
-#' This is a grouping of \code{simList} objects. Normally this class will be
-#' made using \code{experiment2}, but can be made manually if there are
-#' existing \code{simList} objects.
+#' This is a grouping of `simList` objects. Normally this class will be
+#' made using `experiment2`, but can be made manually if there are
+#' existing `simList` objects.
 #'
-#' @slot paths      Named list of \code{modulePath}, \code{inputPath},
-#'                  and \code{outputPath} paths. Partial matching is performed. These
-#'                  will be prepended to the relative paths of each \code{simList}
-#' @slot .xData  Environment holding the \code{simLists}.
+#' @slot paths      Named list of `modulePath`, `inputPath`,
+#'                  and `outputPath` paths. Partial matching is performed. These
+#'                  will be prepended to the relative paths of each `simList`
+#' @slot .xData  Environment holding the `simLists`.
 #'
 #' @section Accessor Methods:
 #'
 #' None yet defined:
 #' \tabular{ll}{
-#'   \code{\link{simList-accessors-envir}} \tab Simulation environment. \cr
+#'   [simList-accessors-envir()] \tab Simulation environment. \cr
 #' }
 #'
 #'
@@ -35,12 +35,12 @@ setClass(
   }
 )
 
-#' Generate a \code{simLists} object
+#' Generate a `simLists` object
 #'
 #' Given the name or the definition of a class, plus optionally data to be
-#' included in the object, \code{new} returns an object from that class.
+#' included in the object, `new` returns an object from that class.
 #'
-#' @param .Object  A \code{simList} object.
+#' @param .Object  A `simList` object.
 #' @param ... Optional Values passed to any or all slot
 #'
 #' @export
@@ -58,8 +58,8 @@ setMethod("initialize",
             return(.Object)
 })
 
-#' Show method for \code{simLists}
-#' @param object  \code{simLists}
+#' Show method for `simLists`
+#' @param object  `simLists`
 #'
 #' @author Eliot McIntire
 #' @importFrom utils capture.output ls.str tail

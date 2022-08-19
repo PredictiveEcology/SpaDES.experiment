@@ -3,7 +3,7 @@
 \name{experiment2}
 \alias{experiment2}
 \alias{experiment2,simList-method}
-\title{Run experiment, algorithm 2, using \code{\link[SpaDES.core]{spades}}}
+\title{Run experiment, algorithm 2, using \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}}
 \usage{
 experiment2(
   ...,
@@ -58,8 +58,8 @@ to each worker and run as \code{googledrive::drive_auth(drive_auth_account)} to 
 a specific user account for googledrive}
 
 \item{meanStaggerIntervalInSecs}{If used, this will use
-\code{Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,}
-\code{sd = meanStaggerIntervalInSecs/10))))} and distribute these delays to the workers.}
+\verb{Sys.sleep(cumsum(c(0, rnorm(nbrOfWorkers() - 1, mean = meanStaggerIntervalInSecs,}
+\verb{sd = meanStaggerIntervalInSecs/10))))} and distribute these delays to the workers.}
 }
 \value{
 Invisibly returns a \code{simLists} object. This class
@@ -76,7 +76,7 @@ for various backends and parallelism.0
 }
 \details{
 This function, because of its class formalism, allows for methods to be used. For example,
-\code{\link{as.data.table.simLists}} allows user to pull out specific objects (in
+\code{\link[=as.data.table.simLists]{as.data.table.simLists()}} allows user to pull out specific objects (in
 the \code{simList} objects or on disk saved in \code{outputPath(sim)}).
 
 The \code{outputPath} is changed so that every simulation puts outputs in a
@@ -181,8 +181,8 @@ have already been run. See example, via \code{new("simLists")}
 }
 }
 \seealso{
-\code{\link{as.data.table.simLists}},
-  \code{\link{simInit}}, \code{\link[SpaDES.core]{spades}}, \code{\link{experiment}}
+\code{\link[=as.data.table.simLists]{as.data.table.simLists()}},
+\code{\link[=simInit]{simInit()}}, \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}, \code{\link[=experiment]{experiment()}}
 }
 \author{
 Eliot McIntire
