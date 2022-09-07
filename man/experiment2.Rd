@@ -88,10 +88,11 @@ A \code{simLists} object can be made manually, if, say, many manual \code{spades
 have already been run. See example, via \code{new("simLists")}
 }
 \examples{
-
 \dontrun{
+  stopifnot(require("NLMR", quietly = TRUE))
   library(SpaDES.core)
   library(SpaDES.experiment)
+
   tmpdir <- file.path(tempdir(), "examples")
   # Make 3 simLists -- set up scenarios
   endTime <- 2
@@ -181,8 +182,7 @@ have already been run. See example, via \code{new("simLists")}
 }
 }
 \seealso{
-\code{\link[=as.data.table.simLists]{as.data.table.simLists()}},
-\code{\link[=simInit]{simInit()}}, \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}, \code{\link[=experiment]{experiment()}}
+\code{\link[=as.data.table.simLists]{as.data.table.simLists()}}, \code{\link[=simInit]{simInit()}}, \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}, \code{\link[=experiment]{experiment()}}
 }
 \author{
 Eliot McIntire

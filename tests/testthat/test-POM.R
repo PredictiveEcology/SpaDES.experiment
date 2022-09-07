@@ -1,10 +1,13 @@
 test_that("test POM", {
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
+
   testInitOut <- testInit(c("parallel", "raster"),
                           opts = list(spades.moduleCodeChecks = FALSE,
                                       spades.useRequire = FALSE),
                           setPaths = FALSE)
 
   try(clearCache(tmpdir), silent = TRUE)
+
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)

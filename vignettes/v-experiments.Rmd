@@ -10,13 +10,22 @@ self_contained: yes
 toc: yes
 vignette: >
   %\VignetteIndexEntry{05 Simulation Experiments}
-  %\VignetteDepends{SpaDES.core, SpaDES.tools}
+  %\VignetteDepends{NLMR, SpaDES.core, SpaDES.tools}
   %\VignetteKeyword{experiment}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
 ---
+
+```{r setup, include=FALSE}
+hasSuggests <- all(
+  require("NLMR", quietly = TRUE),
+  require("SpaDES.tools", quietly = TRUE)
+)
+
+knitr::opts_chunk$set(eval = hasSuggests)
+```
 
 ## Running a groups of simulations: the `experiment` function
 
@@ -26,9 +35,11 @@ There are two functions, `experiment` and `experiment2` to do this. These both g
 With `experiment`, for example, you can pass alternative values to parameters in modules and the `experiment` will build a fully factorial experiment, with replication and run them.
 This function (as with `POM` and `splitRaster`) is parallel-aware and can either proceed with a cluster object (`cl` argument) or a cluster running in the background using the `raster::beginCluster`.
 
-```{r experiment, eval=TRUE, echo=TRUE}
-library(SpaDES.experiment)
+```{r experiment, echo=TRUE}
 tmpdir <- file.path(tempdir(), "experiment")
+
+library("SpaDES.core")
+library("SpaDES.experiment")
 
 # Copy Example 5 here:
 mySim <- simInit(
@@ -44,7 +55,6 @@ mySim <- simInit(
 sims <- experiment(mySim, replicates = 2, .plotInitialTime = NA) # no plotting
 attr(sims, "experiment")$expDesign # shows 2 replicates of same experiment
 ```
-
 
 ## Caching at the experiment level
 
@@ -100,7 +110,6 @@ dir(outputPath(mySim), recursive = TRUE)
 ```
 
 Notice that speed up can be enormous; in this case ~100 times faster.
-
 
 ## Nested Caching
 

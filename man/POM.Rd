@@ -205,7 +205,7 @@ If \code{weights} is passed, then these weighted values will be reflected
 in the \file{ObjectiveFnValues.txt} file.
 }
 \examples{
-if (interactive()) {
+if (interactive() && require("NLMR", quietly = TRUE)) {
   set.seed(89462)
   library(parallel)
   library(raster)

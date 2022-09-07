@@ -253,7 +253,7 @@ setMethod(
           # scallsFirstElement <- lapply(sys.calls(), function(x) x[1])
           # POMFrameNum <- grep(scallsFirstElement, pattern = "POM")
 
-          envPOMCalled <- sys.frame(min(POMFrameNum)-1)
+          envPOMCalled <- sys.frame(min(POMFrameNum) - 1)
 
           objectiveRes <- lapply(seq_along(outputObjects), function(x) {
             if (is(outputObjects[[x]], "Raster")) {

@@ -33,4 +33,4 @@ There are no ERRORs nor WARNINGs.
 
 ## Downstream dependencies
 
-None as this is a new package
+None as this is a new package.

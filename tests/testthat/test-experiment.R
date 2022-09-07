@@ -1,5 +1,8 @@
 test_that("experiment does not work correctly", {
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
+
   testInitOut <- testInit(c("SpaDES.experiment", "raster"), smcc = FALSE)
+
   on.exit({
     testOnExit(testInitOut)
   }, add = TRUE)
@@ -146,8 +149,9 @@ test_that("experiment does not work correctly", {
 
 test_that("parallel does not work with experiment function", {
   skip_on_cran()
-  skip_on_travis()
-  skip_on_appveyor()
+  skip_on_ci()
+
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
 
   skip("Can't automatically test parallel processing - Run Manually")
 
@@ -198,6 +202,8 @@ test_that("parallel does not work with experiment function", {
 })
 
 test_that("simInitAndExperiment", {
+  skip_if_not_installed("NLMR") ## required by randomLandscapes module
+
   testInitOut <- testInit("SpaDES.experiment", opts = list("spades.moduleCodeChecks" = FALSE))
   on.exit({
     testOnExit(testInitOut)
