@@ -137,6 +137,7 @@ setMethod(
                       createUniquePaths = createUniquePaths,
                       useCache = useCache,
                       .spades = .spades,
+                      spadesOptions = options(),
                       debug = debug,
                       drive_auth_account = drive_auth_account),
       FUN = experiment2Inner,
@@ -152,7 +153,7 @@ setMethod(
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
 experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
-                             simName, name, useCache = FALSE,
+                             simName, name, useCache = FALSE, spadesOptions = options(),
                              debug = getOption("spades.debug"), drive_auth_account,
                              ...) {
   message(paste0("Sleeping ", round(staggerInSecs, 1), " seconds"))
@@ -163,14 +164,15 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
     drive_auth(drive_auth_account)
 
   s <- Cache(.spades, sim, useCache = useCache, simName,
-             debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
+             debug = debug, clearSimEnv = clearSimEnv, spadesOptions = spadesOptions,
+             ..., omitArgs = "debug")
   s
 }
 
 #' @importFrom future plan
 #' @importFrom reproducible Copy
 .spades <- function(sim, debug = getOption("spades.debug"),
-                    clearSimEnv = FALSE, ...) {
+                    clearSimEnv = FALSE, spadesOptions = options(), ...) {
   # don't make a copy if it is callr or multisession because future will make the copy
   if (!any(c("callr", "multisession") %in% attr(plan(), "class"))) {
     a <- Sys.time()
@@ -179,6 +181,7 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
     b <- Sys.time()
     message(format(b - a), " to Copy")
   }
+  options(spadesOptions)
   s <- spades(sim, debug = debug, ...)
   if (isTRUE(clearSimEnv))
     rm(list = ls(s, all.names = TRUE), envir = envir(s))
