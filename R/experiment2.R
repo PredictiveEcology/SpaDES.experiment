@@ -128,6 +128,7 @@ setMethod(
     staggersInSecs <- cumsum(c(0, rnorm(length(nbrOfWorkers())-1, mean = meanStaggerIntervalInSecs,
                               sd = meanStaggerIntervalInSecs/10)))
 
+    allOpts <- options()
     out <- future_mapply(
       name = namsExpanded,
       simName = simNames,
@@ -137,7 +138,7 @@ setMethod(
                       createUniquePaths = createUniquePaths,
                       useCache = useCache,
                       .spades = .spades,
-                      spadesOptions = options(),
+                      allOpts = allOpts,
                       debug = debug,
                       drive_auth_account = drive_auth_account),
       FUN = experiment2Inner,
@@ -153,7 +154,7 @@ setMethod(
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
 experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
-                             simName, name, useCache = FALSE, spadesOptions = options(),
+                             simName, name, useCache = FALSE, allOpts,
                              debug = getOption("spades.debug"), drive_auth_account,
                              ...) {
   message(paste0("Sleeping ", round(staggerInSecs, 1), " seconds"))
