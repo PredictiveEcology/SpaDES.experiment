@@ -164,8 +164,9 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
   if (!is.null(drive_auth_account))
     drive_auth(drive_auth_account)
 
+  options(allOpts)
   s <- Cache(.spades, sim, useCache = useCache, simName,
-             debug = debug, clearSimEnv = clearSimEnv, spadesOptions = spadesOptions,
+             debug = debug, clearSimEnv = clearSimEnv,
              ..., omitArgs = "debug")
   s
 }
@@ -173,7 +174,7 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
 #' @importFrom future plan
 #' @importFrom reproducible Copy
 .spades <- function(sim, debug = getOption("spades.debug"),
-                    clearSimEnv = FALSE, spadesOptions = options(), ...) {
+                    clearSimEnv = FALSE, ...) {
   # don't make a copy if it is callr or multisession because future will make the copy
   if (!any(c("callr", "multisession") %in% attr(plan(), "class"))) {
     a <- Sys.time()
@@ -182,7 +183,7 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
     b <- Sys.time()
     message(format(b - a), " to Copy")
   }
-  options(spadesOptions)
+
   s <- spades(sim, debug = debug, ...)
   if (isTRUE(clearSimEnv))
     rm(list = ls(s, all.names = TRUE), envir = envir(s))
