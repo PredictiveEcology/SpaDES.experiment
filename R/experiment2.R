@@ -78,6 +78,7 @@ setGeneric(
 })
 
 #' @importFrom future.apply future_lapply future_mapply
+#' @importFrom future nbrOfWorkers
 #' @importFrom googledrive drive_auth
 #' @importFrom SpaDES.core packages
 #' @rdname experiment2
@@ -127,6 +128,7 @@ setMethod(
     staggersInSecs <- cumsum(c(0, rnorm(length(nbrOfWorkers())-1, mean = meanStaggerIntervalInSecs,
                               sd = meanStaggerIntervalInSecs/10)))
 
+    allOpts <- options()
     out <- future_mapply(
       name = namsExpanded,
       simName = simNames,
@@ -136,6 +138,7 @@ setMethod(
                       createUniquePaths = createUniquePaths,
                       useCache = useCache,
                       .spades = .spades,
+                      allOpts = allOpts,
                       debug = debug,
                       drive_auth_account = drive_auth_account),
       FUN = experiment2Inner,
@@ -151,7 +154,7 @@ setMethod(
 #' @importFrom SpaDES.core outputPath outputPath<- envir
 #' @importFrom reproducible Cache
 experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
-                             simName, name, useCache = FALSE,
+                             simName, name, useCache = FALSE, allOpts,
                              debug = getOption("spades.debug"), drive_auth_account,
                              ...) {
   message(paste0("Sleeping ", round(staggerInSecs, 1), " seconds"))
@@ -161,8 +164,10 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
   if (!is.null(drive_auth_account))
     drive_auth(drive_auth_account)
 
+  options(allOpts)
   s <- Cache(.spades, sim, useCache = useCache, simName,
-             debug = debug, clearSimEnv = clearSimEnv, ..., omitArgs = "debug")
+             debug = debug, clearSimEnv = clearSimEnv,
+             ..., omitArgs = "debug")
   s
 }
 
@@ -178,6 +183,7 @@ experiment2Inner <- function(sim, clearSimEnv, staggerInSecs, createUniquePaths,
     b <- Sys.time()
     message(format(b - a), " to Copy")
   }
+
   s <- spades(sim, debug = debug, ...)
   if (isTRUE(clearSimEnv))
     rm(list = ls(s, all.names = TRUE), envir = envir(s))
