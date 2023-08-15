@@ -49,7 +49,7 @@ Suggests:
     SpaDES.tools (>= 0.2.0),
     testthat (>= 1.0.2)
 Remotes:
-    ropensci/NLMR
+    ropensci/NLMR,
     PredictiveEcology/quickPlot@development,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/SpaDES.core@development,
