@@ -59,7 +59,7 @@ jobs:
       - name: Install additional package dependencies
         run: |
           pak::pkg_install("remotes")
-          pak::pkg_install("ropensci/NLMR")
+          remotes::install_github("ropensci/NLMR")
           remotes::install_github("s-u/fastshp")
           PredictiveEcology/reproducible@development
           PredictiveEcology/SpaDES.core@development
