@@ -38,7 +38,7 @@ jobs:
             any::pkgdown
             local::.
             fastshp=?ignore
-            NLMR=?ignore
+            ropensci/NLMR
             PredictiveEcology/reproducible@development
             PredictiveEcology/SpaDES.core@development
             PredictiveEcology/SpaDES.tools@development

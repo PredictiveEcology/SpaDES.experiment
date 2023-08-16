@@ -35,7 +35,7 @@ jobs:
           extra-packages: |
             any::covr
             fastshp=?ignore
-            NLMR=?ignore
+            ropensci/NLMR
             PredictiveEcology/reproducible@development
             PredictiveEcology/SpaDES.core@development
             PredictiveEcology/SpaDES.tools@development
