@@ -22,7 +22,7 @@ Authors@R: c(
            role = "cph")
     )
 Depends:
-    R (>= 4.0),
+    R (>= 4.1),
     reproducible (>= 0.2.11),
     SpaDES.core (>= 0.2.7)
 Imports:
