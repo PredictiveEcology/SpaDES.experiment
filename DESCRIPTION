@@ -51,6 +51,8 @@ Suggests:
 Remotes:
     ropensci/NLMR,
     PredictiveEcology/quickPlot@development,
+    cran/RandomFields,
+    cran/RandomFieldsUtils,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/SpaDES.core@development,
     PredictiveEcology/SpaDES.tools@development
