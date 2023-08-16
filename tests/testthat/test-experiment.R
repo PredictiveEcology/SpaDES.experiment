@@ -51,10 +51,11 @@ test_that("experiment does not work correctly", {
   params <- sapply(strsplit(names(exptDesign)[-(4:5)], split = "\\."), function(x) x[[2]])
   out2 <- lapply(seq_along(mods), function(y) {
     out <- lapply(seq_len(NROW(exptDesign)), function(x) {
-      expect_equivalent(0, params(sims[[x]])[[mods[y]]][[params[[y]]]] -
-                          setDT(exptVals)[module == mods[[y]] &
-                                            param == params[[y]] &
-                                            expLevel == x]$val %>% unlist())
+      expect_equal(0, params(sims[[x]])[[mods[y]]][[params[[y]]]] -
+                     setDT(exptVals)[module == mods[[y]] &
+                                       param == params[[y]] &
+                                       expLevel == x]$val %>% unlist(),
+                   ignore_attr = TRUE)
     })
   })
 
