@@ -1,4 +1,7 @@
-if (interactive() && require(igraph, quietly = TRUE) && require("NLMR", quietly = TRUE)) {
+if (interactive() &&
+    require("igraph", quietly = TRUE) &&
+    require("NLMR", quietly = TRUE) &&
+    require("RColorBrewer", quietly = TRUE)) {
   # use %>% in a few examples
   library(raster)
 

@@ -10,12 +10,12 @@ Description: Tools to do simulation experiments within the SpaDES ecosystem.
 URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2022-09-10
-Version: 0.0.2.9004
+Date: 2023-08-15
+Version: 0.0.2.9005
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
            role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
-    person("Alex M", "Chubaty", email = "alex.chubaty@gmail.com",
+    person("Alex M", "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut"), comment = c(ORCID = "0000-0001-7146-8135")),
     person(paste("Her Majesty the Queen in Right of Canada,",
                  "as represented by the Minister of Natural Resources Canada"),
@@ -44,16 +44,20 @@ Suggests:
     igraph,
     knitr,
     quickPlot,
+    RColorBrewer,
     rmarkdown,
     sf,
     SpaDES.tools (>= 0.2.0),
-    testthat (>= 1.0.2)
+    testthat (>= 3.0.0)
 Remotes:
-    achubaty/NLMR,
+    ropensci/NLMR,
     PredictiveEcology/quickPlot@development,
+    cran/RandomFields,
+    cran/RandomFieldsUtils,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/SpaDES.core@development,
     PredictiveEcology/SpaDES.tools@development
+Additional_repositories: https://predictiveecology.r-universe.dev/
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
@@ -69,5 +73,6 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
