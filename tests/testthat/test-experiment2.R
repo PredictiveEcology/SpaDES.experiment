@@ -1,6 +1,7 @@
 test_that("experiment2 test 1", {
   skip_on_cran()
 
+  skip_if_not_installed("ggplot2")
   skip_if_not_installed("NLMR") ## required by randomLandscapes module
   skip_if_not_installed("RColorBrewer") ## required by sample modules
 

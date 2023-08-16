@@ -40,6 +40,7 @@ Imports:
 Suggests:
     covr,
     future.callr,
+    ggplot2,
     igraph,
     knitr,
     NLMR (>= 1.1.1),

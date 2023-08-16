@@ -44,7 +44,8 @@ See examples.
 }
 \examples{
 \dontrun{
-  if (require("NLMR", quietly = TRUE) &&
+  if (require("ggplot2", quietly = TRUE) &&
+      require("NLMR", quietly = TRUE) &&
       require("RColorBrewer", quietly = TRUE)) {
     library(SpaDES.core)
     library(SpaDES.experiment)
