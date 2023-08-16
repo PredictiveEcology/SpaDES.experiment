@@ -47,7 +47,7 @@ Suggests:
     rmarkdown,
     sf,
     SpaDES.tools (>= 0.2.0),
-    testthat (>= 1.0.2)
+    testthat (>= 3.0.0)
 Remotes:
     ropensci/NLMR,
     PredictiveEcology/quickPlot@development,
@@ -72,5 +72,6 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3

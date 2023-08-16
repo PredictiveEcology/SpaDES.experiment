@@ -113,10 +113,8 @@ parallel::makeCluster or equivalent. This is an alternative way, instead
 of \code{beginCluster()}, to use parallelism for this function, allowing for
 more control over cluster use.}
 
-\item{...}{Passed to \code{spades}. Specifically, \code{debug}, \code{.plotInitialTime},
-\code{.saveInitialTime}, \code{cache} and/or \code{notOlderThan}. Caching
-is still experimental. It is tested to work under some conditions, but not
-all. See details.}
+\item{...}{An alternative way to pass \code{objects}, i.e., they can just be named
+arguments rather than in a \code{objects = list(...)}}
 }
 \description{
 Run \code{simInit} and \code{Experiment} in one step
