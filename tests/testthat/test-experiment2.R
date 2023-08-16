@@ -1,7 +1,9 @@
 test_that("experiment2 test 1", {
-  #if (!interactive())
   skip_on_cran()
+
   skip_if_not_installed("NLMR") ## required by randomLandscapes module
+  skip_if_not_installed("RColorBrewer") ## required by sample modules
+
   testInitOut <- testInit(c("raster", "future.callr", "future", "ggplot2", "data.table"),
                           smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
@@ -265,7 +267,7 @@ test_that("experiment2 test 1", {
   }
 })
 
-test_that("simLists tests", {
+test_that("simLists tests 1", {
   testInitOut <- testInit("future", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)
@@ -298,7 +300,7 @@ test_that("simLists tests", {
   expect_true(identical("hello", setdiff(lsOrig, lsClear)))
 })
 
-test_that("simLists tests", {
+test_that("simLists tests 2", {
   testInitOut <- testInit("parallel", smcc = FALSE, opts = list(reproducible.useMemoise = FALSE))
   on.exit({
     testOnExit(testInitOut)

@@ -1,5 +1,6 @@
 test_that("test POM", {
   skip_if_not_installed("NLMR") ## required by randomLandscapes module
+  skip_if_not_installed("RColorBrewer") ## required by sample modules
 
   testInitOut <- testInit(c("parallel", "raster"),
                           opts = list(spades.moduleCodeChecks = FALSE,

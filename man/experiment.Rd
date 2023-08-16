@@ -215,7 +215,10 @@ NOTE: caching may not work as desired on a Windows machine because the sqlite
 database can only be written to one at a time, so there may be collisions.
 }
 \examples{
-if (interactive() && require(igraph, quietly = TRUE) && require("NLMR", quietly = TRUE)) {
+if (interactive() &&
+    require("igraph", quietly = TRUE) &&
+    require("NLMR", quietly = TRUE) &&
+    require("RColorBrewer", quietly = TRUE)) {
   # use \%>\% in a few examples
   library(raster)
 
