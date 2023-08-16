@@ -35,16 +35,12 @@ jobs:
           extra-packages: |
             any::covr
             fastshp=?ignore
-            ropensci/NLMR
-            PredictiveEcology/reproducible@development
-            PredictiveEcology/SpaDES.core@development
-            PredictiveEcology/SpaDES.tools@development
+            cran/RandomFields
+            cran/RandomFieldsUtils
 
       - name: Install additional package dependencies
         run: |
-          pak::pkg_install("remotes")
-          remotes::install_github("s-u/fastshp")
-          remotes::install_github("ropensci/NLMR")
+          pak::pkg_install("s-u/fastshp")
         shell: Rscript {0}
 
       - name: Test coverage
