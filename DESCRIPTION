@@ -31,7 +31,6 @@ Imports:
     future,
     future.apply,
     googledrive,
-    magrittr,
     methods,
     parallel,
     purrr,

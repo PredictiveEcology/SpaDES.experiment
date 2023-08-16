@@ -35,14 +35,14 @@ test_that("experiment does not work correctly", {
   )
 
   sims <- experiment(mySimFull, params = experimentParams)
-  expt <- load(file.path(tmpdir, "experiment.RData")) %>% get() # Loads an object named experiment
+  expt <- load(file.path(tmpdir, "experiment.RData")) |> get() # Loads an object named experiment
   exptDesign <- expt$expDesign
   exptVals <- expt$expVals
 
   expect_equal(NROW(exptDesign), 4)
-  expect_equal(exptVals[exptVals$module == "caribouMovement", "val"] %>% unlist(),
+  expect_equal(exptVals[exptVals$module == "caribouMovement", "val"] |> unlist(),
                c(rep(caribouNums, each = 2)))
-  expect_equal(exptVals$modules %>% unique(),
+  expect_equal(exptVals$modules |> unique(),
                "randomLandscapes,fireSpread,caribouMovement")
   expect_equal(NROW(attr(sims, "experiment")$expDesign), NROW(exptDesign))
 
@@ -54,13 +54,13 @@ test_that("experiment does not work correctly", {
       expect_equal(0, params(sims[[x]])[[mods[y]]][[params[[y]]]] -
                      setDT(exptVals)[module == mods[[y]] &
                                        param == params[[y]] &
-                                       expLevel == x]$val %>% unlist(),
+                                       expLevel == x]$val |> unlist(),
                    ignore_attr = TRUE)
     })
   })
 
   sims <- experiment(mySimFull, replicates = 3)
-  expt <- load(file.path(tmpdir, "experiment.RData")) %>% get() # Loads an object named experiment
+  expt <- load(file.path(tmpdir, "experiment.RData")) |> get() # Loads an object named experiment
   exptDesign <- expt$expDesign
   exptVals <- expt$expVals
   out <- lapply(seq_along(sims), function(x) {
@@ -68,7 +68,7 @@ test_that("experiment does not work correctly", {
     expect_equal(
       outputs(sims[[x]])$file,
       file.path(normPath(tmpdir), paste0("rep", x),
-                paste0(c("landscape", "caribou"), "_year2.rds")) %>%
+                paste0(c("landscape", "caribou"), "_year2.rds")) |>
         normPath()
     )
   })
@@ -139,7 +139,7 @@ test_that("experiment does not work correctly", {
   expect_equal(sims[[1]], sims2[[1]])
 
   # Test object passing in
-  experimentObj <- list(landscape = lapply(landscapeFiles, readRDS) %>%
+  experimentObj <- list(landscape = lapply(landscapeFiles, readRDS) |>
                           setNames(paste0("landscape", 1:2)))
   # Pass in this list of landscape objects
   set.seed(1232)
@@ -228,7 +228,7 @@ test_that("simInitAndExperiment", {
 
   set.seed(123)
   mySim2 <- simInit(times = times, params = params,
-                    modules = modules, objects = list(), paths = paths) %>%
+                    modules = modules, objects = list(), paths = paths) |>
     experiment(debug = FALSE)
 
   expect_true(all.equal(mySim, mySim2))

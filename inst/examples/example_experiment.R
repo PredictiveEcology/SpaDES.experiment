@@ -2,7 +2,7 @@ if (interactive() &&
     require("igraph", quietly = TRUE) &&
     require("NLMR", quietly = TRUE) &&
     require("RColorBrewer", quietly = TRUE)) {
-  # use %>% in a few examples
+
   library(raster)
 
   tmpdir <- file.path(tempdir(), "examples")
@@ -155,8 +155,8 @@ if (interactive() &&
 
   # Can read in fires layers from disk since they were saved, or from the sims
   #  object
-  # fires <- lapply(sims, function(x) x$landscape$fires) %>% stack
-  fires <- lapply(landscapeFiles, function(x) readRDS(x)$fires) %>% stack()
+  # fires <- lapply(sims, function(x) x$landscape$fires) |> stack()
+  fires <- lapply(landscapeFiles, function(x) readRDS(x)$fires) |> stack()
   fires[fires > 0] <- 1 # convert to 1s and 0s
   fireProb <- sum(fires) / nlayers(fires) # sum them and convert to probability
   if (interactive()) Plot(fireProb, new = TRUE)
@@ -192,7 +192,8 @@ if (interactive() &&
    )
 
   # load in experimental design object
-  experiment <- load(file = file.path(tmpdir, "example9", "experiment.RData")) %>% get()
+  experiment <- load(file = file.path(tmpdir, "example9", "experiment.RData")) |>
+    get()
   print(experiment) # shows input files and details
 
   # Example 10 - Use a very simple output dir name using substrLength = 0,
@@ -201,7 +202,8 @@ if (interactive() &&
   sims <- experiment(mySim, modules = experimentModules, replicates = 2,
                      substrLength = 0)
   lapply(sims, outputPath) # shows that the path is just the simNum
-  experiment <- load(file = file.path(tmpdir, "example10", "experiment.RData")) %>% get()
+  experiment <- load(file = file.path(tmpdir, "example10", "experiment.RData")) |>
+    get()
   print(experiment) # shows input files and details
 
   # Example 11 - use clearSimEnv = TRUE to remove objects from simList
@@ -209,16 +211,16 @@ if (interactive() &&
   #  return from experiment function may be a large object (it is a list of
   # simLists). To see size of a simList, you have to look at the objects
   #  contained in the  envir(simList).  These can be obtained via objs(sim)
-  sapply(sims, function(x) object.size(objs(x))) %>% sum + object.size(sims)
+  sapply(sims, function(x) object.size(objs(x))) |> sum() + object.size(sims)
   # around 3 MB
   # rerun with clearSimEnv = TRUE
   sims <- experiment(mySim, modules = experimentModules, replicates = 2,
                      substrLength = 0, clearSimEnv = TRUE)
-  sapply(sims, function(x) object.size(objs(x))) %>% sum + object.size(sims)
+  sapply(sims, function(x) object.size(objs(x))) |> sum() + object.size(sims)
   # around 250 kB, i.e., all the simList contents except the objects.
 
   # Example 12 - pass in objects
-  experimentObj <- list(landscape = lapply(landscapeFiles, readRDS) %>%
+  experimentObj <- list(landscape = lapply(landscapeFiles, readRDS) |>
                                     setNames(paste0("landscape", 1:2)))
   # Pass in this list of landscape objects
   sims <- experiment(mySimNoRL, objects = experimentObj)

@@ -174,7 +174,6 @@
 #'
 #' @author Eliot McIntire
 #' @export
-#' @importFrom magrittr %>%
 #' @importClassesFrom SpaDES.core simList
 #' @importFrom data.table rbindlist
 #' @importFrom SpaDES.core spades
@@ -222,12 +221,12 @@ setMethod(
 
     #if (length(modules) == 0) modules <- list(modules(sim)[-(1:4)])
     factorialExpList <- lapply(seq_along(modules), function(x) {
-      paramsTmp <- pmatch(modules[[x]], names(params)) %>% na.omit
+      paramsTmp <- pmatch(modules[[x]], names(params)) |> na.omit()
       factorsTmp <- if (NROW(paramsTmp) > 0) {
         # unlist(params[paramsTmp], recursive = FALSE)
         lapply(params[paramsTmp], function(z) {
           lapply(z, function(y) seq_along(y))
-        }) %>% unlist(recursive = FALSE)
+        }) |> unlist(recursive = FALSE)
       } else {
         params
       }
@@ -253,7 +252,7 @@ setMethod(
       }
       factorialExpInner
     })
-    factorialExp <- rbindlist(factorialExpList, fill = TRUE) %>%
+    factorialExp <- rbindlist(factorialExpList, fill = TRUE) |>
       data.frame(stringsAsFactors = FALSE)
     numExpLevels <- NROW(factorialExp)
     factorialExp$expLevel <- seq_len(numExpLevels)
@@ -305,7 +304,7 @@ setMethod(
     #lapply(cachePaths, function(from) mergeCache(cachePath(sim), from))
     #unlink(cachePaths, recursive = TRUE)
     expDFs <- lapply(expOut, function(x) x[[2]])
-    experimentDF <- rbindlist(expDFs, fill = TRUE, use.names = TRUE) %>%
+    experimentDF <- rbindlist(expDFs, fill = TRUE, use.names = TRUE) |>
       data.frame(stringsAsFactors = FALSE)
 
     keepCols <- names(experimentDF) %in% c(names(factorialExp),
@@ -342,9 +341,9 @@ FunDef <- function(ind, sim, factorialExp, modules, params,
                    ...) { # nolint
   dtOrig <- data.table::setDTthreads(2)
   on.exit(data.table::setDTthreads(dtOrig), add = TRUE)
-  mod <- strsplit(names(factorialExp), split = "\\.") %>%
+  mod <- strsplit(names(factorialExp), split = "\\.") |>
     sapply(function(x) x[1])
-  param <- strsplit(names(factorialExp), split = "\\.") %>%
+  param <- strsplit(names(factorialExp), split = "\\.") |>
     sapply(function(x) x[2])
   param[is.na(param)] <- ""
 
@@ -473,8 +472,8 @@ FunDef <- function(ind, sim, factorialExp, modules, params,
       file.path(nn)
     }
   }
-  newOutputPath <- file.path(paths(sim_)$outputPath, dirName) %>%
-    gsub(pattern = "/$", replacement = "") %>%  # nolint
+  newOutputPath <- file.path(paths(sim_)$outputPath, dirName) |>
+    gsub(pattern = "/$", replacement = "") |>  # nolint
     gsub(pattern = "//", replacement = "/")
   if (!dir.exists(newOutputPath)) dir.create(newOutputPath, recursive = TRUE)
   paths(sim_)$outputPath <- newOutputPath
