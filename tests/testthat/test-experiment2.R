@@ -71,7 +71,7 @@ test_that("experiment2 test 1", {
   )
 
   planTypes <- c("sequential", "multisession")
-  planTypes <- if (requireNamespace("future.callr", quietly = TRUE)) c(planTypes, "callr")
+  planTypes <- if (requireNamespace("future.callr", quietly = TRUE)) c(planTypes, "callr") else planTypes
   # planTypes <- c("sequential")
   for (pl in planTypes) {
     cat(" -- testing future plan when", pl, "                ")
