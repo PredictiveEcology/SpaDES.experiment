@@ -9,13 +9,20 @@
 \if{html}{\figure{SpaDES.png}{options: width=100 alt="SpaDES logo" style="float: right;"}}
 \if{latex}{\figure{SpaDES.png}{options: width=0.5in}}
 
-This package provides additional tools to do simulation experiments within the \code{SpaDES}
-ecosystem.
-This includes replication, parameter sweeps, scenario analysis, pattern oriented modeling,
-and simulation experiments.
-The package introduces a new object class, the \code{simLists}, which is an environment that
-contains many \code{simList} objects.
-This package also includes tools to do post hoc analyses of such \code{simLists} objects.
+\strong{\code{SpaDES.experiment} is deprecated and no longer maintained.} Its
+experiment functionality has moved to the
+\href{https://github.com/PredictiveEcology/SpaDES.project}{SpaDES.project}
+package, which is now its maintained home: \code{experiment()}, \code{experiment2()},
+\code{simInitAndExperiment()}, the \code{simLists} class and \code{as.data.table.simLists()}
+all live there. The same-named functions here are thin shims that forward to
+\code{SpaDES.project} (when installed). Please migrate:
+\code{remotes::install_github("PredictiveEcology/SpaDES.project")}.
+
+Historically, this package provided tools to do simulation experiments within
+the \code{SpaDES} ecosystem -- replication, parameter sweeps, scenario analysis,
+pattern oriented modeling, and simulation experiments -- and introduced the
+\code{simLists} class (an environment holding many \code{simList} objects) plus tools
+for post hoc analyses of such objects.
 
 Bug reports: \url{https://github.com/PredictiveEcology/SpaDES.experiment/issues}
 

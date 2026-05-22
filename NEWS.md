@@ -3,6 +3,7 @@ Known issues: https://github.com/PredictiveEcology/SpaDES.experiment/issues
 version 0.0.2.9006
 =============
 
+* **The whole package is deprecated and no longer maintained.** Its functionality has moved to `SpaDES.project` (its maintained home). Loading the package now prints a deprecation notice on attach. CI is left as-is (failing) intentionally.
 * `experiment()`, `experiment2()` and `simInitAndExperiment()` are **deprecated**; they have moved to the `SpaDES.project` package, which is now their maintained home. The functions here forward to `SpaDES.project::*` (when installed) and emit a deprecation message. Please switch to `SpaDES.project::experiment()` / `experiment2()` / `simInitAndExperiment()`.
 
 version 0.0.2.9000

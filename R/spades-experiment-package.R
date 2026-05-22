@@ -10,13 +10,20 @@
 #' \if{html}{\figure{SpaDES.png}{options: width=100 alt="SpaDES logo" style="float: right;"}}
 #' \if{latex}{\figure{SpaDES.png}{options: width=0.5in}}
 #'
-#' This package provides additional tools to do simulation experiments within the `SpaDES`
-#' ecosystem.
-#' This includes replication, parameter sweeps, scenario analysis, pattern oriented modeling,
-#' and simulation experiments.
-#' The package introduces a new object class, the `simLists`, which is an environment that
-#' contains many `simList` objects.
-#' This package also includes tools to do post hoc analyses of such `simLists` objects.
+#' **`SpaDES.experiment` is deprecated and no longer maintained.** Its
+#' experiment functionality has moved to the
+#' [SpaDES.project](https://github.com/PredictiveEcology/SpaDES.project)
+#' package, which is now its maintained home: `experiment()`, `experiment2()`,
+#' `simInitAndExperiment()`, the `simLists` class and `as.data.table.simLists()`
+#' all live there. The same-named functions here are thin shims that forward to
+#' `SpaDES.project` (when installed). Please migrate:
+#' `remotes::install_github("PredictiveEcology/SpaDES.project")`.
+#'
+#' Historically, this package provided tools to do simulation experiments within
+#' the `SpaDES` ecosystem -- replication, parameter sweeps, scenario analysis,
+#' pattern oriented modeling, and simulation experiments -- and introduced the
+#' `simLists` class (an environment holding many `simList` objects) plus tools
+#' for post hoc analyses of such objects.
 #'
 #' Bug reports: <https://github.com/PredictiveEcology/SpaDES.experiment/issues>
 #'
@@ -27,3 +34,15 @@
 #' @import methods
 #' @rdname SpaDES.experiment-package
 "_PACKAGE"
+
+# Whole-package deprecation notice on attach.
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage(
+    "SpaDES.experiment is DEPRECATED and no longer maintained.\n",
+    "Its experiment functions -- experiment(), experiment2() and ",
+    "simInitAndExperiment() --\n",
+    "have moved to SpaDES.project; the versions here simply forward to it.\n",
+    "Please migrate: ",
+    "remotes::install_github('PredictiveEcology/SpaDES.project')"
+  )
+}
