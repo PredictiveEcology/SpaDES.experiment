@@ -6,6 +6,14 @@
 
 <img align="right" width="80" vspace="10" hspace="10" src="https://github.com/PredictiveEcology/SpaDES/raw/master/docs/images/SpaDES.png">
 
+> ⚠️ **`SpaDES.experiment` is deprecated and no longer maintained.**
+> Its experiment functionality has moved to
+> [`SpaDES.project`](https://spades-project.predictiveecology.org), which is now
+> its maintained home: `experiment()`, `experiment2()`, `simInitAndExperiment()`,
+> the `simLists` class and `as.data.table.simLists()` all live there. The
+> same-named functions here simply forward to `SpaDES.project`. Please migrate:
+> `remotes::install_github("PredictiveEcology/SpaDES.project")`.
+
 # SpaDES.experiment
 
 Tools to build simulation experiments within the `SpaDES` ecosystem.
