@@ -1,17 +1,20 @@
 Package: SpaDES.experiment
 Type: Package
-Title: Simulation Experiments Within The SpaDES Ecosystem
-Description: Tools to do simulation experiments within the SpaDES ecosystem. 
-  This includes replication, parameter sweeps, scenario analysis, 
-  pattern oriented modeling, and simulation experiments. The package introduces
-  a new object class, the simLists, which is an environment that contains
-  many simList class objects. This package also includes tools to do post hoc 
-  analyses of such simLists objects.
+Title: Simulation Experiments Within The SpaDES Ecosystem (Deprecated)
+Description: DEPRECATED and no longer maintained: this functionality has moved
+  to the 'SpaDES.project' package, which is now its maintained home. The
+  experiment functions here (experiment(), experiment2(),
+  simInitAndExperiment()) forward to 'SpaDES.project'. Historically, this
+  package provided tools to do simulation experiments within the SpaDES
+  ecosystem, including replication, parameter sweeps, scenario analysis,
+  pattern oriented modeling, and simulation experiments, and introduced the
+  simLists class (an environment that contains many simList class objects)
+  plus tools to do post hoc analyses of such objects.
 URL:
     https://spades-experiment.predictiveecology.org/,
     https://github.com/PredictiveEcology/SpaDES.experiment
-Date: 2023-08-15
-Version: 0.0.2.9005
+Date: 2026-05-22
+Version: 0.0.2.9006
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
            role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
@@ -47,6 +50,7 @@ Suggests:
     RColorBrewer,
     rmarkdown,
     sf,
+    SpaDES.project,
     SpaDES.tools (>= 0.2.0),
     testthat (>= 3.0.0)
 Remotes:
@@ -56,6 +60,7 @@ Remotes:
     cran/RandomFieldsUtils,
     PredictiveEcology/reproducible@development,
     PredictiveEcology/SpaDES.core@development,
+    PredictiveEcology/SpaDES.project,
     PredictiveEcology/SpaDES.tools@development
 Additional_repositories: https://predictiveecology.r-universe.dev/
 Encoding: UTF-8
@@ -73,6 +78,6 @@ Collate:
     'experiment2.R'
     'simInitAndExperiment.R'
     'spades-experiment-package.R'
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3

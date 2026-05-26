@@ -2,7 +2,7 @@
 % Please edit documentation in R/simInitAndExperiment.R
 \name{simInitAndExperiment}
 \alias{simInitAndExperiment}
-\title{Run \code{simInit} and \code{Experiment} in one step}
+\title{Run \code{simInit} and \code{experiment} in one step (moved to SpaDES.project)}
 \usage{
 simInitAndExperiment(
   times,
@@ -25,117 +25,18 @@ simInitAndExperiment(
 )
 }
 \arguments{
-\item{times}{A named list of numeric simulation start and end times
-(e.g., \code{times = list(start = 0.0, end = 10.0, timeunit = "year")}),
-with the final optional element, \code{timeunit}, overriding the default
-time unit used in the simulation which is the "smallest time unit" across all
-modules. See examples.}
+\item{times, params, modules, objects, paths, inputs, outputs, loadOrder, notOlderThan}{See \code{\link[SpaDES.core:simInit]{SpaDES.core::simInit()}}.}
 
-\item{params}{A list of lists of the form \code{list(moduleName=list(param1=value, param2=value))}.
-See details.}
+\item{replicates, dirPrefix, substrLength, saveExperiment, experimentFile, clearSimEnv, cl}{See \code{\link[SpaDES.project:experiment]{SpaDES.project::experiment()}}.}
 
-\item{modules}{A named list of character strings specifying the names of modules to be loaded
-for the simulation.
-Note: the module name should correspond to the R source file from which the module is loaded.
-Example: a module named "caribou" will be sourced form the file \file{caribou.R},
-located at the specified \code{modulePath(simList)} (see below).}
-
-\item{objects}{(optional) A vector of object names (naming objects
-that are in the calling environment of
-the \code{simInit}, which is often the
-\code{.GlobalEnv} unless used programmatically.
-NOTE: this mechanism will
-fail if object name is in a package dependency), or
-a named list of data objects to be
-passed into the \code{simList} (more reliable).
-These objects will be accessible
-from the \code{simList} as a normal list, e.g,. \code{mySim$obj}.}
-
-\item{paths}{An optional named list with up to 4 named elements,
-\code{modulePath}, \code{inputPath}, \code{outputPath}, and \code{cachePath}.
-See details. NOTE: Experimental feature now allows for multiple \code{modulePath}s
-to be specified in a character vector. The modules will be searched for sequentially
-in the first \code{modulePath}, then if it doesn't find it, in the second etc.}
-
-\item{inputs}{A \code{data.frame}. Can specify from 1 to 6
-columns with following column names: \code{objectName} (character, required),
-\code{file} (character), \code{fun} (character), \code{package} (character),
-\code{interval} (numeric), \code{loadTime} (numeric).
-See \code{\link[SpaDES.core:inputs]{inputs()}} and vignette("ii-modules") section about inputs.}
-
-\item{outputs}{A \code{data.frame}. Can specify from 1 to 5
-columns with following column names: \code{objectName} (character, required),
-\code{file} (character), \code{fun} (character), \code{package} (character),
-\code{saveTime} (numeric) and \code{eventPriority} (numeric). If
-\code{eventPriority} is not set, it defaults to \code{.last()}. If \code{eventPriority}
-is set to a low value, e.g., 0, 1, 2 and \code{saveTime} is \code{start(sim)},
-it should give "initial conditions".
-
-See \code{\link[SpaDES.core:outputs]{outputs()}} and
-\code{vignette("ii-modules")} section about outputs.}
-
-\item{loadOrder}{An optional character vector of module names specifying the order in
-which to load the modules. If not specified, the module
-load order will be determined automatically.}
-
-\item{notOlderThan}{A time, as in from \code{Sys.time()}. This is passed into
-the \code{Cache} function that wraps \code{.inputObjects}.
-If the module uses the \code{.useCache} parameter and it is
-set to \code{TRUE} or \code{".inputObjects"},
-then the \code{.inputObjects} will be cached.
-Setting \code{notOlderThan = Sys.time()} will cause the
-cached versions of \code{.inputObjects} to be refreshed,
-i.e., rerun.}
-
-\item{replicates}{The number of replicates to run of the same \code{simList}.
-See details and examples.}
-
-\item{dirPrefix}{String vector. This will be concatenated as a prefix on the
-directory names. See details and examples.}
-
-\item{substrLength}{Numeric. While making \code{outputPath} for each spades call, this
-is the number of characters kept from each factor level.
-See details and examples.}
-
-\item{saveExperiment}{Logical. Should params, modules, inputs, sim, and resulting
-experimental design be saved to a file. If TRUE are saved to a single list
-called \code{experiment}. Default TRUE.}
-
-\item{experimentFile}{String. Filename if \code{saveExperiment} is TRUE; saved to
-\code{outputPath(sim)} in \code{.RData} format. See Details.}
-
-\item{clearSimEnv}{Logical. If TRUE, then the envir(sim) of each simList in the return list
-is emptied. This is to reduce RAM load of large return object.
-Default FALSE.}
-
-\item{cl}{A cluster object. Optional. This would generally be created using
-parallel::makeCluster or equivalent. This is an alternative way, instead
-of \code{beginCluster()}, to use parallelism for this function, allowing for
-more control over cluster use.}
-
-\item{...}{An alternative way to pass \code{objects}, i.e., they can just be named
-arguments rather than in a \code{objects = list(...)}. It can also be any
-\code{options} that begins with \code{spades}, \code{reproducible} or \code{Require}, i.e.,
-those identified in \code{spadesOptions()},
-\code{reproducibleOptions()} or \code{RequireOptions()}.
-These will be assigned to the equivalent option \emph{during} the \code{simInit} and \code{spades}
-calls only, i.e., they will revert after the \code{simInit} or \code{spades} calls
-are complete. NOTE: these are not passed to the \code{simList} per se, i.e., they are
-not be available in the \code{simList} during either
-the \code{simInit} or \code{spades} calls via \code{sim$xxx}, though they will be returned to the \code{simList}
-at the end of each of these calls (so that the next call to e.g., \code{spades} can
-see them). For convenience, these can be supplied without their package prefix,
-e.g., \code{lowMemory} can be specified instead of \code{spades.lowMemory}. In cases that
-share option name (\code{reproducible.verbose} and \code{Require.verbose} both exist),
-passing \code{verbose = FALSE} will set both. Obviously this may cause unexpected
-problems if a module is also expecting a value.}
+\item{...}{Passed onward.}
 }
 \description{
-Run \code{simInit} and \code{Experiment} in one step
-}
-\details{
-\code{simInitAndExperiment} cannot pass modules or params to \code{experiment} because
-these are also in \code{simInit}. If the \code{experiment} is being used
-to vary these arguments, it must be done separately (i.e., \code{simInit} then
-\code{experiment}).
+\strong{Deprecated} -- moved to SpaDES.project.
+
+\code{simInitAndExperiment()} has moved to the \pkg{SpaDES.project} package, which
+is now its maintained home. The version here is a thin shim: it emits a
+deprecation message and forwards to \code{\link[SpaDES.project:simInitAndExperiment]{SpaDES.project::simInitAndExperiment()}}
+when that package is installed. Please update your code to call
+\code{SpaDES.project::simInitAndExperiment()} directly.
 }

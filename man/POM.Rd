@@ -83,7 +83,7 @@ Mean Absolute Deviation or Root Mean Squared Error.}
 
 \item{optimControl}{List of control arguments passed into the control of each
 optimization routine. Currently, only passed to
-\code{\link[=DEoptim.control]{DEoptim.control()}} when \code{optimizer} is \code{"DEoptim"}}
+\code{\link[DEoptim:DEoptim.control]{DEoptim::DEoptim.control()}} when \code{optimizer} is \code{"DEoptim"}}
 
 \item{NaNRetries}{Numeric. If greater than 1, then the function will retry the objective
 function for a total of that number of times if it results in an \code{NaN}.
@@ -189,7 +189,7 @@ Using this function with a parallel cluster currently requires that you pass
 This setting will use all available threads on your computer.
 Future versions of this will allow passing of a custom cluster object via \code{cl} argument.
 \code{POM} will automatically determine packages to load in the spawned cluster
-(via \code{\link[=packages]{packages()}}) and it will load all objects in the cluster that are
+(via \code{\link[SpaDES.core:packages]{SpaDES.core::packages()}}) and it will load all objects in the cluster that are
 necessary, by sending \code{names(objects)} to \code{parVar} in \code{DEoptim.control}.
 
 Setting \code{logObjFnVals} to \code{TRUE} may help diagnosing some problems.
@@ -378,7 +378,7 @@ if (interactive() &&
 }
 \seealso{
 \code{\link[SpaDES.core:spades]{SpaDES.core::spades()}}, \code{\link[parallel:makeCluster]{parallel::makeCluster()}},
-\code{\link[=simInit]{simInit()}}
+\code{\link[SpaDES.core:simInit]{SpaDES.core::simInit()}}
 }
 \author{
 Eliot McIntire
