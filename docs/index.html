@@ -93,6 +93,17 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
+<div class="alert alert-warning" style="border-left:5px solid #d9534f; font-size:1.05em;">
+  <strong>⚠️ <code>SpaDES.experiment</code> is deprecated and no longer maintained.</strong>
+  Its experiment functionality has moved to
+  <a href="https://spades-project.predictiveecology.org"><code>SpaDES.project</code></a>,
+  which is now its maintained home: <code>experiment()</code>, <code>experiment2()</code>,
+  <code>simInitAndExperiment()</code>, the <code>simLists</code> class and
+  <code>as.data.table.simLists()</code> all live there. The same-named functions here
+  simply forward to <code>SpaDES.project</code>. Please migrate:
+  <code>remotes::install_github("PredictiveEcology/SpaDES.project")</code>.
+</div>
+
 
 <p><img align="right" width="80" vspace="10" hspace="10" src="https://github.com/PredictiveEcology/SpaDES/raw/master/docs/images/SpaDES.png"></p>
 <div id="spades-experiment" class="section level1">
